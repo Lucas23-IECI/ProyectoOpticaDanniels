@@ -1,6 +1,5 @@
 # ProyectoOpticaDanniels
 
-
 Proyecto pre-tesis con la finalidad de lanzar un software funcional, con funciones varias como por ejemplo el visualizar los productos de la optica y la venta de los mismos
 
-Se ocupara stack PERN
+Se ocupara stack PERN, APIs para la pasarela de pago y el poder completar los libros contables electronicos del servicio impuestos internos, y una arquitectura Backend y Frontend
