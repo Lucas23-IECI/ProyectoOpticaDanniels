@@ -16,6 +16,9 @@ function Navbar() {
                         {darkMode ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
                     </button>
                 </li>
+                <li>
+                    <NavLink to="/productos">Productos</NavLink>
+                </li>
             </ul>
         </nav>
     );

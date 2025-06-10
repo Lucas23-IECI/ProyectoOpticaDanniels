@@ -2,12 +2,19 @@
 import express, { json, urlencoded } from "express";
 import { HOST, PORT } from "./config/configEnv.js";
 import { connectDB } from "./config/configDb.js";
+import indexRoutes from "./routes/index.routes.js";
+import cors from "cors";
 
 async function setupServer() {
     try {
         const app = express();
 
         app.disable("x-powered-by");
+
+        app.use(cors({
+            origin: "http://localhost:5173",
+            credentials: true
+        }));
 
         app.use(
             urlencoded({
@@ -21,6 +28,8 @@ async function setupServer() {
                 limit: "1mb",
             }),
         );
+
+        app.use("/api", indexRoutes);
 
         app.get("/", (_req, res) => {
             res.send("API Óptica Danniels corriendo correctamente.");
