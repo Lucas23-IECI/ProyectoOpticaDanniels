@@ -1,6 +1,6 @@
 import { AppDataSource } from "../config/configDb.js";
 import Producto from "../entity/producto.entity.js";
-import { ILike, Between, MoreThanOrEqual, LessThanOrEqual, Not } from "typeorm";
+import { Between, ILike, LessThanOrEqual, MoreThanOrEqual, Not } from "typeorm";
 
 const camposPermitidos = [
     "id",
