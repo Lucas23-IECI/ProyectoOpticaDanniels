@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
 
-import { HOST, PORT, cookieKey } from "./config/configEnv.js";
+import { cookieKey, HOST, PORT } from "./config/configEnv.js";
 import { connectDB } from "./config/configDb.js";
 import indexRoutes from "./routes/index.routes.js";
 import { passportJwtSetup } from "./auth/passport.auth.js";
