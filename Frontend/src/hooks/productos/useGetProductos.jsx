@@ -12,15 +12,17 @@ const useGetProductos = () => {
             const data = await getProductos(filtros);
             setProductos(data);
             setError('');
+            return data;
         } catch (err) {
             console.error('Error al obtener productos:', err);
             setError('Error al obtener productos');
             setProductos([]);
+            return [];
         } finally {
             setLoading(false);
         }
     };
-
+    
     return { productos, loading, error, fetchProductos };
 };
 

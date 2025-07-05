@@ -1,50 +1,83 @@
-import { useEffect, useState } from "react";
-import useGetProductos from "@hooks/productos/useGetProductos";
+import { useState, useEffect } from "react";
+import { useSearchParams, Link } from "react-router-dom";
+import { getProductos } from "@services/producto.service";
+import { FaSearch } from "react-icons/fa";
 import DropdownFiltro from "@components/DropdownFiltro";
-import "@styles/productos.css";
-import { Link } from "react-router-dom";
+import "@styles/busquedaResultados.css";
 
-const Productos = () => {
-    const [loading, setLoading] = useState(false);
+const BusquedaResultados = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const query = searchParams.get("query") || "";
+    const [busqueda, setBusqueda] = useState(query);
+    const [productos, setProductos] = useState([]);
+    const [cargando, setCargando] = useState(false);
+
     const [disponibilidad, setDisponibilidad] = useState("");
     const [precioMin, setPrecioMin] = useState("");
     const [precioMax, setPrecioMax] = useState("");
     const [orden, setOrden] = useState("");
+
     const [dropdownActivo, setDropdownActivo] = useState(null);
 
-    const { productos, fetchProductos } = useGetProductos();
+    useEffect(() => {
+        setBusqueda(query);
+        const buscarProductos = async () => {
+            setCargando(true);
+            setProductos([]);
+            try {
+                const filtros = { nombre: query };
+                if (precioMin) filtros.precio_min = precioMin;
+                if (precioMax) filtros.precio_max = precioMax;
+                if (disponibilidad) filtros.activo = disponibilidad === "en_stock";
+                if (orden) filtros.orden = orden;
 
-    const obtenerProductos = async () => {
-        setLoading(true);
-        try {
-            const filtros = {};
-            if (precioMin) filtros.precio_min = precioMin;
-            if (precioMax) filtros.precio_max = precioMax;
-            if (disponibilidad) filtros.activo = disponibilidad === "en_stock";
-            if (orden) filtros.orden = orden;
+                const resultados = await getProductos(filtros);
+                setProductos(resultados);
+            } catch (error) {
+                console.error("Error al buscar productos:", error);
+                setProductos([]);
+            } finally {
+                setCargando(false);
+            }
+        };
 
-            await fetchProductos(filtros);  // 👈 SIN GUARDAR RESULTADO
-        } catch (error) {
-            console.error("Error al obtener productos:", error);
-        } finally {
-            setLoading(false);
+        if (query.trim() !== "") {
+            buscarProductos();
+        } else {
+            setProductos([]);
+        }
+    }, [query, disponibilidad, precioMin, precioMax, orden]);
+
+    const handleBuscar = (e) => {
+        e.preventDefault();
+        if (busqueda.trim() !== "") {
+            setSearchParams({ query: busqueda.trim() });
         }
     };
-
-    useEffect(() => {
-        obtenerProductos();
-    }, [disponibilidad, precioMin, precioMax, orden]);
 
     const restablecerFiltros = () => {
         setDisponibilidad("");
         setPrecioMin("");
         setPrecioMax("");
         setOrden("");
+        setSearchParams({ query: busqueda.trim() });
     };
 
     return (
         <div className="resultados-container">
-            <h1 className="resultados-titulo">Catálogo de Productos</h1>
+            <h1 className="resultados-titulo">Resultados de búsqueda</h1>
+
+            <form onSubmit={handleBuscar} className="busqueda-barra">
+                <input
+                    type="text"
+                    placeholder="Buscar productos..."
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                />
+                <button type="submit" aria-label="Buscar">
+                    <FaSearch />
+                </button>
+            </form>
 
             <div className="filtros-barra">
                 <DropdownFiltro
@@ -89,9 +122,16 @@ const Productos = () => {
                 />
             </div>
 
-            {loading ? (
+            {cargando ? (
                 <p className="cargando">Cargando productos...</p>
-            ) : Array.isArray(productos) && productos.length > 0 ? (
+            ) : productos.length === 0 ? (
+                <div className="no-resultados">
+                    <p>No se encontraron productos que coincidan con los filtros aplicados.</p>
+                    <button onClick={restablecerFiltros} className="restablecer-boton">
+                        Restablecer filtros
+                    </button>
+                </div>
+            ) : (
                 <div className="lista-productos">
                     {productos.map((producto) => (
                         <Link
@@ -117,16 +157,9 @@ const Productos = () => {
                         </Link>
                     ))}
                 </div>
-            ) : (
-                <div className="no-resultados">
-                    <p>No hay productos disponibles.</p>
-                    <button onClick={restablecerFiltros} className="restablecer-boton">
-                        Restablecer filtros
-                    </button>
-                </div>
             )}
         </div>
     );
 };
 
-export default Productos;
+export default BusquedaResultados;

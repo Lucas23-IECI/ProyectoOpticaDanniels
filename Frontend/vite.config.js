@@ -10,7 +10,7 @@ export default defineConfig({
   base: "/OpticaDanniels/",
   plugins: [react()],
   preview: {
-    port: 1670,
+    port: 443,
     host: true
   },
   resolve: {

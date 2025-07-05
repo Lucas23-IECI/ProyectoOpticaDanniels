@@ -1,25 +1,18 @@
-import { Link } from 'react-router-dom';
-import { useContext } from 'react';
-import { ThemeContext } from '../context/ThemeContext';
+import { NavLink } from 'react-router-dom';
+import BarraBusqueda from '@components/BarraBusqueda';
+import '@styles/navbar.css';
 
 function Navbar() {
-    const { darkMode, toggleTheme } = useContext(ThemeContext);
-
     return (
         <nav>
+            <div className="logo">
+                <span>Óptica Danniels</span>
+            </div>
             <ul>
-                <li><Link to="/">Inicio</Link></li>
-                <li><Link to="/proyectos">Proyectos</Link></li>
-                <li><Link to="/contacto">Contacto</Link></li>
-                <li>
-                    <button onClick={toggleTheme}>
-                        {darkMode ? '☀️ Modo Claro' : '🌙 Modo Oscuro'}
-                    </button>
-                </li>
-                <li>
-                    <NavLink to="/productos">Productos</NavLink>
-                </li>
+                <li><NavLink to="/">Inicio</NavLink></li>
+                <li><NavLink to="/productos">Productos</NavLink></li>
             </ul>
+            <BarraBusqueda />
         </nav>
     );
 }

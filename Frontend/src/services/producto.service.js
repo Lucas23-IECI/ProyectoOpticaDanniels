@@ -7,6 +7,9 @@ export const getProductos = async (filtros = {}) => {
         const response = await axios.get(`${API_URL}/productos`, { params: filtros });
         return response.data.productos || [];
     } catch (error) {
+        if (error.response && error.response.status === 404) {
+            return [];
+        }
         console.error("Error en getProductos:", error);
         throw error;
     }
