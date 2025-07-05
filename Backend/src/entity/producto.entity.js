@@ -33,7 +33,7 @@ const ProductSchema = new EntitySchema({
         imagen_url: {
             type: "varchar",
             length: 500,
-            nullable: false,
+            nullable: true,
         },
         stock: {
             type: "int",

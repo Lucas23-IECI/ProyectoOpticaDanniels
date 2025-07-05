@@ -1,6 +1,28 @@
 import { AppDataSource } from "../config/configDb.js";
 import Producto from "../entity/producto.entity.js";
 import { Between, ILike, LessThanOrEqual, MoreThanOrEqual, Not } from "typeorm";
+import fs from "fs";
+import path from "path";
+
+export const actualizarImagenProductoService = async (id, imagenUrl) => {
+    const productoRepository = AppDataSource.getRepository(Producto);
+    const producto = await productoRepository.findOneBy({ id });
+
+    if (!producto) {
+        throw { status: 404, message: "Producto no encontrado" };
+    }
+
+    if (producto.imagen_url) {
+        const rutaImagenAnterior = path.join("uploads", "productos", producto.imagen_url);
+        if (fs.existsSync(rutaImagenAnterior)) {
+            fs.unlinkSync(rutaImagenAnterior);
+        }
+    }
+
+    producto.imagen_url = imagenUrl;
+    await productoRepository.save(producto);
+    return producto;
+};
 
 const camposPermitidos = [
     "id",

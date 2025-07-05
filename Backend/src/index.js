@@ -18,6 +18,8 @@ async function setupServer() {
 
         app.disable("x-powered-by");
 
+        app.use("/uploads", express.static("uploads"));
+
         app.use(cors({
             origin: true,
             credentials: true,

@@ -4,6 +4,30 @@ import {
     crearProductoService,
     eliminarProductoService
 } from "../services/producto.service.js";
+import { actualizarImagenProductoService } from "../services/producto.service.js";
+import { HOST, PORT } from "../config/configEnv.js";
+
+export const subirImagenProductoController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const imagenUrl = req.file.filename;
+
+        const producto = await actualizarImagenProductoService(Number(id), imagenUrl);
+
+        const protocolo = "http";
+        const puertoDefault = PORT === "80" || PORT === "443";
+        const imagenUrlCompleta =
+            `${protocolo}://${HOST}${puertoDefault ? "" : `:${PORT}`}/uploads/productos/${producto.imagen_url}`;
+
+        res.json({
+            mensaje: "Imagen del producto actualizada correctamente",
+            imagen_url: imagenUrlCompleta,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(error.status || 500).json({ mensaje: error.message });
+    }
+};
 
 export const crearProductoController = async (req, res) => {
     try {
@@ -31,9 +55,19 @@ export const buscarProductosController = async (req, res) => {
             });
         }
 
+        const protocolo = "http";
+        const puertoDefault = PORT === "80" || PORT === "443";
+
+        const productosConImagenUrl = productos.map((producto) => ({
+            ...producto,
+            imagen_url: producto.imagen_url
+                ? `${protocolo}://${HOST}${puertoDefault ? "" : `:${PORT}`}/uploads/productos/${producto.imagen_url}`
+                : null,
+        }));
+
         res.status(200).json({
             mensaje: "Productos encontrados correctamente.",
-            productos,
+            productos: productosConImagenUrl,
             paginacion,
         });
     } catch (error) {
@@ -49,9 +83,18 @@ export const actualizarProductoController = async (req, res) => {
         const { id } = req.params;
         const producto = await actualizarProductoService(Number(id), req.body);
 
+        const protocolo = "http";
+        const puertoDefault = PORT === "80" || PORT === "443";
+        const imagenUrlCompleta = producto.imagen_url
+            ? `${protocolo}://${HOST}${puertoDefault ? "" : `:${PORT}`}/uploads/productos/${producto.imagen_url}`
+            : null;
+
         res.status(200).json({
             mensaje: "Producto actualizado correctamente.",
-            producto,
+            producto: {
+                ...producto,
+                imagen_url: imagenUrlCompleta,
+            },
         });
     } catch (error) {
         res.status(error.status || 500).json({

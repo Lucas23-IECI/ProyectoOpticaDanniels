@@ -7,9 +7,9 @@ export const productSchema = Joi.object({
     categoria: Joi.string()
         .valid("opticos", "sol", "accesorios")
         .required(),
-    imagen_url: Joi.string().uri().max(500).required(),
+    imagen_url: Joi.string().uri().max(500).optional().allow(""), 
     stock: Joi.number().integer().min(0).required(),
-    activo: Joi.boolean().required(),
+    activo: Joi.boolean().optional(),  
     marca: Joi.string().max(100).required(),
     codigoSKU: Joi.string().max(100).required(),
     oferta: Joi.boolean().required(),
