@@ -10,11 +10,15 @@ function DetalleProducto() {
     useEffect(() => {
         const fetchProducto = async () => {
             try {
-                const nombreBuscado = decodeURIComponent(nombreProducto).replace(/-/g, ' ').toLowerCase();
+                const limpiarNombre = (nombre) =>
+                    nombre.toLowerCase().replace(/[\s-]+/g, "");
+
+                const nombreBuscado = limpiarNombre(decodeURIComponent(nombreProducto));
                 const productos = await getProductos();
                 const productoEncontrado = productos.find(
-                    (p) => p.nombre.toLowerCase() === nombreBuscado
+                    (p) => limpiarNombre(p.nombre) === nombreBuscado
                 );
+
                 if (productoEncontrado) {
                     setProducto(productoEncontrado);
                 }
@@ -25,6 +29,7 @@ function DetalleProducto() {
 
         fetchProducto();
     }, [nombreProducto]);
+    
 
     if (!producto) {
         return <p>Cargando producto...</p>;

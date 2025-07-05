@@ -34,7 +34,7 @@
 
 .busqueda-barra button {
     position: absolute;
-    top: 16%;
+    top: 50%;
     right: -2.75rem;
     transform: translateY(-50%);
     background: none;
