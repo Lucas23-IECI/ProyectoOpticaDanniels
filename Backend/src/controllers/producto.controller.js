@@ -31,10 +31,26 @@ export const subirImagenProductoController = async (req, res) => {
 
 export const crearProductoController = async (req, res) => {
     try {
-        const productoCreado = await crearProductoService(req.body);
+        const datosProducto = req.body;
+        
+        if (req.file) {
+            datosProducto.imagen_url = req.file.filename;
+        }
+
+        const productoCreado = await crearProductoService(datosProducto);
+        
+        const protocolo = "http";
+        const puertoDefault = PORT === "80" || PORT === "443";
+        const imagenUrlCompleta = productoCreado.imagen_url
+            ? `${protocolo}://${HOST}${puertoDefault ? "" : `:${PORT}`}/uploads/productos/${productoCreado.imagen_url}`
+            : null;
+
         res.status(201).json({
             mensaje: "Producto creado exitosamente.",
-            producto: productoCreado,
+            producto: {
+                ...productoCreado,
+                imagen_url: imagenUrlCompleta,
+            },
         });
     } catch (error) {
         res.status(error.status || 500).json({
@@ -47,14 +63,6 @@ export const buscarProductosController = async (req, res) => {
     try {
         const { productos, paginacion } = await buscarProductosService(req.query);
 
-        if (!productos || productos.length === 0) {
-            return res.status(404).json({
-                mensaje: "No se encontraron productos con los filtros especificados.",
-                productos: [],
-                paginacion,
-            });
-        }
-
         const protocolo = "http";
         const puertoDefault = PORT === "80" || PORT === "443";
 
@@ -66,7 +74,7 @@ export const buscarProductosController = async (req, res) => {
         }));
 
         res.status(200).json({
-            mensaje: "Productos encontrados correctamente.",
+            mensaje: productos.length > 0 ? "Productos encontrados correctamente." : "No se encontraron productos.",
             productos: productosConImagenUrl,
             paginacion,
         });
@@ -81,7 +89,16 @@ export const buscarProductosController = async (req, res) => {
 export const actualizarProductoController = async (req, res) => {
     try {
         const { id } = req.params;
-        const producto = await actualizarProductoService(Number(id), req.body);
+        console.log("Actualizando producto con ID:", id);
+        console.log("Datos recibidos:", req.body);
+        
+        const datosProducto = { ...req.body };
+        
+        if (req.file) {
+            datosProducto.imagen_url = req.file.filename;
+        }
+        
+        const producto = await actualizarProductoService(Number(id), datosProducto);
 
         const protocolo = "http";
         const puertoDefault = PORT === "80" || PORT === "443";
@@ -97,6 +114,7 @@ export const actualizarProductoController = async (req, res) => {
             },
         });
     } catch (error) {
+        console.error("Error en actualizarProductoController:", error);
         res.status(error.status || 500).json({
             mensaje: error.message || "Error al actualizar el producto.",
         });

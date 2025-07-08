@@ -167,7 +167,7 @@ export const buscarProductosService = async (filtros) => {
         console.log("Condición WHERE final:", where);
 
         const pagina = filtros.page ? parseInt(filtros.page) : 1;
-        const limite = filtros.limit ? parseInt(filtros.limit) : 10;
+        const limite = filtros.limit ? parseInt(filtros.limit) : 100; 
 
         if (pagina < 1 || limite < 1)
             throw { status: 400, message: "Parámetros de paginación inválidos" };
