@@ -1,3 +1,102 @@
+.usuario-sesion {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.usuario-sesion span {
+    color: #fff;
+    font-size: 0.95rem;
+}
+
+.usuario-sesion button {
+    padding: 0.4rem 0.8rem;
+    background-color: #f39c12;
+    border: none;
+    border-radius: 6px;
+    color: #111;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.usuario-sesion button:hover {
+    background-color: #e67e22;
+}
+
+@media (max-width: 768px) {
+    nav ul {
+        gap: 1rem;
+    }
+
+    .barra-busqueda {
+        max-width: 200px;
+    }
+
+    .usuario-sesion span {
+        display: none;
+    } }
+
+
+
+
+        .navbar-icons {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-left: 2rem;
+        }
+    
+        .icono-usuario {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+    
+        .icono-usuario:hover {
+            color: #f39c12;
+        }
+    
+        .popup-auth,
+        .dropdown-usuario {
+            position: absolute;
+            top: 2.5rem;
+            right: 0;
+            background-color: #fff;
+            color: #000;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            width: 200px;
+        }
+    
+        .popup-auth button,
+        .dropdown-usuario button {
+            width: 100%;
+            background-color: #f39c12;
+            border: none;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    
+        .popup-auth button:hover,
+        .dropdown-usuario button:hover {
+            background-color: #e67e22;
+        }
+
+
+
+
+
+
+
 nav {
     display: flex;
     align-items: center;

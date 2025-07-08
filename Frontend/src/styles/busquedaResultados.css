@@ -53,10 +53,14 @@
 .filtros-barra {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     flex-wrap: wrap;
     gap: 1.5rem;
     margin-bottom: 2rem;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid #333;
 }
 
 .lista-productos {
@@ -136,6 +140,31 @@
     padding: 2rem;
     font-weight: bold;
     font-size: 1.2rem;
+}
+
+.restablecer-filtros {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.restablecer-filtros:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+.restablecer-filtros:active {
+    transform: translateY(0);
 }
 
 @media (max-width: 768px) {

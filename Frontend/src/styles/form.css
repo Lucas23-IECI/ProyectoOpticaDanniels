@@ -36,3 +36,40 @@ form button {
 form button:hover {
     background-color: #222;
 }
+
+/* Estilos para validación de errores */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 0.2rem;
+}
+
+input.error,
+select.error,
+textarea.error {
+    border-color: #e74c3c;
+    background-color: #ffeaea;
+}
+
+input.error:focus,
+select.error:focus,
+textarea.error:focus {
+    outline: none;
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
+/* Estilos para campos válidos (opcional) */
+input.valid,
+select.valid,
+textarea.valid {
+    border-color: #27ae60;
+    background-color: #eafaf1;
+}
