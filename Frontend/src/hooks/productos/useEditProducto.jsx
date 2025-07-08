@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createProducto } from '@services/producto.service';
+import { updateProducto, updateProductoImagen } from '@services/producto.service';
 import { showErrorAlert, showSuccessAlert } from '@helpers/sweetAlert';
 import { 
     validatePrice, 
@@ -9,15 +9,16 @@ import {
     validateCategory,
     validateBrand,
     validateDescription,
-    validateProductName,
-    validateImage
+    validateProductName
 } from '@helpers/validation.helper';
 
-const useCreateProducto = (onSuccess) => {
+const useEditProducto = (onSuccess) => {
     const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
 
-    const validateForm = (formData) => {
+    const validateForm = (formData, isImageOnly = false) => {
+        if (isImageOnly) return true;
+
         const newErrors = {};
         
         const nombreError = validateProductName(formData.get('nombre'));
@@ -32,9 +33,6 @@ const useCreateProducto = (onSuccess) => {
 
         const categoriaError = validateCategory(formData.get('categoria'));
         if (categoriaError) newErrors.categoria = categoriaError;
-
-        const imagenError = validateImage(formData.get('imagen'));
-        if (imagenError) newErrors.imagen = imagenError;
 
         const stockError = validateStock(formData.get('stock'));
         if (stockError) newErrors.stock = stockError;
@@ -52,28 +50,37 @@ const useCreateProducto = (onSuccess) => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleCreate = async (formData) => {
+    const handleEdit = async (productoId, formData, isImageOnly = false) => {
         try {
             setLoading(true);
             setErrors({});
 
-            if (!validateForm(formData)) {
+            if (!validateForm(formData, isImageOnly)) {
                 showErrorAlert('Errores de validación', 'Por favor corrige los errores marcados en el formulario.');
                 return;
             }
 
-            const nuevoProducto = await createProducto(formData);
+            let productoActualizado;
             
-            showSuccessAlert(
-                '¡Producto creado exitosamente!', 
-                `${nuevoProducto.nombre} ha sido agregado al catálogo.`
-            );
+            if (isImageOnly) {
+                productoActualizado = await updateProductoImagen(productoId, formData);
+                showSuccessAlert(
+                    '¡Imagen actualizada!', 
+                    'La imagen del producto ha sido actualizada exitosamente.'
+                );
+            } else {
+                productoActualizado = await updateProducto(productoId, formData);
+                showSuccessAlert(
+                    '¡Producto actualizado!', 
+                    `${productoActualizado.nombre} ha sido actualizado exitosamente.`
+                );
+            }
             
             if (onSuccess) {
-                onSuccess(nuevoProducto);
+                onSuccess(productoActualizado);
             }
         } catch (error) {
-            console.error("Error al crear producto:", error);
+            console.error("Error al actualizar producto:", error);
             
             if (error.response?.status === 400) {
                 const responseData = error.response.data;
@@ -91,6 +98,11 @@ const useCreateProducto = (onSuccess) => {
                 showErrorAlert(
                     'Error de validación', 
                     responseData.mensaje || 'Por favor verifica los datos ingresados.'
+                );
+            } else if (error.response?.status === 404) {
+                showErrorAlert(
+                    'Producto no encontrado', 
+                    'El producto que intentas editar no existe.'
                 );
             } else if (error.response?.status === 409) {
                 setErrors({ codigoSKU: 'Este código SKU ya está en uso' });
@@ -112,13 +124,13 @@ const useCreateProducto = (onSuccess) => {
             } else if (error.response?.status === 403) {
                 showErrorAlert(
                     'Acceso denegado', 
-                    'No tienes permisos para crear productos.'
+                    'No tienes permisos para editar productos.'
                 );
             } else {
                 showErrorAlert(
-                    'Error al crear producto', 
+                    'Error al actualizar producto', 
                     error.response?.data?.mensaje || 
-                    'No se pudo crear el producto. Verifica tu conexión e intenta nuevamente.'
+                    'No se pudo actualizar el producto. Verifica tu conexión e intenta nuevamente.'
                 );
             }
         } finally {
@@ -129,7 +141,7 @@ const useCreateProducto = (onSuccess) => {
     const clearErrors = () => setErrors({});
 
     return { 
-        handleCreate, 
+        handleEdit, 
         loading, 
         errors, 
         clearErrors,
@@ -137,4 +149,4 @@ const useCreateProducto = (onSuccess) => {
     };
 };
 
-export default useCreateProducto;
+export default useEditProducto;

@@ -1,13 +1,12 @@
-import { useState, useRef } from 'react';
-import useCreateProducto from '@hooks/productos/useCreateProducto';
+import { useState, useRef, useEffect } from 'react';
+import useEditProducto from '@hooks/productos/useEditProducto';
 import { FaTimes, FaUpload, FaImage, FaSpinner } from 'react-icons/fa';
 import '@styles/crearProducto.css';
 
-const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
-    const { handleCreate, loading, errors, clearErrors, setErrors } = useCreateProducto((nuevoProducto) => {
+const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => {
+    const { handleEdit, loading, errors, clearErrors, setErrors } = useEditProducto((productoActualizado) => {
         setShow(false);
-        resetForm();
-        if (onProductoCreated) onProductoCreated(nuevoProducto);
+        if (onProductoUpdated) onProductoUpdated(productoActualizado);
     });
 
     const [formData, setFormData] = useState({
@@ -28,6 +27,29 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
     const [alert, setAlert] = useState(null);
     const fileInputRef = useRef(null);
 
+    useEffect(() => {
+        if (producto && show) {
+            const precio = producto.precio ? producto.precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+            
+            setFormData({
+                nombre: producto.nombre || '',
+                descripcion: producto.descripcion || '',
+                precio: precio,
+                categoria: producto.categoria || '',
+                stock: producto.stock?.toString() || '',
+                marca: producto.marca || '',
+                codigoSKU: producto.codigoSKU || '',
+                activo: producto.activo !== undefined ? producto.activo : true,
+                oferta: producto.oferta !== undefined ? producto.oferta : false,
+                descuento: producto.descuento || 0
+            });
+            
+            if (producto.imagen_url) {
+                setPreviewImagen(producto.imagen_url);
+            }
+        }
+    }, [producto, show]);
+
     const showAlert = (message) => {
         setAlert(message);
         setTimeout(() => setAlert(null), 2000);
@@ -42,7 +64,6 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             formData.stock !== '' &&
             formData.marca.trim().length >= 2 &&
             formData.codigoSKU.trim().length >= 3 &&
-            imagen !== null &&
             Object.keys(errors).length === 0
         );
     };
@@ -106,24 +127,6 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 precio: null
             }));
         }
-    };
-
-    const resetForm = () => {
-        setFormData({
-            nombre: '',
-            descripcion: '',
-            precio: '',
-            categoria: '',
-            stock: '',
-            marca: '',
-            codigoSKU: '',
-            activo: true,
-            oferta: false,
-            descuento: 0
-        });
-        setImagen(null);
-        setPreviewImagen(null);
-        clearErrors();
     };
 
     const handleInputChange = (e) => {
@@ -269,7 +272,6 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('Solo se permiten imágenes JPG, PNG o WebP');
                 e.target.value = '';
                 setImagen(null);
-                setPreviewImagen(null);
                 return;
             }
             
@@ -277,7 +279,6 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('La imagen no puede exceder 5MB');
                 e.target.value = '';
                 setImagen(null);
-                setPreviewImagen(null);
                 return;
             }
             
@@ -287,7 +288,6 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                     showAlert('La imagen debe tener al menos 200x200 píxeles');
                     e.target.value = '';
                     setImagen(null);
-                    setPreviewImagen(null);
                     return;
                 }
                 
@@ -295,7 +295,6 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                     showAlert('La imagen no puede exceder 4000x4000 píxeles');
                     e.target.value = '';
                     setImagen(null);
-                    setPreviewImagen(null);
                     return;
                 }
                 
@@ -314,7 +313,6 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('Archivo de imagen corrupto o no válido');
                 e.target.value = '';
                 setImagen(null);
-                setPreviewImagen(null);
             };
             
             img.src = URL.createObjectURL(file);
@@ -339,12 +337,38 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             submitFormData.append('imagen', imagen);
         }
 
-        handleCreate(submitFormData);
+        handleEdit(producto.id, submitFormData);
+    };
+
+    const handleImageOnlyUpdate = () => {
+        if (!imagen) {
+            showAlert('Selecciona una nueva imagen primero');
+            return;
+        }
+
+        const imageFormData = new FormData();
+        imageFormData.append('imagen', imagen);
+
+        handleEdit(producto.id, imageFormData, true);
     };
 
     const handleClose = () => {
         setShow(false);
-        resetForm();
+        setFormData({
+            nombre: '',
+            descripcion: '',
+            precio: '',
+            categoria: '',
+            stock: '',
+            marca: '',
+            codigoSKU: '',
+            activo: true,
+            oferta: false,
+            descuento: 0
+        });
+        setImagen(null);
+        setPreviewImagen(null);
+        clearErrors();
     };
 
     if (!show) return null;
@@ -359,7 +383,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 )}
                 
                 <div className="crear-producto-header">
-                    <h2>🆕 Crear Nuevo Producto</h2>
+                    <h2>✏️ Editar Producto</h2>
                     <button 
                         className="close-button" 
                         onClick={handleClose}
@@ -531,7 +555,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                                     ) : (
                                         <div className="upload-placeholder">
                                             <FaUpload size={48} />
-                                            <h4>Subir imagen del producto</h4>
+                                            <h4>Subir nueva imagen</h4>
                                             <p>JPG, PNG o WebP • Máximo 5MB</p>
                                             <p>Recomendado: 800x600px</p>
                                         </div>
@@ -547,6 +571,25 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                                 />
                                 
                                 {errors.imagen && <span className="error-message">{errors.imagen}</span>}
+                                
+                                {imagen && (
+                                    <button
+                                        type="button"
+                                        onClick={handleImageOnlyUpdate}
+                                        className="btn-create"
+                                        disabled={loading}
+                                        style={{ marginTop: '10px', width: '100%' }}
+                                    >
+                                        {loading ? (
+                                            <>
+                                                <FaSpinner className="spinner" />
+                                                Actualizando imagen...
+                                            </>
+                                        ) : (
+                                            'Actualizar solo imagen'
+                                        )}
+                                    </button>
+                                )}
                             </div>
                         </div>
 
@@ -596,10 +639,10 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                             {loading ? (
                                 <>
                                     <FaSpinner className="spinner" />
-                                    Creando producto...
+                                    Actualizando producto...
                                 </>
                             ) : (
-                                'Crear Producto'
+                                'Actualizar Producto'
                             )}
                         </button>
                     </div>
@@ -609,4 +652,4 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
     );
 };
 
-export default CrearProductoPopup;
+export default EditarProductoPopup;
