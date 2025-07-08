@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { getProductos } from "@services/producto.service";
 import { FaSearch } from "react-icons/fa";
@@ -11,6 +11,7 @@ const BusquedaResultados = () => {
     const [busqueda, setBusqueda] = useState(query);
     const [productos, setProductos] = useState([]);
     const [cargando, setCargando] = useState(false);
+    const debounceRef = useRef(null);
 
     const [disponibilidad, setDisponibilidad] = useState("");
     const [precioMin, setPrecioMin] = useState("");
@@ -18,6 +19,24 @@ const BusquedaResultados = () => {
     const [orden, setOrden] = useState("");
 
     const [dropdownActivo, setDropdownActivo] = useState(null);
+
+    useEffect(() => {
+        if (debounceRef.current) {
+            clearTimeout(debounceRef.current);
+        }
+
+        debounceRef.current = setTimeout(() => {
+            if (busqueda.trim() !== "" && busqueda !== query) {
+                setSearchParams({ query: busqueda.trim() });
+            }
+        }, 500);
+
+        return () => {
+            if (debounceRef.current) {
+                clearTimeout(debounceRef.current);
+            }
+        };
+    }, [busqueda, query, setSearchParams]);
 
     useEffect(() => {
         setBusqueda(query);
@@ -45,6 +64,7 @@ const BusquedaResultados = () => {
             buscarProductos();
         } else {
             setProductos([]);
+            setCargando(false);
         }
     }, [query, disponibilidad, precioMin, precioMax, orden]);
 
@@ -61,6 +81,14 @@ const BusquedaResultados = () => {
         setPrecioMax("");
         setOrden("");
         setSearchParams({ query: busqueda.trim() });
+    };
+
+    const contarFiltrosActivos = () => {
+        let count = 0;
+        if (disponibilidad) count++;
+        if (precioMin || precioMax) count++;
+        if (orden) count++;
+        return count;
     };
 
     return (
@@ -120,6 +148,16 @@ const BusquedaResultados = () => {
                     dropdownActivo={dropdownActivo}
                     setDropdownActivo={setDropdownActivo}
                 />
+                
+                {contarFiltrosActivos() > 0 && (
+                    <button 
+                        className="restablecer-filtros"
+                        onClick={restablecerFiltros}
+                        title={`Limpiar ${contarFiltrosActivos()} filtro${contarFiltrosActivos() > 1 ? 's' : ''}`}
+                    >
+                        Limpiar filtros ({contarFiltrosActivos()})
+                    </button>
+                )}
             </div>
 
             {cargando ? (

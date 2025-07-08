@@ -23,7 +23,7 @@ const Productos = () => {
             if (disponibilidad) filtros.activo = disponibilidad === "en_stock";
             if (orden) filtros.orden = orden;
 
-            await fetchProductos(filtros);  // 👈 SIN GUARDAR RESULTADO
+            await fetchProductos(filtros); 
         } catch (error) {
             console.error("Error al obtener productos:", error);
         } finally {

@@ -21,6 +21,13 @@ const DropdownFiltro = ({
     const [inputMax, setInputMax] = useState(precioMax);
     const debounceRef = useRef(null);
 
+    const tieneSeleccion = () => {
+        if (tipo === "precio") {
+            return precioMin || precioMax;
+        }
+        return seleccion && seleccion !== "";
+    };
+
     const toggleDropdown = () => {
         setDropdownActivo(abierto ? null : id);
     };
@@ -68,16 +75,18 @@ const DropdownFiltro = ({
                 setPrecioMax(max ? String(max) : "");
             }, 500);
         }
-    }, [inputMin, inputMax, tipo, setPrecioMin, setPrecioMax]);
+    }, [inputMin, inputMax, tipo, setPrecioMin, setPrecioMax, setDropdownActivo]);
 
     return (
-        <div className={`dropdown-filtro ${abierto ? "abierto" : ""}`}>
+        <div className={`dropdown-filtro ${abierto ? "abierto" : ""} ${tieneSeleccion() ? "activo" : ""}`}>
             <button
                 type="button"
                 className="dropdown-titulo"
                 onClick={toggleDropdown}
             >
-                {titulo} {abierto ? <FaChevronUp /> : <FaChevronDown />}
+                {titulo} 
+                {tieneSeleccion() && <span className="filtro-activo-indicador">●</span>}
+                {abierto ? <FaChevronUp /> : <FaChevronDown />}
             </button>
 
             {abierto && (

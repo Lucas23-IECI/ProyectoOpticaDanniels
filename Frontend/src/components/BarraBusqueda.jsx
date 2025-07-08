@@ -12,7 +12,7 @@ const BarraBusqueda = () => {
     useEffect(() => {
         const delay = setTimeout(() => {
             if (busqueda.trim() !== '') {
-                buscar(busqueda, { limit: 5 }); // Sugerencias limitadas
+                buscar(busqueda, { limit: 5 });
                 setMostrarResultados(true);
             } else {
                 setMostrarResultados(false);
@@ -20,13 +20,22 @@ const BarraBusqueda = () => {
         }, 400);
 
         return () => clearTimeout(delay);
-    }, [busqueda]);
+    }, [busqueda, buscar]);
+
+    useEffect(() => {
+        const autoSearchDelay = setTimeout(() => {
+            if (busqueda.trim() !== '' && busqueda.length > 2) {
+                navegar(`/buscar?query=${encodeURIComponent(busqueda.trim())}`);
+            }
+        }, 500);
+
+        return () => clearTimeout(autoSearchDelay);
+    }, [busqueda, navegar]);
 
     const manejarBuscar = () => {
         if (busqueda.trim() !== '') {
             navegar(`/buscar?query=${encodeURIComponent(busqueda.trim())}`);
-            setBusqueda(''); // Limpiar input al buscar (como en la competencia)
-            setMostrarResultados(false); // Ocultar sugerencias
+            setMostrarResultados(false);
         }
     };
 
