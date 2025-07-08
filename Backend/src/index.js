@@ -48,7 +48,7 @@ async function setupServer() {
             cookie: {
                 secure: false,
                 httpOnly: true,
-                sameSite: "strict",
+                sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
             },
         }));
 
