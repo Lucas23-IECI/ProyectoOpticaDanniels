@@ -1,10 +1,17 @@
-import axios from "axios";
+import api from "./root.service";
 
-const API_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000/api';
+const PRODUCTOS_ENDPOINT = "/productos";
 
 export const getProductos = async (filtros = {}) => {
     try {
-        const response = await axios.get(`${API_URL}/productos`, { params: filtros });
+        const filtrosLimpios = Object.entries(filtros).reduce((acc, [key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+
+        const response = await api.get(PRODUCTOS_ENDPOINT, { params: filtrosLimpios });
         return response.data.productos || [];
     } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -15,13 +22,86 @@ export const getProductos = async (filtros = {}) => {
     }
 };
 
-export const createProducto = async (producto) => {
+export const getProductoById = async (id) => {
     try {
-        const response = await axios.post(`${API_URL}/productos`, producto);
+        const response = await api.get(`${PRODUCTOS_ENDPOINT}/${id}`);
+        return response.data.producto;
+    } catch (error) {
+        console.error("Error en getProductoById:", error);
+        throw error;
+    }
+};
+
+export const createProducto = async (formData) => {
+    try {
+        const response = await api.post(PRODUCTOS_ENDPOINT, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
         return response.data.producto;
     } catch (error) {
         console.error("Error en createProducto:", error);
         throw error;
+    }
+};
+
+export const updateProducto = async (id, data) => {
+    try {
+        let response;
+        
+        if (data instanceof FormData) {
+            response = await api.put(`${PRODUCTOS_ENDPOINT}/${id}`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+        } else {
+            response = await api.put(`${PRODUCTOS_ENDPOINT}/${id}`, data);
+        }
+        
+        return response.data.producto;
+    } catch (error) {
+        console.error("Error en updateProducto:", error);
+        throw error;
+    }
+};
+
+export const updateProductoImagen = async (id, formData) => {
+    try {
+        const response = await api.put(`${PRODUCTOS_ENDPOINT}/${id}/imagen`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data.producto;
+    } catch (error) {
+        console.error("Error en updateProductoImagen:", error);
+        throw error;
+    }
+};
+
+export const deleteProducto = async (id) => {
+    try {
+        const response = await api.delete(`${PRODUCTOS_ENDPOINT}/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error en deleteProducto:", error);
+        throw error;
+    }
+};
+
+export const buscarProductosRapido = async (query, options = {}) => {
+    try {
+        const params = {
+            nombre: query,
+            limit: options.limit || 10
+        };
+        const response = await api.get(PRODUCTOS_ENDPOINT, { params });
+        return response.data.productos || [];
+    } catch (error) {
+        console.error("Error en buscarProductosRapido:", error);
+        return [];
     }
 };
 
