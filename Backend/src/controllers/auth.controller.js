@@ -10,6 +10,15 @@ import {
     handleSuccess,
 } from "../handlers/responseHandlers.js";
 
+export async function profile(req, res) {
+    try {
+        const user = req.user;
+        handleSuccess(res, 200, "Perfil obtenido correctamente", user);
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+}
+
 export async function login(req, res) {
     try {
         const { body } = req;
@@ -19,14 +28,12 @@ export async function login(req, res) {
         if (error) {
             return handleErrorClient(res, 400, "Error de validación", error.message);
         }
+
         const [accessToken, errorToken] = await loginService(body);
 
-        if (errorToken) return handleErrorClient(res, 400, "Error iniciando sesión", errorToken);
-
-        res.cookie("jwt", accessToken, {
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000,
-        });
+        if (errorToken) {
+            return handleErrorClient(res, 400, "Error iniciando sesión", errorToken);
+        }
 
         handleSuccess(res, 200, "Inicio de sesión exitoso", { token: accessToken });
     } catch (error) {
@@ -45,7 +52,9 @@ export async function register(req, res) {
 
         const [newUser, errorNewUser] = await registerService(body);
 
-        if (errorNewUser) return handleErrorClient(res, 400, "Error registrando al usuario", errorNewUser);
+        if (errorNewUser) {
+            return handleErrorClient(res, 400, "Error registrando al usuario", errorNewUser);
+        }
 
         handleSuccess(res, 201, "Usuario registrado con éxito", newUser);
     } catch (error) {
@@ -55,7 +64,6 @@ export async function register(req, res) {
 
 export async function logout(req, res) {
     try {
-        res.clearCookie("jwt", { httpOnly: true });
         handleSuccess(res, 200, "Sesión cerrada exitosamente");
     } catch (error) {
         handleErrorServer(res, 500, error.message);
