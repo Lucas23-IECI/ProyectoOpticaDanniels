@@ -1,154 +1,186 @@
+@import './variables.css';
+
+html,
+body {
+    overflow-x: hidden;
+}
+
 .usuario-sesion {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--spacing-md);
 }
 
 .usuario-sesion span {
-    color: #fff;
+    color: var(--text-light);
     font-size: 0.95rem;
 }
 
 .usuario-sesion button {
-    padding: 0.4rem 0.8rem;
-    background-color: #f39c12;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--btn-secondary-bg);
     border: none;
-    border-radius: 6px;
-    color: #111;
+    border-radius: var(--border-radius);
+    color: var(--btn-secondary-color);
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: var(--transition-normal);
 }
 
 .usuario-sesion button:hover {
-    background-color: #e67e22;
+    background-color: var(--btn-secondary-hover);
+    box-shadow: var(--shadow-md);
+}
+
+.navbar-icons {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.icono-usuario {
+    background: none !important;
+    border: none !important;
+    color: var(--text-light);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    outline: none !important;
+    text-decoration: none !important;
+    box-shadow: none !important;
+}
+
+.icono-usuario:hover {
+    color: var(--screamin-green);
+}
+
+.usuario-nombre {
+    text-decoration: none !important;
+    border: none !important;
+    outline: none !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+}
+
+.popup-auth,
+.dropdown-usuario {
+    position: absolute;
+    top: 2.5rem;
+    right: 0;
+    background-color: #fff;
+    color: #000;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    width: 200px;
+}
+
+.popup-auth button,
+.dropdown-usuario button {
+    width: 100%;
+    background-color: var(--btn-secondary-bg);
+    border: none;
+    padding: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--btn-secondary-color);
+    transition: var(--transition-fast);
+}
+
+.popup-auth button:hover,
+.dropdown-usuario button:hover {
+    background-color: var(--btn-secondary-hover);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--gradient-header);
+    box-shadow: var(--shadow-md);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-light);
+}
+
+.logo a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 2.5rem;
+    width: auto;
+}
+
+.nav-derecha {
+    margin-left: 2rem;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    flex-wrap: nowrap;
+    flex: 1;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: var(--spacing-lg);
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-light);
+    font-weight: bold;
+    transition: var(--transition-fast);
+}
+
+nav a:hover {
+    color: var(--screamin-green);
+}
+
+.barra-busqueda {
+    flex: 1 1 auto;
+    max-width: 300px;
+}
+
+.barra-busqueda input {
+    width: 100%;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+}
+
+.barra-busqueda input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 @media (max-width: 768px) {
     nav ul {
-        gap: 1rem;
+        gap: var(--spacing-md);
     }
 
     .barra-busqueda {
         max-width: 200px;
     }
 
-    .usuario-sesion span {
+    .usuario-nombre {
         display: none;
-    } }
-
-
-
-
-        .navbar-icons {
-            position: relative;
-            display: flex;
-            align-items: center;
-            margin-left: 2rem;
-        }
-    
-        .icono-usuario {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-    
-        .icono-usuario:hover {
-            color: #f39c12;
-        }
-    
-        .popup-auth,
-        .dropdown-usuario {
-            position: absolute;
-            top: 2.5rem;
-            right: 0;
-            background-color: #fff;
-            color: #000;
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 10;
-            width: 200px;
-        }
-    
-        .popup-auth button,
-        .dropdown-usuario button {
-            width: 100%;
-            background-color: #f39c12;
-            border: none;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-    
-        .popup-auth button:hover,
-        .dropdown-usuario button:hover {
-            background-color: #e67e22;
-        }
-
-
-
-
-
-
-
-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    background-color: #111;
-}
-
-.logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #fff;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 2rem;
-    margin: 0;
-    padding: 0;
-}
-
-nav li {
-    margin: 0;
-}
-
-nav a {
-    text-decoration: none;
-    color: #fff;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-nav a:hover {
-    color: #f39c12;
-}
-
-.barra-busqueda {
-    flex-grow: 1;
-    max-width: 300px;
-    margin-left: 2rem;
-}
-
-.barra-busqueda input {
-    width: 100%;
-    padding: 0.4rem 0.6rem;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #222;
-    color: #fff;
-}
-
-.barra-busqueda input::placeholder {
-    color: #aaa;
+    }
 }

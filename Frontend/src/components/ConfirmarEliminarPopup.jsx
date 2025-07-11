@@ -23,7 +23,7 @@ const ConfirmarEliminarPopup = ({ show, setShow, producto, onProductoDeleted }) 
     return (
         <div className="crear-producto-overlay">
             <div className="crear-producto-modal" style={{ maxWidth: '500px' }}>
-                <div className="crear-producto-header" style={{ background: 'linear-gradient(135deg, #e53e3e 0%, #c53030 100%)' }}>
+                <div className="crear-producto-header" style={{ background: 'linear-gradient(135deg, var(--error-color) 0%, #d32f2f 100%)' }}>
                     <h2>🗑️ Eliminar Producto</h2>
                     <button 
                         className="close-button" 
@@ -48,31 +48,31 @@ const ConfirmarEliminarPopup = ({ show, setShow, producto, onProductoDeleted }) 
                                     borderRadius: '12px',
                                     margin: '0 auto 15px',
                                     display: 'block',
-                                    border: '3px solid #e53e3e'
+                                    border: '3px solid var(--error-color)'
                                 }}
                             />
                         )}
                         
-                        <h3 style={{ color: '#2d3748', marginBottom: '10px' }}>
+                        <h3 style={{ color: 'var(--text-color)', marginBottom: '10px' }}>
                             ¿Estás seguro de que deseas eliminar este producto?
                         </h3>
                         
                         <div style={{
-                            background: '#fff5f5',
-                            border: '2px solid #feb2b2',
+                            background: 'rgba(244, 67, 54, 0.05)',
+                            border: '2px solid rgba(244, 67, 54, 0.2)',
                             borderRadius: '12px',
                             padding: '15px',
                             marginBottom: '20px'
                         }}>
-                            <p style={{ fontWeight: '600', color: '#e53e3e', margin: '0 0 5px 0' }}>
+                            <p style={{ fontWeight: '600', color: 'var(--error-color)', margin: '0 0 5px 0' }}>
                                 {producto.nombre}
                             </p>
-                            <p style={{ fontSize: '14px', color: '#718096', margin: '0' }}>
+                            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', margin: '0' }}>
                                 SKU: {producto.codigoSKU} • Stock: {producto.stock}
                             </p>
                         </div>
                         
-                        <p style={{ color: '#4a5568', fontSize: '14px', lineHeight: '1.5' }}>
+                        <p style={{ color: 'var(--text-color)', fontSize: '14px', lineHeight: '1.5' }}>
                             <strong>⚠️ Esta acción no se puede deshacer.</strong><br />
                             El producto será eliminado permanentemente del sistema.
                         </p>

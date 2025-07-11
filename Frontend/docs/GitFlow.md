@@ -12,7 +12,6 @@ Este proyecto se utiliza una variante profesional de GitHub Flow, con una rama i
 - `feature/<nombre>`: Para el desarrollo de nuevas funcionalidades.
 - `fix/<nombre>`: Para corregir errores o bugs.
 - `refactor/<nombre>`: Para mejoras internas del código sin modificar funcionalidades.
-- `portafolio`: Rama aislada con el landing personal (no forma parte del flujo principal de desarrollo).
 
 ## Flujo de trabajo (pasos)
 
