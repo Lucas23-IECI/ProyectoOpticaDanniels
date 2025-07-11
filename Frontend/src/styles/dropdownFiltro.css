@@ -4,23 +4,24 @@
 }
 
 .dropdown-titulo {
-    background-color: #111;
-    color: #fff;
-    border: 1px solid #555;
-    border-radius: 10px;
+    background: linear-gradient(135deg, var(--surface-color) 0%, rgba(255, 255, 255, 0.95) 100%);
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
     padding: 0.8rem 1.2rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-weight: bold;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    font-weight: 600;
+    transition: all 0.3s ease;
     font-size: 1rem;
 }
 
 .dropdown-titulo:hover {
-    background-color: #222;
-    color: #f39c12;
+    background: linear-gradient(135deg, rgba(18, 52, 86, 0.04) 0%, rgba(18, 52, 86, 0.02) 100%);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .dropdown-contenido {
@@ -28,12 +29,12 @@
     top: 110%;
     left: 0;
     z-index: 10;
-    background-color: #222;
-    border: 1px solid #555;
-    border-radius: 10px;
-    padding: 1rem;
+    background: linear-gradient(135deg, var(--surface-color) 0%, rgba(255, 255, 255, 0.98) 100%);
+    border: 1px solid rgba(18, 52, 86, 0.08);
+    border-radius: 16px;
+    padding: 1.2rem;
     min-width: 220px;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
 }
 
 .dropdown-opciones {
@@ -48,7 +49,7 @@
 
 .dropdown-opciones input[type="checkbox"] {
     margin-right: 0.5rem;
-    accent-color: #f39c12;
+    accent-color: var(--primary-color);
 }
 
 .dropdown-precio {
@@ -65,12 +66,19 @@
 
 .precio-item input {
     width: 100%;
-    padding: 0.6rem;
-    background-color: #111;
-    border: 1px solid #555;
+    padding: 0.6rem 0.8rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid var(--border-color);
     border-radius: 8px;
-    color: #fff;
+    color: var(--text-color);
     font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.precio-item input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(18, 52, 86, 0.1);
+    background: var(--surface-color);
 }
 
 .precio-item input::-webkit-outer-spin-button,
@@ -86,78 +94,87 @@
 
 select {
     width: 100%;
-    padding: 0.6rem;
-    background-color: #111;
-    color: #fff;
-    border: 1px solid #555;
+    padding: 0.6rem 0.8rem;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     appearance: none;
     font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(18, 52, 86, 0.1);
+    background: var(--surface-color);
 }
 
 select option {
-    background-color: #111;
-    color: #fff;
+    background: var(--surface-color);
+    color: var(--text-color);
 }
 
 .dropdown-restablecer {
     font-size: 0.8rem;
-    color: #f39c12;
+    color: var(--accent-color);
     cursor: pointer;
     text-align: right;
     margin-top: 0.5rem;
-    transition: color 0.2s ease;
+    transition: color 0.3s ease;
 }
 
 .dropdown-restablecer:hover {
-    color: #e67e22;
+    color: var(--primary-color);
 }
 
 .dropdown-error {
-    color: #e74c3c;
+    color: var(--error-color);
     font-size: 0.85rem;
     margin-top: 0.5rem;
 }
 
 .restablecer-boton {
-    background-color: #1a1a1a;
-    color: #fff;
-    border: 1px solid #555;
+    background: linear-gradient(135deg, var(--surface-color) 0%, rgba(255, 255, 255, 0.95) 100%);
+    color: var(--text-color);
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     padding: 0.6rem 1rem;
     cursor: pointer;
     font-size: 1rem;
     margin-top: 0.75rem;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: all 0.3s ease;
     width: 100%;
     text-align: center;
+    font-weight: 500;
 }
 
 .restablecer-boton:hover {
-    background-color: #333;
-    color: #f39c12;
+    background: rgba(18, 52, 86, 0.04);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .dropdown-filtro.activo .dropdown-titulo {
-    background-color: #f39c12;
-    color: #000;
-    border-color: #e67e22;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+    color: var(--surface-color);
+    border-color: var(--primary-color);
 }
 
 .dropdown-filtro.activo .dropdown-titulo:hover {
-    background-color: #e67e22;
-    color: #000;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--surface-color);
 }
 
 .filtro-activo-indicador {
-    color: #fff;
+    color: var(--surface-color);
     font-weight: bold;
     font-size: 1.2rem;
     animation: pulse 2s infinite;
 }
 
 .dropdown-filtro.activo .filtro-activo-indicador {
-    color: #000;
+    color: var(--surface-color);
 }
 
 @keyframes pulse {

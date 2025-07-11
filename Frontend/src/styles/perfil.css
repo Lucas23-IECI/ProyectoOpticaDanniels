@@ -2,17 +2,22 @@
     max-width: 600px;
     margin: 2rem auto;
     padding: 2rem;
-    background-color: #1a1a1a;
-    border-radius: 12px;
-    border: 1px solid #333;
-    color: #fff;
+    background: linear-gradient(135deg, var(--surface-color) 0%, rgba(255, 255, 255, 0.98) 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(18, 52, 86, 0.08);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        0 2px 16px rgba(0, 0, 0, 0.04);
+    color: var(--text-color);
 }
 
 .perfil-container h1 {
     text-align: center;
     margin-bottom: 2rem;
-    color: #f39c12;
-    font-size: 2rem;
+    color: var(--primary-color);
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
 }
 
 .perfil-info {
@@ -25,59 +30,68 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
-    background-color: #222;
-    border-radius: 8px;
-    border: 1px solid #444;
+    padding: 1.2rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    border: 1px solid rgba(18, 52, 86, 0.08);
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .info-item strong {
-    color: #f39c12;
+    color: var(--primary-color);
     font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .role-badge {
-    border: 2px solid #f39c12;
-    background-color: rgba(243, 156, 18, 0.1);
+    border: 2px solid var(--accent-color);
+    background: linear-gradient(135deg, rgba(18, 52, 86, 0.05) 0%, rgba(18, 52, 86, 0.02) 100%);
 }
 
 .role {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: bold;
-    font-size: 1.1rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 24px;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
 }
 
 .role.administrador {
-    background-color: #e74c3c;
-    color: #fff;
-    box-shadow: 0 0 10px rgba(231, 76, 60, 0.3);
+    background: linear-gradient(135deg, var(--error-color) 0%, #d32f2f 100%);
+    color: var(--surface-color);
+    box-shadow: 0 4px 16px rgba(244, 67, 54, 0.2);
 }
 
 .role.usuario {
-    background-color: #3498db;
-    color: #fff;
-    box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+    background: linear-gradient(135deg, var(--info-color) 0%, #1976d2 100%);
+    color: var(--surface-color);
+    box-shadow: 0 4px 16px rgba(33, 150, 243, 0.2);
 }
 
 .admin-notice {
     text-align: center;
-    padding: 1rem;
-    background-color: #27ae60;
-    color: #fff;
-    border-radius: 8px;
-    font-weight: bold;
+    padding: 1.2rem;
+    background: linear-gradient(135deg, var(--success-color) 0%, #388e3c 100%);
+    color: var(--surface-color);
+    border-radius: 12px;
+    font-weight: 600;
     font-size: 1.1rem;
-    box-shadow: 0 0 15px rgba(39, 174, 96, 0.3);
+    box-shadow: 0 4px 16px rgba(76, 175, 80, 0.2);
     animation: glow 2s ease-in-out infinite alternate;
 }
 
 @keyframes glow {
     from {
-        box-shadow: 0 0 15px rgba(39, 174, 96, 0.3);
+        box-shadow: 0 4px 16px rgba(76, 175, 80, 0.2);
     }
     to {
-        box-shadow: 0 0 20px rgba(39, 174, 96, 0.6);
+        box-shadow: 0 8px 24px rgba(76, 175, 80, 0.4);
     }
 }
 

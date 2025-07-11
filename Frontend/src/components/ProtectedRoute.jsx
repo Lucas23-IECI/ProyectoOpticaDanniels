@@ -18,7 +18,7 @@ const ProtectedRoute = ({
                 alignItems: 'center',
                 height: '50vh',
                 fontSize: '1.2rem',
-                color: '#666'
+                color: 'var(--text-secondary)'
             }}>
                 Verificando sesión...
             </div>
@@ -42,7 +42,7 @@ const ProtectedRoute = ({
                 alignItems: 'center',
                 height: '50vh',
                 fontSize: '1.2rem',
-                color: '#e74c3c'
+                color: 'var(--error-color)'
             }}>
                 No tienes permisos para acceder a esta página
             </div>

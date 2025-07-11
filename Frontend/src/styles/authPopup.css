@@ -1,31 +1,44 @@
+@import './variables.css';
+
 .popup-auth {
     position: absolute;
     top: 60px;
     right: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-    padding: 1rem;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-md);
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
     z-index: 999;
-    animation: fadeIn 0.3s ease;
+    animation: fadeIn var(--transition-normal) ease;
+    border: 1px solid var(--border-color);
 }
 
 .popup-auth button {
-    padding: 0.5rem 1rem;
+    padding: var(--spacing-sm) var(--spacing-md);
     border: none;
-    border-radius: 6px;
-    background-color: #111;
-    color: #fff;
+    border-radius: var(--border-radius);
+    background-color: var(--btn-primary-bg);
+    color: var(--btn-primary-color);
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: var(--transition-normal);
     font-weight: bold;
 }
 
 .popup-auth button:hover {
-    background-color: #333;
+    background-color: var(--btn-primary-hover);
+    box-shadow: var(--shadow-primary);
+}
+
+.popup-auth button.secondary {
+    background-color: var(--btn-secondary-bg);
+    color: var(--btn-secondary-color);
+}
+
+.popup-auth button.secondary:hover {
+    background-color: var(--btn-secondary-hover);
 }
 
 @keyframes fadeIn {

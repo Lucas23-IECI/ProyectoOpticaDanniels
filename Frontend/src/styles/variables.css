@@ -1,0 +1,72 @@
+:root {
+  --cobalt-blue: #2147A2;
+  --pigment-green: #29A937;
+  --screamin-green: #8EEC62;
+  --sgbus-green: #03EA0C;
+  --white: #FFFFFF;
+  --black: #000000;
+  --gray-light: #F5F5F5;
+  --gray-medium: #CCCCCC;
+  --gray-dark: #666666;
+  
+  --primary-color: var(--cobalt-blue);
+  --secondary-color: var(--pigment-green);
+  --accent-color: var(--screamin-green);
+  --success-color: var(--sgbus-green);
+  --warning-color: #FFA500;
+  --error-color: #FF4444;
+  --info-color: var(--cobalt-blue);
+  
+  --bg-primary: var(--white);
+  --bg-secondary: var(--gray-light);
+  --bg-header: var(--cobalt-blue);
+  --bg-navbar: var(--cobalt-blue);
+  --bg-card: var(--white);
+  --bg-overlay: rgba(33, 71, 162, 0.1);
+  
+  --text-primary: var(--black);
+  --text-secondary: var(--gray-dark);
+  --text-light: var(--white);
+  --text-muted: var(--gray-medium);
+  
+  --btn-primary-bg: var(--cobalt-blue);
+  --btn-primary-color: var(--white);
+  --btn-primary-hover: #1a3b8a;
+  --btn-secondary-bg: var(--pigment-green);
+  --btn-secondary-color: var(--white);
+  --btn-secondary-hover: #228a2e;
+  --btn-success-bg: var(--sgbus-green);
+  --btn-success-color: var(--white);
+  --btn-success-hover: #02c70a;
+  --btn-outline-border: var(--cobalt-blue);
+  --btn-outline-color: var(--cobalt-blue);
+  --btn-outline-hover-bg: var(--cobalt-blue);
+  
+  --border-color: var(--gray-medium);
+  --border-focus: var(--cobalt-blue);
+  --border-radius: 8px;
+  --border-radius-sm: 4px;
+  --border-radius-lg: 12px;
+  
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
+  --shadow-primary: 0 4px 6px rgba(33, 71, 162, 0.2);
+  --shadow-success: 0 4px 6px rgba(3, 234, 12, 0.2);
+
+  --transition-fast: 0.15s ease-in-out;
+  --transition-normal: 0.3s ease-in-out;
+  --transition-slow: 0.5s ease-in-out;
+  
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  
+  --gradient-primary: linear-gradient(135deg, var(--cobalt-blue), var(--pigment-green));
+  --gradient-success: linear-gradient(135deg, var(--pigment-green), var(--screamin-green));
+  --gradient-header: linear-gradient(90deg, var(--cobalt-blue), #1a3b8a);
+}
