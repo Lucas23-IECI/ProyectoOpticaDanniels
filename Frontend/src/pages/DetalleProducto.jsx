@@ -42,7 +42,7 @@ function DetalleProducto() {
             </div>
             <div className="info">
                 <h1>{producto.nombre}</h1>
-                <div className="precio">${parseFloat(producto.precio).toLocaleString('es-CL')} CLP</div>
+                <div className="precio">${parseFloat(producto.precio).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} CLP</div>
                 <p>Marca: {producto.marca}</p>
                 <p className="descripcion">{producto.descripcion}</p>
                 <div className="botones">

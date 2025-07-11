@@ -63,8 +63,7 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
             formData.categoria !== '' &&
             formData.stock !== '' &&
             formData.marca.trim().length >= 2 &&
-            formData.codigoSKU.trim().length >= 3 &&
-            Object.keys(errors).length === 0
+            formData.codigoSKU.trim().length >= 3
         );
     };
 
@@ -99,18 +98,19 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
         
         const rawValue = inputValue.replace(/\D/g, '');
         
-        if (rawValue && (parseInt(rawValue) <= 0)) {
+        if (rawValue.length > 8) {
+            showAlert('El precio es demasiado largo');
+            return;
+        }
+        
+        const actualPrice = parseInt(rawValue);
+        if (rawValue && actualPrice <= 0) {
             showAlert('El precio debe ser mayor a 0');
             return;
         }
         
-        if (rawValue && parseInt(rawValue) > 10000000) {
+        if (rawValue && actualPrice > 10000000) {
             showAlert('El precio no puede exceder $10.000.000');
-            return;
-        }
-        
-        if (rawValue.length > 8) {
-            showAlert('El precio es demasiado largo');
             return;
         }
         
@@ -142,10 +142,6 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                 showAlert('El nombre no puede exceder 100 caracteres');
                 return;
             }
-            if (value.length > 0 && value.length < 3) {
-                showAlert('El nombre debe tener al menos 3 caracteres');
-                return;
-            }
             if (value.trim() === '' && value.length > 0) {
                 showAlert('El nombre no puede ser solo espacios en blanco');
                 return;
@@ -159,10 +155,6 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
         if (name === 'descripcion') {
             if (value.length > 1000) {
                 showAlert('La descripción no puede exceder 1000 caracteres');
-                return;
-            }
-            if (value.length > 0 && value.length < 10) {
-                showAlert('La descripción debe tener al menos 10 caracteres');
                 return;
             }
             if (value.trim() === '' && value.length > 0) {
@@ -214,10 +206,6 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                 showAlert('La marca no puede exceder 50 caracteres');
                 return;
             }
-            if (value.length > 0 && value.length < 2) {
-                showAlert('La marca debe tener al menos 2 caracteres');
-                return;
-            }
             if (value.trim() === '' && value.length > 0) {
                 showAlert('La marca no puede ser solo espacios en blanco');
                 return;
@@ -235,10 +223,6 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
             }
             if (value.length > 20) {
                 showAlert('El código SKU no puede exceder 20 caracteres');
-                return;
-            }
-            if (value.length > 0 && value.length < 3) {
-                showAlert('El código SKU debe tener al menos 3 caracteres');
                 return;
             }
             if (/^[-_]/.test(value)) {
@@ -321,6 +305,26 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        
+        if (formData.descripcion.trim().length < 10) {
+            showAlert('La descripción debe tener al menos 10 caracteres');
+            return;
+        }
+        
+        if (formData.codigoSKU.trim().length < 3) {
+            showAlert('El código SKU debe tener al menos 3 caracteres');
+            return;
+        }
+        
+        if (formData.nombre.trim().length < 3) {
+            showAlert('El nombre debe tener al menos 3 caracteres');
+            return;
+        }
+        
+        if (formData.marca.trim().length < 2) {
+            showAlert('La marca debe tener al menos 2 caracteres');
+            return;
+        }
         
         const submitFormData = new FormData();
         

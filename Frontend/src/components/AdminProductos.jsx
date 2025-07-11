@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getProductos } from '@services/producto.service';
 import CrearProductoPopup from '@components/CrearProductoPopup';
 import EditarProductoPopup from '@components/EditarProductoPopup';
@@ -9,11 +9,15 @@ import '@styles/admin.css';
 const AdminProductos = () => {
     const [productos, setProductos] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [marcasDisponibles, setMarcasDisponibles] = useState([]);
     const [filtros, setFiltros] = useState({
         categoria: '',
         activo: '',
-        busqueda: ''
+        busqueda: '',
+        tipoBusqueda: 'nombre',
+        marca: ''
     });
+    const debounceRef = useRef(null);
 
     const [showCrearModal, setShowCrearModal] = useState(false);
     const [showEditarModal, setShowEditarModal] = useState(false);
@@ -38,46 +42,89 @@ const AdminProductos = () => {
     }, []);
 
     useEffect(() => {
-        const hayFiltros = Object.values(filtros).some(value => value && value.trim() !== '');
-        
-        if (!hayFiltros) {
-            return;
-        }
-
-        const cargarProductos = async () => {
+        const cargarMarcas = async () => {
             try {
-                setLoading(true);
-                
-                const filtrosLimpios = Object.entries(filtros).reduce((acc, [key, value]) => {
-                    if (value && value.trim() !== '') {
-                        acc[key] = value;
-                    }
-                    return acc;
-                }, {});
-                
-                filtrosLimpios.limit = 100;
-                
-                const data = await getProductos(filtrosLimpios);
-                setProductos(data);
+                const data = await getProductos({ limit: 1000 });
+                const marcas = [...new Set(data.map(p => p.marca).filter(m => m && m.trim()))].sort();
+                setMarcasDisponibles(marcas);
             } catch (error) {
-                console.error('Error al cargar productos:', error);
-                setProductos([]);
-            } finally {
-                setLoading(false);
+                console.error('Error al cargar marcas:', error);
             }
         };
+        
+        cargarMarcas();
+    }, []);
 
-        cargarProductos();
+    useEffect(() => {
+        if (debounceRef.current) {
+            clearTimeout(debounceRef.current);
+        }
+        
+
+        const hasTextSearch = filtros.busqueda && filtros.busqueda.trim() !== '';
+        const delay = hasTextSearch ? 500 : 0; 
+        
+        debounceRef.current = setTimeout(() => {
+            const cargarProductos = async () => {
+                try {
+                    setLoading(true);
+                    
+                    const filtrosParaServidor = {};
+                    
+                    if (filtros.busqueda && filtros.busqueda.trim() !== '') {
+                        if (filtros.tipoBusqueda === 'nombre') {
+                            filtrosParaServidor.nombre = filtros.busqueda.trim();
+                        } else if (filtros.tipoBusqueda === 'sku') {
+                            filtrosParaServidor.codigoSKU = filtros.busqueda.trim();
+                        }
+                    }
+                    
+                    if (filtros.categoria && filtros.categoria !== '') {
+                        filtrosParaServidor.categoria = filtros.categoria;
+                    }
+                    
+                    if (filtros.activo && filtros.activo !== '') {
+                        filtrosParaServidor.activo = filtros.activo === 'true';
+                    }
+                    
+                    if (filtros.marca && filtros.marca !== '') {
+                        filtrosParaServidor.marca = filtros.marca;
+                    }
+                    
+                    filtrosParaServidor.limit = 100;
+                    
+                    const data = await getProductos(filtrosParaServidor);
+                    setProductos(data);
+                } catch (error) {
+                    console.error('Error al cargar productos:', error);
+                    setProductos([]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            cargarProductos();
+        }, delay);
+        
+        return () => {
+            if (debounceRef.current) {
+                clearTimeout(debounceRef.current);
+            }
+        };
     }, [filtros]);
 
     const handleProductoCreado = (nuevoProducto) => {
-        setProductos(prev => [nuevoProducto, ...prev]);
+        if (nuevoProducto && nuevoProducto.id) {
+            setProductos(prev => [nuevoProducto, ...prev]);
+        }
     };
 
     const handleProductoActualizado = (productoActualizado) => {
-        setProductos(prev => 
-            prev.map(p => p.id === productoActualizado.id ? productoActualizado : p)
-        );
+        if (productoActualizado && productoActualizado.id) {
+            setProductos(prev => 
+                prev.map(p => p.id === productoActualizado.id ? productoActualizado : p)
+            );
+        }
         setProductoSeleccionado(null);
     };
 
@@ -99,7 +146,9 @@ const AdminProductos = () => {
     const formatPrice = (price) => {
         return new Intl.NumberFormat('es-CL', {
             style: 'currency',
-            currency: 'CLP'
+            currency: 'CLP',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
         }).format(price);
     };
 
@@ -115,7 +164,9 @@ const AdminProductos = () => {
         setFiltros({
             categoria: '',
             activo: '',
-            busqueda: ''
+            busqueda: '',
+            tipoBusqueda: 'nombre',
+            marca: ''
         });
         
         try {
@@ -131,20 +182,7 @@ const AdminProductos = () => {
 
     const hayFiltrosActivos = Object.values(filtros).some(value => value && value.trim() !== '');
 
-    const productosAMostrar = productos.filter(producto => {
-        const matchesBusqueda = !filtros.busqueda || 
-            producto.nombre.toLowerCase().includes(filtros.busqueda.toLowerCase()) ||
-            producto.codigoSKU.toLowerCase().includes(filtros.busqueda.toLowerCase()) ||
-            producto.marca.toLowerCase().includes(filtros.busqueda.toLowerCase());
-        
-        const matchesCategoria = !filtros.categoria || producto.categoria === filtros.categoria;
-        
-        const matchesActivo = filtros.activo === '' || 
-            (filtros.activo === 'true' && producto.activo) ||
-            (filtros.activo === 'false' && !producto.activo);
-
-        return matchesBusqueda && matchesCategoria && matchesActivo;
-    });
+    const productosAMostrar = productos;
 
     return (
         <div className="admin-productos">
@@ -161,14 +199,40 @@ const AdminProductos = () => {
             <div className="filtros-section">
                 <div className="filtros-row">
                     <div className="filtro-group">
+                        <label>Buscar por:</label>
+                        <select
+                            name="tipoBusqueda"
+                            value={filtros.tipoBusqueda}
+                            onChange={handleFiltroChange}
+                        >
+                            <option value="nombre">Nombre</option>
+                            <option value="sku">SKU</option>
+                        </select>
+                    </div>
+                    
+                    <div className="filtro-group">
                         <label>Buscar:</label>
                         <input
                             type="text"
                             name="busqueda"
                             value={filtros.busqueda}
                             onChange={handleFiltroChange}
-                            placeholder="Nombre, SKU o marca..."
+                            placeholder={filtros.tipoBusqueda === 'nombre' ? 'Nombre del producto...' : 'Código SKU...'}
                         />
+                    </div>
+                    
+                    <div className="filtro-group">
+                        <label>Marca:</label>
+                        <select
+                            name="marca"
+                            value={filtros.marca}
+                            onChange={handleFiltroChange}
+                        >
+                            <option value="">Todas</option>
+                            {marcasDisponibles.map(marca => (
+                                <option key={marca} value={marca}>{marca}</option>
+                            ))}
+                        </select>
                     </div>
                     
                     <div className="filtro-group">
@@ -253,7 +317,7 @@ const AdminProductos = () => {
                 </div>
             ) : (
                 <div className="productos-grid">
-                    {productosAMostrar.map(producto => (
+                    {productosAMostrar.filter(producto => producto && producto.id).map(producto => (
                         <div key={producto.id} className="produto-card">
                             <div className="produto-imagen">
                                 {producto.imagen_url ? (

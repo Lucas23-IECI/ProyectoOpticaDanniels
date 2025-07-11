@@ -20,15 +20,15 @@ const ProductCard = ({ producto }) => {
                 {producto.oferta ? (
                     <>
                         <p className="product-old-price">
-                            ${parseFloat(producto.precio).toLocaleString('es-CL')}
+                            ${parseFloat(producto.precio).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                         </p>
                         <p className="product-new-price">
-                            A partir de ${precioConDescuento.toLocaleString('es-CL')} CLP
+                            A partir de ${precioConDescuento.toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} CLP
                         </p>
                     </>
                 ) : (
                     <p className="product-price">
-                        ${parseFloat(producto.precio).toLocaleString('es-CL')} CLP
+                        ${parseFloat(producto.precio).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} CLP
                     </p>
                 )}
             </div>

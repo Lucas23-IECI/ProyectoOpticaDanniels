@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useBuscarProductosRapido from '@hooks/productos/useBuscarProductosRapido';
 import '@styles/barraBusqueda.css';
@@ -9,28 +9,22 @@ const BarraBusqueda = () => {
     const [mostrarResultados, setMostrarResultados] = useState(false);
     const navegar = useNavigate();
 
+    const buscarAutocomplete = useCallback((termino) => {
+        if (termino.trim() !== '') {
+            buscar(termino);
+            setMostrarResultados(true);
+        } else {
+            setMostrarResultados(false);
+        }
+    }, [buscar]);
+
     useEffect(() => {
         const delay = setTimeout(() => {
-            if (busqueda.trim() !== '') {
-                buscar(busqueda, { limit: 5 });
-                setMostrarResultados(true);
-            } else {
-                setMostrarResultados(false);
-            }
+            buscarAutocomplete(busqueda);
         }, 400);
 
         return () => clearTimeout(delay);
-    }, [busqueda, buscar]);
-
-    useEffect(() => {
-        const autoSearchDelay = setTimeout(() => {
-            if (busqueda.trim() !== '' && busqueda.length > 2) {
-                navegar(`/buscar?query=${encodeURIComponent(busqueda.trim())}`);
-            }
-        }, 500);
-
-        return () => clearTimeout(autoSearchDelay);
-    }, [busqueda, navegar]);
+    }, [busqueda, buscarAutocomplete]);
 
     const manejarBuscar = () => {
         if (busqueda.trim() !== '') {
@@ -82,7 +76,7 @@ const BarraBusqueda = () => {
                             <div className="resultado-info">
                                 <p className="resultado-nombre">{producto.nombre}</p>
                                 <p className="resultado-precio">
-                                    ${parseFloat(producto.precio).toLocaleString('es-CL')} CLP
+                                    ${parseFloat(producto.precio).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} CLP
                                 </p>
                             </div>
                         </Link>
