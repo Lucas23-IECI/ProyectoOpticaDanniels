@@ -6,6 +6,47 @@ import {
 } from "../services/producto.service.js";
 import { actualizarImagenProductoService } from "../services/producto.service.js";
 import { HOST, PORT } from "../config/configEnv.js";
+import path from "path";
+import fs from "fs";
+
+// Helper para convertir imagen a Base64
+const convertirImagenABase64 = (filename) => {
+    if (!filename) return null;
+    
+    try {
+        const imagePath = path.join("uploads", "productos", filename);
+        
+        if (!fs.existsSync(imagePath)) {
+            return null;
+        }
+        
+        const imageBuffer = fs.readFileSync(imagePath);
+        const ext = path.extname(filename).toLowerCase();
+        
+        let mimeType = "image/jpeg";
+        switch (ext) {
+            case ".png":
+                mimeType = "image/png";
+                break;
+            case ".jpg":
+            case ".jpeg":
+                mimeType = "image/jpeg";
+                break;
+            case ".webp":
+                mimeType = "image/webp";
+                break;
+            case ".gif":
+                mimeType = "image/gif";
+                break;
+        }
+        
+        const base64Image = imageBuffer.toString("base64");
+        return `data:${mimeType};base64,${base64Image}`;
+    } catch (error) {
+        console.error("Error convirtiendo imagen a Base64:", error);
+        return null;
+    }
+};
 
 export const subirImagenProductoController = async (req, res) => {
     try {
@@ -14,14 +55,12 @@ export const subirImagenProductoController = async (req, res) => {
 
         const producto = await actualizarImagenProductoService(Number(id), imagenUrl);
 
-        const protocolo = "http";
-        const puertoDefault = PORT === "80" || PORT === "443";
-        const imagenUrlCompleta =
-            `${protocolo}://${HOST}${puertoDefault ? "" : `:${PORT}`}/uploads/productos/${producto.imagen_url}`;
+        const imagenBase64 = convertirImagenABase64(producto.imagen_url);
 
         res.json({
             mensaje: "Imagen del producto actualizada correctamente",
-            imagen_url: imagenUrlCompleta,
+            imagen_url: imagenBase64,
+            filename: producto.imagen_url
         });
     } catch (error) {
         console.error(error);
@@ -39,17 +78,13 @@ export const crearProductoController = async (req, res) => {
 
         const productoCreado = await crearProductoService(datosProducto);
         
-        const protocolo = "http";
-        const puertoDefault = PORT === "80" || PORT === "443";
-        const imagenUrlCompleta = productoCreado.imagen_url
-            ? `${protocolo}://${HOST}${puertoDefault ? "" : `:${PORT}`}/uploads/productos/${productoCreado.imagen_url}`
-            : null;
+        const imagenBase64 = convertirImagenABase64(productoCreado.imagen_url);
 
         res.status(201).json({
             mensaje: "Producto creado exitosamente.",
             producto: {
                 ...productoCreado,
-                imagen_url: imagenUrlCompleta,
+                imagen_url: imagenBase64,
             },
         });
     } catch (error) {
@@ -63,19 +98,14 @@ export const buscarProductosController = async (req, res) => {
     try {
         const { productos, paginacion } = await buscarProductosService(req.query);
 
-        const protocolo = "http";
-        const puertoDefault = PORT === "80" || PORT === "443";
-
-        const productosConImagenUrl = productos.map((producto) => ({
+        const productosConImagenBase64 = productos.map((producto) => ({
             ...producto,
-            imagen_url: producto.imagen_url
-                ? `${protocolo}://${HOST}${puertoDefault ? "" : `:${PORT}`}/uploads/productos/${producto.imagen_url}`
-                : null,
+            imagen_url: convertirImagenABase64(producto.imagen_url),
         }));
 
         res.status(200).json({
             mensaje: productos.length > 0 ? "Productos encontrados correctamente." : "No se encontraron productos.",
-            productos: productosConImagenUrl,
+            productos: productosConImagenBase64,
             paginacion,
         });
     } catch (error) {
@@ -100,17 +130,13 @@ export const actualizarProductoController = async (req, res) => {
         
         const producto = await actualizarProductoService(Number(id), datosProducto);
 
-        const protocolo = "http";
-        const puertoDefault = PORT === "80" || PORT === "443";
-        const imagenUrlCompleta = producto.imagen_url
-            ? `${protocolo}://${HOST}${puertoDefault ? "" : `:${PORT}`}/uploads/productos/${producto.imagen_url}`
-            : null;
+        const imagenBase64 = convertirImagenABase64(producto.imagen_url);
 
         res.status(200).json({
             mensaje: "Producto actualizado correctamente.",
             producto: {
                 ...producto,
-                imagen_url: imagenUrlCompleta,
+                imagen_url: imagenBase64,
             },
         });
     } catch (error) {

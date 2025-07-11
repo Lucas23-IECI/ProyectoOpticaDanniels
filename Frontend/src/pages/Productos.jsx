@@ -110,7 +110,7 @@ const Productos = () => {
                             <div className="producto-info">
                                 <p className="producto-nombre">{producto.nombre}</p>
                                 <p className="producto-precio">
-                                    ${parseFloat(producto.precio).toLocaleString("es-CL")} CLP
+                                    ${parseFloat(producto.precio).toLocaleString("es-CL", { minimumFractionDigits: 0, maximumFractionDigits: 0 })} CLP
                                 </p>
                                 <p className="producto-marca">{producto.marca}</p>
                             </div>

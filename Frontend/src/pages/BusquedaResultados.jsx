@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { getProductos } from "@services/producto.service";
 import { FaSearch } from "react-icons/fa";
@@ -12,6 +12,7 @@ const BusquedaResultados = () => {
     const [productos, setProductos] = useState([]);
     const [cargando, setCargando] = useState(false);
     const debounceRef = useRef(null);
+    const lastSearchRef = useRef("");
 
     const [disponibilidad, setDisponibilidad] = useState("");
     const [precioMin, setPrecioMin] = useState("");
@@ -20,13 +21,39 @@ const BusquedaResultados = () => {
 
     const [dropdownActivo, setDropdownActivo] = useState(null);
 
+    const buscarProductos = useCallback(async (searchQuery) => {
+        if (lastSearchRef.current === searchQuery) {
+            return;
+        }
+        
+        lastSearchRef.current = searchQuery;
+        setCargando(true);
+        setProductos([]);
+        
+        try {
+            const filtros = { nombre: searchQuery };
+            if (precioMin) filtros.precio_min = precioMin;
+            if (precioMax) filtros.precio_max = precioMax;
+            if (disponibilidad) filtros.activo = disponibilidad === "en_stock";
+            if (orden) filtros.orden = orden;
+
+            const resultados = await getProductos(filtros);
+            setProductos(resultados);
+        } catch (error) {
+            console.error("Error al buscar productos:", error);
+            setProductos([]);
+        } finally {
+            setCargando(false);
+        }
+    }, [precioMin, precioMax, disponibilidad, orden]);
+
     useEffect(() => {
         if (debounceRef.current) {
             clearTimeout(debounceRef.current);
         }
 
         debounceRef.current = setTimeout(() => {
-            if (busqueda.trim() !== "" && busqueda !== query) {
+            if (busqueda.trim() !== "" && busqueda.trim() !== query) {
                 setSearchParams({ query: busqueda.trim() });
             }
         }, 500);
@@ -39,34 +66,18 @@ const BusquedaResultados = () => {
     }, [busqueda, query, setSearchParams]);
 
     useEffect(() => {
-        setBusqueda(query);
-        const buscarProductos = async () => {
-            setCargando(true);
-            setProductos([]);
-            try {
-                const filtros = { nombre: query };
-                if (precioMin) filtros.precio_min = precioMin;
-                if (precioMax) filtros.precio_max = precioMax;
-                if (disponibilidad) filtros.activo = disponibilidad === "en_stock";
-                if (orden) filtros.orden = orden;
-
-                const resultados = await getProductos(filtros);
-                setProductos(resultados);
-            } catch (error) {
-                console.error("Error al buscar productos:", error);
-                setProductos([]);
-            } finally {
-                setCargando(false);
-            }
-        };
-
         if (query.trim() !== "") {
-            buscarProductos();
+            buscarProductos(query);
         } else {
             setProductos([]);
             setCargando(false);
+            lastSearchRef.current = "";
         }
-    }, [query, disponibilidad, precioMin, precioMax, orden]);
+    }, [query, buscarProductos]);
+
+    useEffect(() => {
+        setBusqueda(query);
+    }, [query]);
 
     const handleBuscar = (e) => {
         e.preventDefault();
@@ -188,7 +199,7 @@ const BusquedaResultados = () => {
                             <div className="producto-info">
                                 <p className="producto-nombre">{producto.nombre}</p>
                                 <p className="producto-precio">
-                                    ${parseFloat(producto.precio).toLocaleString("es-CL")} CLP
+                                    ${parseFloat(producto.precio).toLocaleString("es-CL", { minimumFractionDigits: 0, maximumFractionDigits: 0 })} CLP
                                 </p>
                                 <p className="producto-marca">{producto.marca}</p>
                             </div>

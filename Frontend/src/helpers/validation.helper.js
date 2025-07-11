@@ -311,7 +311,7 @@ export const validateBrand = (value) => {
 
 export const validateDescription = (value) => {
     return validationRules.required(value?.trim(), 'La descripción') ||
-           validationRules.minLength(value?.trim(), 10, 'La descripción') ||
+           validationRules.minLength(value?.trim(), 5, 'La descripción') ||
            validationRules.maxLength(value?.trim(), 1000, 'La descripción');
 };
 

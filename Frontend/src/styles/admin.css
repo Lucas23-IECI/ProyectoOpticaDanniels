@@ -294,6 +294,7 @@
     font-size: 14px;
     transition: all 0.3s ease;
     background: white;
+    color: #333;
 }
 
 .filtro-group input:focus,

@@ -97,9 +97,9 @@ export const buscarProductosService = async (filtros) => {
             where.id = id;
         }
 
-        if (filtros.nombre) where.nombre = ILike(`%${filtros.nombre}%`);
-        if (filtros.codigoSKU) where.codigoSKU = ILike(`%${filtros.codigoSKU}%`);
-        if (filtros.marca) where.marca = ILike(`%${filtros.marca}%`);
+        if (filtros.nombre) where.nombre = ILike(`${filtros.nombre}%`);
+        if (filtros.codigoSKU) where.codigoSKU = ILike(`${filtros.codigoSKU}%`);
+        if (filtros.marca) where.marca = ILike(`${filtros.marca}%`);
 
         if (filtros.categoria) {
             if (!categoriasValidas.includes(filtros.categoria)) {
