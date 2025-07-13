@@ -1,8 +1,5 @@
 import { decodeToken } from '@helpers/jwt.helper';
 
-/**
- * Middleware para validar y agregar token a las peticiones
- */
 export const tokenMiddleware = {
     addTokenToRequest: (config) => {
         const token = localStorage.getItem('token');

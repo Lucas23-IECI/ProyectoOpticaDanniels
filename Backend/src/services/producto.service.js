@@ -89,44 +89,78 @@ export const buscarProductosService = async (filtros) => {
             };
         }
 
-        const where = {};
+        const queryBuilder = productoRepository.createQueryBuilder("producto");
 
         if (filtros.id) {
             const id = Number(filtros.id);
             if (isNaN(id) || id < 1) throw { status: 400, message: "ID inválido" };
-            where.id = id;
+            queryBuilder.andWhere("producto.id = :id", { id });
         }
 
-        if (filtros.nombre) where.nombre = ILike(`${filtros.nombre}%`);
-        if (filtros.codigoSKU) where.codigoSKU = ILike(`${filtros.codigoSKU}%`);
-        if (filtros.marca) where.marca = ILike(`${filtros.marca}%`);
+        if (filtros.nombre) {
+            const searchWords = filtros.nombre.toLowerCase().trim().split(/\s+/);
+            searchWords.forEach((word, index) => {
+                queryBuilder.andWhere(
+                    `(LOWER(producto.nombre) LIKE :word${index} OR `
+                    + `LOWER(producto.nombre) LIKE :wordSpace${index} OR `
+                    + `LOWER(producto.marca) LIKE :word${index} OR `
+                    + `LOWER(producto.marca) LIKE :wordSpace${index} OR `
+                    + `LOWER(producto.categoria) LIKE :word${index} OR `
+                    + `LOWER(producto.categoria) LIKE :wordSpace${index} OR `
+                    + `LOWER(producto.codigoSKU) LIKE :word${index} OR `
+                    + `LOWER(producto.codigoSKU) LIKE :wordSpace${index})`,
+                    { 
+                        [`word${index}`]: `${word}%`,
+                        [`wordSpace${index}`]: ` ${word}%`
+                    }
+                );
+            });
+        }
+
+        if (filtros.codigoSKU) {
+            queryBuilder.andWhere("LOWER(producto.codigoSKU) LIKE LOWER(:codigoSKU)", { 
+                codigoSKU: `%${filtros.codigoSKU}%` 
+            });
+        }
+
+        if (filtros.marca) {
+            queryBuilder.andWhere("LOWER(producto.marca) LIKE LOWER(:marca)", { 
+                marca: `%${filtros.marca}%` 
+            });
+        }
 
         if (filtros.categoria) {
             if (!categoriasValidas.includes(filtros.categoria)) {
                 throw { status: 400, message: "Categoría inválida" };
             }
-            where.categoria = filtros.categoria;
+            queryBuilder.andWhere("producto.categoria = :categoria", { categoria: filtros.categoria });
         }
 
-        if (filtros.activo !== undefined)
-            where.activo = filtros.activo === "true";
-        if (filtros.oferta !== undefined)
-            where.oferta = filtros.oferta === "true";
+        if (filtros.activo !== undefined) {
+            queryBuilder.andWhere("producto.activo = :activo", { activo: filtros.activo === "true" });
+        }
+
+        if (filtros.oferta !== undefined) {
+            queryBuilder.andWhere("producto.oferta = :oferta", { oferta: filtros.oferta === "true" });
+        }
 
         if (filtros.precio_min && filtros.precio_max) {
             const min = Number(filtros.precio_min);
             const max = Number(filtros.precio_max);
             if (min < 0 || max < 0 || min > max)
                 throw { status: 400, message: "Rango de precio inválido" };
-            where.precio = Between(min, max);
+            queryBuilder.andWhere("producto.precio BETWEEN :precioMin AND :precioMax", { 
+                precioMin: min, 
+                precioMax: max 
+            });
         } else if (filtros.precio_min) {
             const min = Number(filtros.precio_min);
             if (min < 0) throw { status: 400, message: "Precio mínimo inválido" };
-            where.precio = MoreThanOrEqual(min);
+            queryBuilder.andWhere("producto.precio >= :precioMin", { precioMin: min });
         } else if (filtros.precio_max) {
             const max = Number(filtros.precio_max);
             if (max < 0) throw { status: 400, message: "Precio máximo inválido" };
-            where.precio = LessThanOrEqual(max);
+            queryBuilder.andWhere("producto.precio <= :precioMax", { precioMax: max });
         }
 
         if (filtros.stock_min && filtros.stock_max) {
@@ -134,15 +168,18 @@ export const buscarProductosService = async (filtros) => {
             const max = Number(filtros.stock_max);
             if (min < 0 || max < 0 || min > max)
                 throw { status: 400, message: "Rango de stock inválido" };
-            where.stock = Between(min, max);
+            queryBuilder.andWhere("producto.stock BETWEEN :stockMin AND :stockMax", { 
+                stockMin: min, 
+                stockMax: max 
+            });
         } else if (filtros.stock_min) {
             const min = Number(filtros.stock_min);
             if (min < 0) throw { status: 400, message: "Stock mínimo inválido" };
-            where.stock = MoreThanOrEqual(min);
+            queryBuilder.andWhere("producto.stock >= :stockMin", { stockMin: min });
         } else if (filtros.stock_max) {
             const max = Number(filtros.stock_max);
             if (max < 0) throw { status: 400, message: "Stock máximo inválido" };
-            where.stock = LessThanOrEqual(max);
+            queryBuilder.andWhere("producto.stock <= :stockMax", { stockMax: max });
         }
 
         if (filtros.descuento_min && filtros.descuento_max) {
@@ -150,21 +187,23 @@ export const buscarProductosService = async (filtros) => {
             const max = Number(filtros.descuento_max);
             if (min < 0 || max < 0 || min > max)
                 throw { status: 400, message: "Rango de descuento inválido" };
-            where.descuento = Between(min, max);
+            queryBuilder.andWhere("producto.descuento BETWEEN :descuentoMin AND :descuentoMax", { 
+                descuentoMin: min, 
+                descuentoMax: max 
+            });
         } else if (filtros.descuento_min) {
             const min = Number(filtros.descuento_min);
             if (min < 0)
                 throw { status: 400, message: "Descuento mínimo inválido" };
-            where.descuento = MoreThanOrEqual(min);
+            queryBuilder.andWhere("producto.descuento >= :descuentoMin", { descuentoMin: min });
         } else if (filtros.descuento_max) {
             const max = Number(filtros.descuento_max);
             if (max < 0)
                 throw { status: 400, message: "Descuento máximo inválido" };
-            where.descuento = LessThanOrEqual(max);
+            queryBuilder.andWhere("producto.descuento <= :descuentoMax", { descuentoMax: max });
         }
 
         console.log("Filtros recibidos:", filtros);
-        console.log("Condición WHERE final:", where);
 
         const pagina = filtros.page ? parseInt(filtros.page) : 1;
         const limite = filtros.limit ? parseInt(filtros.limit) : 100; 
@@ -173,9 +212,6 @@ export const buscarProductosService = async (filtros) => {
             throw { status: 400, message: "Parámetros de paginación inválidos" };
 
         const skip = (pagina - 1) * limite;
-        const take = limite;
-
-        let order = {};
 
         if (filtros.orden) {
             const [campo, direccion] = filtros.orden.split("_");
@@ -189,24 +225,20 @@ export const buscarProductosService = async (filtros) => {
             ];
 
             if (
-                !camposValidos.includes(campo) ||
-                !["ASC", "DESC"].includes(direccion?.toUpperCase())
+                !camposValidos.includes(campo)
+                || !["ASC", "DESC"].includes(direccion?.toUpperCase())
             ) {
                 throw { status: 400, message: "Parámetro de ordenamiento inválido" };
             }
 
-            order[campo] = direccion.toUpperCase();
+            queryBuilder.orderBy(`producto.${campo}`, direccion.toUpperCase());
         }
 
-        const [productos, total] = await productoRepository.findAndCount({
-            where,
-            skip,
-            take,
-            order,
-        });
+        queryBuilder.skip(skip).take(limite);
+
+        const [productos, total] = await queryBuilder.getManyAndCount();
 
         console.log("Paginación => página:", pagina, " | límite:", limite);
-        console.log("Orden aplicado:", order);
         console.log("Total productos encontrados:", total);
 
         return {

@@ -61,7 +61,6 @@ form button.secondary:hover {
     background-color: var(--btn-secondary-hover);
 }
 
-/* Estilos para validación de errores */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -90,7 +89,6 @@ textarea.error:focus {
     box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
 }
 
-/* Estilos para campos válidos */
 input.valid,
 select.valid,
 textarea.valid {

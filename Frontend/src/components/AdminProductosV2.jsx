@@ -28,7 +28,7 @@ const VIEW_MODES = {
     TABLE: 'table'
 };
 
-const AdminProductos = () => {
+const AdminProductosV2 = () => {
     const [productos, setProductos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -43,10 +43,10 @@ const AdminProductos = () => {
         marca: '',
         activo: '',
         oferta: '',
-        stock_min: '',
-        stock_max: '',
-        precio_min: '',
-        precio_max: ''
+        stockMin: '',
+        stockMax: '',
+        precioMin: '',
+        precioMax: ''
     });
     
     const [sortBy, setSortBy] = useState('nombre');
@@ -55,15 +55,13 @@ const AdminProductos = () => {
     const [viewMode, setViewMode] = useState(VIEW_MODES.GRID);
     const [showFilters, setShowFilters] = useState(false);
     
-    const [scrollPosition, setScrollPosition] = useState(0);
-    
     const [showCrearModal, setShowCrearModal] = useState(false);
+    const [showEditarModal, setShowEditarModal] = useState(false);
     const [showDetalleModal, setShowDetalleModal] = useState(false);
     const [showEliminarModal, setShowEliminarModal] = useState(false);
     const [productoSeleccionado, setProductoSeleccionado] = useState(null);
     
-    const [modoEdicion, setModoEdicion] = useState(false);
-    
+    const [categorias, setCategorias] = useState([]);
     const [marcas, setMarcas] = useState([]);
 
     const cargarProductos = useCallback(async () => {
@@ -74,18 +72,23 @@ const AdminProductos = () => {
             const queryParams = {
                 page: currentPage,
                 limit: itemsPerPage,
+                search: searchTerm,
+                sortBy,
+                sortOrder,
                 ...filters
             };
-            
-            if (searchTerm) {
-                queryParams.nombre = searchTerm;
-            }
             
             const data = await getAllProductos(queryParams);
             
             if (data && data.productos) {
                 setProductos(data.productos);
                 setTotalItems(data.total || data.productos.length);
+
+                const categoriasUnicas = [...new Set(data.productos.map(p => p.categoria).filter(Boolean))];
+                const marcasUnicas = [...new Set(data.productos.map(p => p.marca).filter(Boolean))];
+                
+                setCategorias(categoriasUnicas);
+                setMarcas(marcasUnicas);
             } else {
                 setProductos([]);
                 setTotalItems(0);
@@ -98,33 +101,17 @@ const AdminProductos = () => {
         } finally {
             setLoading(false);
         }
-    }, [currentPage, itemsPerPage, searchTerm, filters]);
-
-    const cargarMarcas = useCallback(async () => {
-        try {
-            const data = await getAllProductos({ limit: 1000 });
-            if (data && data.productos) {
-                const marcasUnicas = [...new Set(data.productos.map(p => p.marca).filter(Boolean))];
-                setMarcas(marcasUnicas);
-            }
-        } catch (error) {
-            console.error('Error al cargar marcas:', error);
-        }
-    }, []);
+    }, [currentPage, itemsPerPage, searchTerm, sortBy, sortOrder, filters]);
 
     useEffect(() => {
         cargarProductos();
     }, [cargarProductos]);
 
     useEffect(() => {
-        cargarMarcas();
-    }, [cargarMarcas]);
-
-    useEffect(() => {
         if (currentPage !== 1) {
             setCurrentPage(1);
         }
-    }, [searchTerm, filters, currentPage]);
+    }, [searchTerm, filters, sortBy, sortOrder, currentPage]);
 
     const productosProcessados = useMemo(() => {
         let resultado = [...productos];
@@ -203,10 +190,8 @@ const AdminProductos = () => {
     };
 
     const handleEditarProducto = (producto) => {
-        setScrollPosition(window.pageYOffset || document.documentElement.scrollTop);
         setProductoSeleccionado(producto);
-        setShowDetalleModal(false);
-        setModoEdicion(true);
+        setShowEditarModal(true);
     };
 
     const handleEliminarProducto = (producto) => {
@@ -217,57 +202,20 @@ const AdminProductos = () => {
     const handleConfirmarEliminar = async () => {
         try {
             await deleteProducto(productoSeleccionado.id);
-            
-            setProductos(prevProductos => 
-                prevProductos.filter(producto => producto.id !== productoSeleccionado.id)
-            );
-            setTotalItems(prev => prev - 1);
-            
             setShowEliminarModal(false);
             setProductoSeleccionado(null);
+            await cargarProductos();
         } catch (error) {
             console.error('Error al eliminar producto:', error);
         }
     };
 
-    const handleProductoCreado = (nuevoProducto) => {
-        setProductos(prevProductos => [nuevoProducto, ...prevProductos]);
-        setTotalItems(prev => prev + 1);
-        
-        if (nuevoProducto.marca && !marcas.includes(nuevoProducto.marca)) {
-            setMarcas(prev => [...prev, nuevoProducto.marca].sort());
-        }
+    const handleProductoCreado = () => {
+        cargarProductos();
     };
 
-    const handleCancelarEdicion = () => {
-        setModoEdicion(false);
-        setProductoSeleccionado(null);
-        
-        setTimeout(() => {
-            window.scrollTo(0, scrollPosition);
-        }, 100);
-    };
-
-    const handleProductoActualizado = (productoActualizado) => {
-        setProductos(prevProductos => 
-            prevProductos.map(producto => 
-                producto.id === productoActualizado.id ? productoActualizado : producto
-            )
-        );
-        
-        if (productoSeleccionado && productoSeleccionado.id === productoActualizado.id) {
-            setProductoSeleccionado(productoActualizado);
-        }
-        
-        setModoEdicion(false);
-        
-        setTimeout(() => {
-            window.scrollTo(0, scrollPosition);
-        }, 100);
-        
-        if (productoActualizado.marca && !marcas.includes(productoActualizado.marca)) {
-            setMarcas(prev => [...prev, productoActualizado.marca].sort());
-        }
+    const handleProductoActualizado = () => {
+        cargarProductos();
     };
 
     const limpiarFiltros = () => {
@@ -277,10 +225,10 @@ const AdminProductos = () => {
             marca: '',
             activo: '',
             oferta: '',
-            stock_min: '',
-            stock_max: '',
-            precio_min: '',
-            precio_max: ''
+            stockMin: '',
+            stockMax: '',
+            precioMin: '',
+            precioMax: ''
         });
     };
 
@@ -298,24 +246,13 @@ const AdminProductos = () => {
 
     return (
         <div className="admin-productos-v2">
-            {modoEdicion && productoSeleccionado && (
-                <EditarProductoPopup
-                    show={true}
-                    setShow={handleCancelarEdicion}
-                    producto={productoSeleccionado}
-                    onProductoUpdated={handleProductoActualizado}
-                />
-            )}
-            
-            {!modoEdicion && (
-                <>
-                    <div className="admin-header">
-                        <div className="header-title">
-                            <h1>Administración de Productos</h1>
-                            <span className="productos-count">
-                                {loading ? 'Cargando...' : `${totalItems} productos`}
-                            </span>
-                        </div>
+            <div className="admin-header">
+                <div className="header-title">
+                    <h1>Administración de Productos</h1>
+                    <span className="productos-count">
+                        {loading ? 'Cargando...' : `${totalItems} productos`}
+                    </span>
+                </div>
                 
                 <div className="header-actions">
                     <button 
@@ -417,9 +354,9 @@ const AdminProductos = () => {
                                 onChange={(e) => handleFilterChange('categoria', e.target.value)}
                             >
                                 <option value="">Todas las categorías</option>
-                                <option value="opticos">Lentes Ópticos</option>
-                                <option value="sol">Lentes de Sol</option>
-                                <option value="accesorios">Accesorios</option>
+                                {categorias.map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
                             </select>
                         </div>
                         
@@ -465,8 +402,8 @@ const AdminProductos = () => {
                             <input 
                                 type="number" 
                                 placeholder="Min"
-                                value={filters.stock_min}
-                                onChange={(e) => handleFilterChange('stock_min', e.target.value)}
+                                value={filters.stockMin}
+                                onChange={(e) => handleFilterChange('stockMin', e.target.value)}
                             />
                         </div>
                         
@@ -475,8 +412,8 @@ const AdminProductos = () => {
                             <input 
                                 type="number" 
                                 placeholder="Max"
-                                value={filters.stock_max}
-                                onChange={(e) => handleFilterChange('stock_max', e.target.value)}
+                                value={filters.stockMax}
+                                onChange={(e) => handleFilterChange('stockMax', e.target.value)}
                             />
                         </div>
                         
@@ -485,8 +422,8 @@ const AdminProductos = () => {
                             <input 
                                 type="number" 
                                 placeholder="Min"
-                                value={filters.precio_min}
-                                onChange={(e) => handleFilterChange('precio_min', e.target.value)}
+                                value={filters.precioMin}
+                                onChange={(e) => handleFilterChange('precioMin', e.target.value)}
                             />
                         </div>
                         
@@ -495,8 +432,8 @@ const AdminProductos = () => {
                             <input 
                                 type="number" 
                                 placeholder="Max"
-                                value={filters.precio_max}
-                                onChange={(e) => handleFilterChange('precio_max', e.target.value)}
+                                value={filters.precioMax}
+                                onChange={(e) => handleFilterChange('precioMax', e.target.value)}
                             />
                         </div>
                     </div>
@@ -595,6 +532,9 @@ const AdminProductos = () => {
                                     onEditar={handleEditarProducto}
                                     onEliminar={handleEliminarProducto}
                                     formatearPrecio={formatearPrecio}
+                                    sortBy={sortBy}
+                                    onSortChange={handleSortChange}
+                                    getSortIcon={getSortIcon}
                                 />
                             </div>
                         )}
@@ -613,44 +553,49 @@ const AdminProductos = () => {
                     />
                 </div>
             )}
-
-                    {showCrearModal && (
-                        <CrearProductoPopup
-                            show={showCrearModal}
-                            setShow={setShowCrearModal}
-                            onProductoCreated={handleProductoCreado}
-                        />
-                    )}
-                    
-                    {showDetalleModal && (
-                        <div className="modal-overlay" onClick={() => setShowDetalleModal(false)}>
-                            <div className="modal-content detalle-modal" onClick={e => e.stopPropagation()}>
-                                <button 
-                                    className="modal-close"
-                                    onClick={() => setShowDetalleModal(false)}
-                                >
-                                    <FaTimes />
-                                </button>
-                                <ProductoDetalle
-                                    producto={productoSeleccionado}
-                                    onEdit={handleEditarProducto}
-                                    onDelete={handleEliminarProducto}
-                                    showActions={true}
-                                    onClose={() => setShowDetalleModal(false)}
-                                />
-                            </div>
-                        </div>
-                    )}
-                    
-                    {showEliminarModal && (
-                        <ConfirmarEliminarPopup
-                            show={showEliminarModal}
-                            setShow={setShowEliminarModal}
+            {showCrearModal && (
+                <CrearProductoPopup
+                    show={showCrearModal}
+                    setShow={setShowCrearModal}
+                    onProductoCreated={handleProductoCreado}
+                />
+            )}
+            
+            {showEditarModal && (
+                <EditarProductoPopup
+                    show={showEditarModal}
+                    setShow={setShowEditarModal}
+                    producto={productoSeleccionado}
+                    onProductoUpdated={handleProductoActualizado}
+                />
+            )}
+            
+            {showDetalleModal && (
+                <div className="modal-overlay" onClick={() => setShowDetalleModal(false)}>
+                    <div className="modal-content detalle-modal" onClick={e => e.stopPropagation()}>
+                        <button 
+                            className="modal-close"
+                            onClick={() => setShowDetalleModal(false)}
+                        >
+                            <FaTimes />
+                        </button>
+                        <ProductoDetalle
                             producto={productoSeleccionado}
-                            onConfirm={handleConfirmarEliminar}
+                            onEdit={handleEditarProducto}
+                            onDelete={handleEliminarProducto}
+                            showActions={true}
                         />
-                    )}
-                </>
+                    </div>
+                </div>
+            )}
+            
+            {showEliminarModal && (
+                <ConfirmarEliminarPopup
+                    show={showEliminarModal}
+                    setShow={setShowEliminarModal}
+                    producto={productoSeleccionado}
+                    onConfirm={handleConfirmarEliminar}
+                />
             )}
         </div>
     );
@@ -834,17 +779,42 @@ const ProductListItem = ({ producto, onVerDetalle, onEditar, onEliminar, formate
     );
 };
 
-const ProductTable = ({ productos, onVerDetalle, onEditar, onEliminar, formatearPrecio }) => {
+const ProductTable = ({ productos, onVerDetalle, onEditar, onEliminar, formatearPrecio, sortBy, onSortChange, getSortIcon }) => {
     return (
         <table className="products-table">
             <thead>
                 <tr>
                     <th>Imagen</th>
-                    <th>Nombre</th>
-                    <th>Marca</th>
-                    <th>Categoría</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
+                    <th 
+                        className={`sortable ${sortBy === 'nombre' ? 'active' : ''}`}
+                        onClick={() => onSortChange('nombre')}
+                    >
+                        Nombre {getSortIcon('nombre')}
+                    </th>
+                    <th 
+                        className={`sortable ${sortBy === 'marca' ? 'active' : ''}`}
+                        onClick={() => onSortChange('marca')}
+                    >
+                        Marca {getSortIcon('marca')}
+                    </th>
+                    <th 
+                        className={`sortable ${sortBy === 'categoria' ? 'active' : ''}`}
+                        onClick={() => onSortChange('categoria')}
+                    >
+                        Categoría {getSortIcon('categoria')}
+                    </th>
+                    <th 
+                        className={`sortable ${sortBy === 'precio' ? 'active' : ''}`}
+                        onClick={() => onSortChange('precio')}
+                    >
+                        Precio {getSortIcon('precio')}
+                    </th>
+                    <th 
+                        className={`sortable ${sortBy === 'stock' ? 'active' : ''}`}
+                        onClick={() => onSortChange('stock')}
+                    >
+                        Stock {getSortIcon('stock')}
+                    </th>
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
@@ -1033,4 +1003,4 @@ const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPe
     );
 };
 
-export default AdminProductos;
+export default AdminProductosV2;

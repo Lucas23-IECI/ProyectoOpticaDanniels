@@ -12,12 +12,60 @@ export const getProductos = async (filtros = {}) => {
         }, {});
 
         const response = await api.get(PRODUCTOS_ENDPOINT, { params: filtrosLimpios });
+        
+        if (response.data.productos && response.data.total !== undefined) {
+            return {
+                data: response.data.productos,
+                total: response.data.total,
+                page: response.data.page,
+                totalPages: response.data.totalPages
+            };
+        }
+
         return response.data.productos || [];
     } catch (error) {
         if (error.response && error.response.status === 404) {
-            return [];
+            return { data: [], total: 0, page: 1, totalPages: 0 };
         }
         console.error("Error en getProductos:", error);
+        throw error;
+    }
+};
+
+export const getAllProductos = async (queryParams = {}) => {
+    try {
+        const filtrosLimpios = Object.entries(queryParams).reduce((acc, [key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+
+        const response = await api.get(PRODUCTOS_ENDPOINT, { params: filtrosLimpios });
+
+        if (response.data.productos && response.data.total !== undefined) {
+            return {
+                productos: response.data.productos,
+                total: response.data.total,
+                page: response.data.page,
+                totalPages: response.data.totalPages,
+                hasMore: response.data.hasMore
+            };
+        }
+
+        const productos = response.data.productos || response.data || [];
+        return {
+            productos: productos,
+            total: productos.length,
+            page: 1,
+            totalPages: 1,
+            hasMore: false
+        };
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            return { productos: [], total: 0, page: 1, totalPages: 0, hasMore: false };
+        }
+        console.error("Error en getAllProductos:", error);
         throw error;
     }
 };
