@@ -20,9 +20,7 @@ const ProductSchema = new EntitySchema({
             nullable: false,
         },
         precio: {
-            type: "numeric",
-            precision: 10,
-            scale: 2,
+            type: "int",
             nullable: false,
         },
         categoria: {
@@ -61,9 +59,7 @@ const ProductSchema = new EntitySchema({
             nullable: false,
         },
         descuento: {
-            type: "numeric",
-            precision: 5,
-            scale: 2,
+            type: "int",
             default: 0,
             nullable: false,
         },

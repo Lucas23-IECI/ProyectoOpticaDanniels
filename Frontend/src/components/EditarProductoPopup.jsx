@@ -28,6 +28,18 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
     const fileInputRef = useRef(null);
 
     useEffect(() => {
+        if (show) {
+            document.body.classList.add('no-scroll');
+        } else {
+            document.body.classList.remove('no-scroll');
+        }
+
+        return () => {
+            document.body.classList.remove('no-scroll');
+        };
+    }, [show]);
+
+    useEffect(() => {
         if (producto && show) {
             const precio = producto.precio ? producto.precio.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
             
@@ -164,6 +176,11 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
         }
         
         if (name === 'stock') {
+            if (/[a-zA-Z]/.test(value)) {
+                showAlert('El stock no puede contener letras');
+                return;
+            }
+
             if (value !== '' && !/^\d+$/.test(value)) {
                 showAlert('El stock solo puede contener números enteros');
                 return;
@@ -181,12 +198,17 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
         }
         
         if (name === 'descuento') {
-            if (value !== '' && !/^\d*\.?\d*$/.test(value)) {
-                showAlert('El descuento solo puede contener números');
+            if (/[a-zA-Z]/.test(value)) {
+                showAlert('El descuento no puede contener letras');
                 return;
             }
             
-            const numValue = parseFloat(value);
+            if (value !== '' && !/^\d+$/.test(value)) {
+                showAlert('El descuento solo puede contener números enteros');
+                return;
+            }
+            
+            const numValue = parseInt(value);
             if (value !== '' && (isNaN(numValue) || numValue < 0)) {
                 showAlert('El descuento no puede ser negativo');
                 return;
@@ -517,6 +539,7 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                                         placeholder="50"
                                         min="0"
                                         max="99999"
+                                        inputMode="numeric"
                                         className={errors.stock ? 'error' : ''}
                                     />
                                     {errors.stock && <span className="error-message">{errors.stock}</span>}
@@ -533,6 +556,7 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                                         placeholder="0"
                                         min="0"
                                         max="100"
+                                        inputMode="numeric"
                                         className={errors.descuento ? 'error' : ''}
                                     />
                                     {errors.descuento && <span className="error-message">{errors.descuento}</span>}

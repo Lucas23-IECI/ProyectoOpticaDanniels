@@ -9,7 +9,7 @@ import { HOST, PORT } from "../config/configEnv.js";
 import path from "path";
 import fs from "fs";
 
-// Helper para convertir imagen a Base64
+//Helper para convertir imagen a Base64
 const convertirImagenABase64 = (filename) => {
     if (!filename) return null;
     
