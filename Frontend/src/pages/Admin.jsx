@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "@context/AuthContext";
+import { useAuth } from "@hooks/useAuth";
 import AdminProductos from "@components/AdminProductos";
 import { FaBox, FaUsers, FaChartBar } from "react-icons/fa";
 import "@styles/admin.css";

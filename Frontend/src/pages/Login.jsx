@@ -3,7 +3,7 @@ import { useState } from "react";
 import { login } from "@services/auth.service";
 import { showErrorAlert, showSuccessAlert } from "@helpers/sweetAlert";
 import { decodeToken } from "@helpers/jwt.helper";
-import { useAuth } from "@context/AuthContext";
+import { useAuth } from "@hooks/useAuth";
 import "@styles/login.css";
 
 const Login = () => {

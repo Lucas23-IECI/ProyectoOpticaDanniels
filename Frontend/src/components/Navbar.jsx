@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '@context/AuthContext';
+import { useAuth } from '@hooks/useAuth';
 import BarraBusqueda from '@components/BarraBusqueda';
 import AuthPopup from '@components/AuthPopup';
 import DropdownUsuario from '@components/DropdownUsuario';
@@ -39,6 +39,7 @@ function Navbar() {
                 <ul>
                     <li><NavLink to="/quienes-somos">Quienes Somos</NavLink></li>
                     <li><NavLink to="/productos">Productos</NavLink></li>
+                    <li><NavLink to="/favoritos">Favoritos</NavLink></li>
                     <li><NavLink to="/contacto">Contacto</NavLink></li>
                 </ul>
 

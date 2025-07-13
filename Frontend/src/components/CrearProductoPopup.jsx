@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import useCreateProducto from '@hooks/productos/useCreateProducto';
 import { FaTimes, FaUpload, FaImage, FaSpinner } from 'react-icons/fa';
+import DropdownCategorias from './DropdownCategorias';
 import '@styles/crearProducto.css';
 
 const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
@@ -27,6 +28,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
         descripcion: '',
         precio: '',
         categoria: '',
+        subcategoria: '',
         stock: '',
         marca: '',
         codigoSKU: '',
@@ -51,6 +53,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             formData.descripcion.trim().length >= 10 &&
             formData.precio.length > 0 &&
             formData.categoria !== '' &&
+            formData.subcategoria !== '' &&
             formData.stock !== '' &&
             formData.marca.trim().length >= 2 &&
             formData.codigoSKU.trim().length >= 3 &&
@@ -126,6 +129,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             descripcion: '',
             precio: '',
             categoria: '',
+            subcategoria: '',
             stock: '',
             marca: '',
             codigoSKU: '',
@@ -491,20 +495,16 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="categoria">Categoría *</label>
-                                    <select
-                                        id="categoria"
-                                        name="categoria"
-                                        value={formData.categoria}
-                                        onChange={handleInputChange}
-                                        className={errors.categoria ? 'error' : ''}
-                                    >
-                                        <option value="">Seleccionar categoría</option>
-                                        <option value="opticos">👓 Lentes Ópticos</option>
-                                        <option value="sol">🕶️ Lentes de Sol</option>
-                                        <option value="accesorios">🧰 Accesorios</option>
-                                    </select>
+                                    <label>Categoría y Subcategoría *</label>
+                                    <DropdownCategorias
+                                        selectedCategoria={formData.categoria}
+                                        selectedSubcategoria={formData.subcategoria}
+                                        onCategoriaChange={(categoria) => setFormData(prev => ({ ...prev, categoria, subcategoria: '' }))}
+                                        onSubcategoriaChange={(subcategoria) => setFormData(prev => ({ ...prev, subcategoria }))}
+                                        className={errors.categoria || errors.subcategoria ? 'error' : ''}
+                                    />
                                     {errors.categoria && <span className="error-message">{errors.categoria}</span>}
+                                    {errors.subcategoria && <span className="error-message">{errors.subcategoria}</span>}
                                 </div>
                             </div>
 

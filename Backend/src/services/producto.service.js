@@ -30,6 +30,7 @@ const camposPermitidos = [
     "codigoSKU",
     "marca",
     "categoria",
+    "subcategoria",
     "activo",
     "oferta",
     "precio_min",
@@ -134,6 +135,12 @@ export const buscarProductosService = async (filtros) => {
                 throw { status: 400, message: "Categoría inválida" };
             }
             queryBuilder.andWhere("producto.categoria = :categoria", { categoria: filtros.categoria });
+        }
+
+        if (filtros.subcategoria) {
+            queryBuilder.andWhere("LOWER(producto.subcategoria) = LOWER(:subcategoria)", { 
+                subcategoria: filtros.subcategoria 
+            });
         }
 
         if (filtros.activo !== undefined) {

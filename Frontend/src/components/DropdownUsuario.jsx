@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@context/AuthContext';
+import { useAuth } from '@hooks/useAuth';
 import { logout } from '@services/auth.service';
 import { showSuccessAlert, showErrorAlert } from '@helpers/sweetAlert';
 import { clearTokenCache } from '@helpers/jwt.helper';
@@ -47,6 +47,9 @@ function DropdownUsuario({ onClose }) {
             </p>
             <button onClick={() => { navigate('/perfil'); onClose(); }}>
                 Mi perfil
+            </button>
+            <button onClick={() => { navigate('/favoritos'); onClose(); }}>
+                ❤️ Mis favoritos
             </button>
             {user?.rol === 'administrador' && (
                 <button 
