@@ -1,11 +1,16 @@
 import { startCase } from 'lodash';
 import { format as formatRut } from 'rut.js';
 import { format as formatTempo } from '@formkit/tempo';
+import { getNombreCompleto } from './nameHelpers.js';
 
 export function formatUserData(user) {
     return {
         ...user,
-        nombreCompleto: startCase(user.nombreCompleto),
+        primerNombre: startCase(user.primerNombre),
+        segundoNombre: user.segundoNombre ? startCase(user.segundoNombre) : null,
+        apellidoPaterno: startCase(user.apellidoPaterno),
+        apellidoMaterno: user.apellidoMaterno ? startCase(user.apellidoMaterno) : null,
+        nombreCompleto: getNombreCompleto(user),
         rol: startCase(user.rol),
         rut: formatRut(user.rut),
         createdAt: formatTempo(user.createdAt, 'DD-MM-YYYY'),

@@ -3,6 +3,7 @@ import { AuthProvider } from "@context/AuthContext";
 import { useTokenExpiration } from "@hooks/useTokenExpiration";
 import ProtectedRoute from "@components/ProtectedRoute";
 import Navbar from "@components/Navbar";
+import Home from "@pages/Home";
 import Productos from "@pages/Productos";
 import DetalleProducto from "@pages/DetalleProducto";
 import BusquedaResultados from "@pages/BusquedaResultados";
@@ -10,7 +11,10 @@ import Wishlist from "@pages/Wishlist";
 import Login from "@pages/Login";
 import Register from "@pages/Register";
 import Perfil from "@pages/Perfil";
+import QuienesSomos from "@pages/QuienesSomos";
+import Contacto from "@pages/Contacto";
 import Admin from "@pages/Admin";
+
 
 function AppContent() {
   useTokenExpiration();
@@ -20,12 +24,13 @@ function AppContent() {
       <Navbar />
       <div className="contenedor-principal">
         <Routes>
-          <Route path="/" element={<div>Bienvenido al Inicio</div>} />
+          <Route path="/" element={<Home />} />
           <Route path="/productos" element={<Productos />} />
           <Route path="/productos/:nombreProducto" element={<DetalleProducto />} />
           <Route path="/buscar" element={<BusquedaResultados />} />
           <Route path="/favoritos" element={<Wishlist />} />
-          <Route path="/contacto" element={<div>Contacto - Página en desarrollo</div>} />
+          <Route path="/contacto" element={<Contacto />} />
+          <Route path="/quienes-somos" element={<QuienesSomos />} />
           
           <Route 
             path="/login" 
@@ -72,7 +77,7 @@ function AppContent() {
             path="/mis-datos" 
             element={
               <ProtectedRoute>
-                <div>Mis Datos Personales - Página en desarrollo</div>
+                <Perfil />
               </ProtectedRoute>
             } 
           />

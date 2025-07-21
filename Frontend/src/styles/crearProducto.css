@@ -501,35 +501,35 @@ body.no-scroll {
         transform: none;
         box-sizing: border-box;
     }
-    
+
     .crear-producto-header {
         padding: 20px;
     }
-    
+
     .crear-producto-header h2 {
         font-size: 20px;
     }
-    
+
     .crear-producto-form {
         padding: 20px;
         overflow-x: hidden;
         width: 100%;
         box-sizing: border-box;
     }
-    
+
     .form-section {
         padding: 20px;
     }
-    
+
     .form-actions {
         flex-direction: column;
     }
-    
+
     .btn-cancel,
     .btn-create {
         width: 100%;
     }
-    
+
     .form-grid {
         gap: 20px;
         grid-template-columns: 1fr;

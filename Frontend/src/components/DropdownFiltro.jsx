@@ -69,11 +69,7 @@ const DropdownFiltro = ({
                     setPrecioMin(min ? String(min) : "");
                     setPrecioMax(max ? String(max) : "");
                 }
-                
-
-                setPrecioMin(min ? String(min) : "");
-                setPrecioMax(max ? String(max) : "");
-            }, 500);
+            }, 1000);
         }
     }, [inputMin, inputMax, tipo, setPrecioMin, setPrecioMax, setDropdownActivo]);
 

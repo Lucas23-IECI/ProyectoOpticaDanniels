@@ -14,26 +14,35 @@ export async function createInitialUsers() {
         }
 
         const adminUser = userRepository.create({
-            nombreCompleto: "Lucas Gabriel Méndez Risopatrón",
+            primerNombre: "Lucas Gabriel",
+            segundoNombre: null,
+            apellidoPaterno: "Méndez",
+            apellidoMaterno: "Risopatrón",
             rut: "21.358.808-7",
             email: "administrador2025@gmail.cl",
-            password: await encryptPassword("admin1234"),
+            password: await encryptPassword("Admin12345"),
             rol: "administrador",
         });
 
         const user1 = userRepository.create({
-            nombreCompleto: "Usuario de Prueba Uno",
+            primerNombre: "Usuario",
+            segundoNombre: "de Prueba",
+            apellidoPaterno: "Uno",
+            apellidoMaterno: null,
             rut: "11.111.111-1",
             email: "usuario1@gmail.cl",
-            password: await encryptPassword("user1234"),
+            password: await encryptPassword("User12345"),
             rol: "usuario",
         });
 
         const user2 = userRepository.create({
-            nombreCompleto: "Usuario de Prueba Dos",
+            primerNombre: "Usuario",
+            segundoNombre: "de Prueba",
+            apellidoPaterno: "Dos",
+            apellidoMaterno: null,
             rut: "22.222.222-2",
             email: "usuario2@gmail.cl",
-            password: await encryptPassword("user1234"),
+            password: await encryptPassword("User12345"),
             rol: "usuario",
         });
 

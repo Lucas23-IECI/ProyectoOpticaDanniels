@@ -97,18 +97,18 @@
         min-width: 200px;
         max-width: 90vw;
     }
-    
+
     .dropdown-usuario::before {
         left: auto;
         right: 20px;
         transform: none;
     }
-    
+
     .dropdown-usuario button {
         padding: 1rem 1.25rem;
         font-size: 1rem;
     }
-    
+
     .usuario-saludo {
         padding: 1rem 1.25rem;
         font-size: 1rem;

@@ -18,9 +18,14 @@ const useLogin = () => {
                 localStorage.setItem('token', response.data.token);
                 const userDecoded = await decodeToken(response.data.token);
                 localStorage.setItem('user', JSON.stringify(userDecoded));
-                showSuccessAlert("¡Bienvenido!", "Sesión iniciada correctamente.");
+                
                 setUser(userDecoded);
-                navigate("/productos");
+                
+                showSuccessAlert("¡Bienvenido!", "Sesión iniciada correctamente.");
+                
+                setTimeout(() => {
+                    navigate('/OpticaDanniels/productos');
+                }, 1000);
             } else {
                 showErrorAlert("Error", response.details.message);
             }

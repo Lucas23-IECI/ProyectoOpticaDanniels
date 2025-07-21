@@ -131,15 +131,15 @@
     .header-container {
         padding: 0 var(--spacing-md);
     }
-    
+
     .header-nav ul {
         gap: var(--spacing-md);
     }
-    
+
     .header-search input {
         width: 200px;
     }
-    
+
     .header-nav {
         gap: var(--spacing-md);
     }
@@ -150,7 +150,7 @@
         flex-direction: column;
         gap: var(--spacing-md);
     }
-    
+
     .header-search input {
         width: 100%;
         max-width: 300px;

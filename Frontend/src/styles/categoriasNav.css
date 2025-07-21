@@ -73,17 +73,16 @@
     color: white;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .categorias-nav {
         padding: 8px;
         font-size: 12px;
     }
-    
+
     .categorias-nav-item {
         padding: 3px 6px;
     }
-    
+
     .categorias-nav-reset {
         position: static;
         margin-left: 8px;

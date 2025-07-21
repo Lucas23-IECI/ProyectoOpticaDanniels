@@ -32,3 +32,23 @@ export async function getProfile() {
     }
 }
 
+export async function updateProfile(userData) {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No hay token de autenticación');
+
+    try {
+        const response = await axios.put('/auth/profile', userData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data.data;
+    } catch (error) {
+        console.error("Error al actualizar perfil:", error);
+        if (error.response?.data?.message) {
+            throw new Error(error.response.data.message);
+        }
+        throw new Error('Error al actualizar el perfil');
+    }
+}
+

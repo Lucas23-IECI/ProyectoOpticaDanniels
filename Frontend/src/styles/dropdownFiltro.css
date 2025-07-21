@@ -4,7 +4,7 @@
 }
 
 .dropdown-titulo {
-    background: linear-gradient(135deg, var(--surface-color) 0%, rgba(255, 255, 255, 0.95) 100%);
+    background: #ffffff !important;
     color: var(--text-color);
     border: 2px solid var(--border-color);
     border-radius: 12px;
@@ -19,7 +19,7 @@
 }
 
 .dropdown-titulo:hover {
-    background: linear-gradient(135deg, rgba(18, 52, 86, 0.04) 0%, rgba(18, 52, 86, 0.02) 100%);
+    background: #f8f9fa !important;
     color: var(--primary-color);
     border-color: var(--primary-color);
 }
@@ -28,8 +28,8 @@
     position: absolute;
     top: 110%;
     left: 0;
-    z-index: 10;
-    background: linear-gradient(135deg, var(--surface-color) 0%, rgba(255, 255, 255, 0.98) 100%);
+    z-index: 100;
+    background: #ffffff !important;
     border: 1px solid rgba(18, 52, 86, 0.08);
     border-radius: 16px;
     padding: 1.2rem;
@@ -67,7 +67,7 @@
 .precio-item input {
     width: 100%;
     padding: 0.6rem 0.8rem;
-    background: rgba(255, 255, 255, 0.8);
+    background: #ffffff;
     border: 2px solid var(--border-color);
     border-radius: 8px;
     color: var(--text-color);
@@ -92,10 +92,11 @@
     -moz-appearance: textfield;
 }
 
-select {
+.dropdown-filtro select,
+.filtros-barra select {
     width: 100%;
     padding: 0.6rem 0.8rem;
-    background: rgba(255, 255, 255, 0.8);
+    background: #ffffff !important;
     color: var(--text-color);
     border: 2px solid var(--border-color);
     border-radius: 8px;
@@ -104,14 +105,16 @@ select {
     transition: all 0.3s ease;
 }
 
-select:focus {
+.dropdown-filtro select:focus,
+.filtros-barra select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(18, 52, 86, 0.1);
-    background: var(--surface-color);
+    background: #ffffff !important;
 }
 
-select option {
-    background: var(--surface-color);
+.dropdown-filtro select option,
+.filtros-barra select option {
+    background: #ffffff;
     color: var(--text-color);
 }
 
@@ -135,7 +138,7 @@ select option {
 }
 
 .restablecer-boton {
-    background: linear-gradient(135deg, var(--surface-color) 0%, rgba(255, 255, 255, 0.95) 100%);
+    background: #ffffff !important;
     color: var(--text-color);
     border: 2px solid var(--border-color);
     border-radius: 8px;
@@ -150,20 +153,20 @@ select option {
 }
 
 .restablecer-boton:hover {
-    background: rgba(18, 52, 86, 0.04);
+    background: #f8f9fa !important;
     color: var(--primary-color);
     border-color: var(--primary-color);
 }
 
 .dropdown-filtro.activo .dropdown-titulo {
-    background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
-    color: var(--surface-color);
+    background: #ffffff !important;
+    color: var(--primary-color);
     border-color: var(--primary-color);
 }
 
 .dropdown-filtro.activo .dropdown-titulo:hover {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    color: var(--surface-color);
+    background: #f8f9fa !important;
+    color: var(--primary-color);
 }
 
 .filtro-activo-indicador {
@@ -188,3 +191,105 @@ select option {
         opacity: 1;
     }
 }
+
+.resultados-container select,
+.filtros-barra select,
+.dropdown-filtro select {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+}
+
+.resultados-container select:focus,
+.filtros-barra select:focus,
+.dropdown-filtro select:focus {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+}
+
+.precio-item input {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+}
+
+.dropdown-contenido,
+.dropdown-titulo,
+.restablecer-boton,
+.dropdown-filtro.activo .dropdown-titulo,
+.dropdown-filtro.activo .dropdown-titulo:hover,
+.dropdown-titulo:hover,
+.restablecer-boton:hover {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+}
+
+.dropdown-filtro *,
+.dropdown-contenido *,
+.dropdown-titulo,
+.restablecer-boton,
+.dropdown-filtro select,
+.dropdown-filtro input,
+.dropdown-filtro button,
+.filtros-barra select,
+.filtros-barra input,
+.resultados-container select,
+.resultados-container input {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+}
+
+.dropdown-titulo:hover,
+.restablecer-boton:hover {
+    background: #f8f9fa !important;
+    background-color: #f8f9fa !important;
+    background-image: none !important;
+}
+
+.dropdown-filtro.activo .dropdown-titulo {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: var(--primary-color) !important;
+}
+
+.dropdown-filtro.activo .dropdown-titulo:hover {
+    background: #f8f9fa !important;
+    background-color: #f8f9fa !important;
+    background-image: none !important;
+}
+
+.dropdown-filtro select option,
+.filtros-barra select option,
+.resultados-container select option {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+}
+
+.dropdown-filtro.debug *,
+.dropdown-contenido.debug *,
+.dropdown-titulo.debug,
+.restablecer-boton.debug {
+    border: 2px solid red !important;
+    background: yellow !important;
+    background-color: yellow !important;
+    background-image: none !important;
+}
+
+.dropdown-filtro,
+.dropdown-filtro *,
+.dropdown-contenido,
+.dropdown-titulo,
+.restablecer-boton {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
+}
+
+.dropdown-titulo:hover,
+.restablecer-boton:hover {
+    background: #f8f9fa !important;
+    background-color: #f8f9fa !important;
+    background-image: none !important;
+}
+

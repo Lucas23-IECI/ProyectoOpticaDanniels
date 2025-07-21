@@ -1,4 +1,5 @@
 import api from "./root.service";
+import cacheService from "./cache.service";
 
 const PRODUCTOS_ENDPOINT = "/productos";
 
@@ -11,21 +12,23 @@ export const getProductos = async (filtros = {}) => {
             return acc;
         }, {});
 
-        const response = await api.get(PRODUCTOS_ENDPOINT, { params: filtrosLimpios });
+        const cacheKey = `productos_${JSON.stringify(filtrosLimpios)}`;
         
-        if (response.data.productos && response.data.total !== undefined) {
-            return {
-                data: response.data.productos,
-                total: response.data.total,
-                page: response.data.page,
-                totalPages: response.data.totalPages
-            };
+        const cached = cacheService.get(cacheKey);
+        if (cached) {
+            return cached;
         }
 
-        return response.data.productos || [];
+        const response = await api.get(PRODUCTOS_ENDPOINT, { params: filtrosLimpios });
+        
+        const productos = response.data.productos || [];
+
+        cacheService.set(cacheKey, productos, 3 * 60 * 1000);
+        
+        return productos;
     } catch (error) {
         if (error.response && error.response.status === 404) {
-            return { data: [], total: 0, page: 1, totalPages: 0 };
+            return [];
         }
         console.error("Error en getProductos:", error);
         throw error;
@@ -40,6 +43,13 @@ export const getAllProductos = async (queryParams = {}) => {
             }
             return acc;
         }, {});
+
+        const cacheKey = `all_productos_${JSON.stringify(filtrosLimpios)}`;
+        
+        const cached = cacheService.get(cacheKey);
+        if (cached) {
+            return cached;
+        }
 
         const response = await api.get(PRODUCTOS_ENDPOINT, { params: filtrosLimpios });
 
@@ -132,6 +142,12 @@ export const updateProductoImagen = async (id, formData) => {
 export const deleteProducto = async (id) => {
     try {
         const response = await api.delete(`${PRODUCTOS_ENDPOINT}/${id}`);
+        
+        const cacheKeys = Object.keys(localStorage).filter(key => 
+            key.includes('productos') || key.includes('all_productos')
+        );
+        cacheKeys.forEach(key => cacheService.delete(key));
+        
         return response.data;
     } catch (error) {
         console.error("Error en deleteProducto:", error);
@@ -152,4 +168,6 @@ export const buscarProductosRapido = async (query, options = {}) => {
         return [];
     }
 };
+
+
 

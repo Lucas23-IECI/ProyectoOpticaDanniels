@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@hooks/useAuth";
+import { getNombreCompleto } from "@helpers/nameHelpers";
 import AdminProductos from "@components/AdminProductos";
 import { FaBox, FaUsers, FaChartBar } from "react-icons/fa";
 import "@styles/admin.css";
@@ -35,7 +36,7 @@ const Admin = () => {
         <div className="admin-container">
             <div className="admin-welcome">
                 <h1>🛡️ Panel de Administración</h1>
-                <h2>¡Bienvenido, {user?.nombreCompleto}!</h2>
+                <h2>¡Bienvenido, {getNombreCompleto(user)}!</h2>
                 <p>Tienes acceso completo como administrador del sistema.</p>
             </div>
 

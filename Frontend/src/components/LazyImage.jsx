@@ -47,7 +47,8 @@ const LazyImage = memo(({ src, alt, className = '', placeholder = null, onLoad =
             return src;
         }
         
-        return `http://localhost:3000/api/productos/imagen/${src}`;
+        const baseUrl = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
+        return `${baseUrl}/api/productos/imagen/${src}`;
     };
 
     if (!src && !placeholder) {

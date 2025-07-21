@@ -2,9 +2,12 @@
 import Joi from "joi";
 
 const domainEmailValidator = (value, helper) => {
-    if (!value.endsWith("@gmail.cl")) {
+    const validDomains = [".cl", ".com"];
+    const hasValidDomain = validDomains.some(domain => value.endsWith(domain));
+    
+    if (!hasValidDomain) {
         return helper.message(
-            "El correo electrónico debe finalizar en @gmail.cl."
+            "El correo electrónico debe ser de dominio .cl o .com"
         );
     }
     return value;
@@ -12,17 +15,17 @@ const domainEmailValidator = (value, helper) => {
 
 export const authValidation = Joi.object({
     email: Joi.string()
-        .min(15)
-        .max(35)
+        .min(8)
+        .max(50)
         .email()
         .required()
         .messages({
             "string.empty": "El correo electrónico no puede estar vacío.",
             "any.required": "El correo electrónico es obligatorio.",
             "string.base": "El correo electrónico debe ser de tipo texto.",
-            "string.email": "El correo electrónico debe finalizar en @gmail.cl.",
-            "string.min": "El correo electrónico debe tener al menos 15 caracteres.",
-            "string.max": "El correo electrónico debe tener como máximo 35 caracteres.",
+            "string.email": "El correo electrónico debe ser de dominio .cl o .com",
+            "string.min": "El correo electrónico debe tener al menos 8 caracteres.",
+            "string.max": "El correo electrónico debe tener como máximo 50 caracteres.",
         })
         .custom(domainEmailValidator, "Validación dominio email"),
     password: Joi.string()
@@ -43,18 +46,53 @@ export const authValidation = Joi.object({
 });
 
 export const registerValidation = Joi.object({
-    nombreCompleto: Joi.string()
-        .min(15)
-        .max(50)
+    primerNombre: Joi.string()
+        .min(2)
+        .max(30)
         .pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
         .required()
         .messages({
-            "string.empty": "El nombre completo no puede estar vacío.",
-            "any.required": "El nombre completo es obligatorio.",
-            "string.base": "El nombre completo debe ser de tipo texto.",
-            "string.min": "El nombre completo debe tener al menos 15 caracteres.",
-            "string.max": "El nombre completo debe tener como máximo 50 caracteres.",
-            "string.pattern.base": "El nombre completo solo puede contener letras y espacios.",
+            "string.empty": "El primer nombre no puede estar vacío.",
+            "any.required": "El primer nombre es obligatorio.",
+            "string.base": "El primer nombre debe ser de tipo texto.",
+            "string.min": "El primer nombre debe tener al menos 2 caracteres.",
+            "string.max": "El primer nombre debe tener como máximo 30 caracteres.",
+            "string.pattern.base": "El primer nombre solo puede contener letras y espacios.",
+        }),
+    segundoNombre: Joi.string()
+        .min(2)
+        .max(30)
+        .pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+        .allow(null, "")
+        .messages({
+            "string.base": "El segundo nombre debe ser de tipo texto.",
+            "string.min": "El segundo nombre debe tener al menos 2 caracteres.",
+            "string.max": "El segundo nombre debe tener como máximo 30 caracteres.",
+            "string.pattern.base": "El segundo nombre solo puede contener letras y espacios.",
+        }),
+    apellidoPaterno: Joi.string()
+        .min(2)
+        .max(30)
+        .pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+        .required()
+        .messages({
+            "string.empty": "El apellido paterno no puede estar vacío.",
+            "any.required": "El apellido paterno es obligatorio.",
+            "string.base": "El apellido paterno debe ser de tipo texto.",
+            "string.min": "El apellido paterno debe tener al menos 2 caracteres.",
+            "string.max": "El apellido paterno debe tener como máximo 30 caracteres.",
+            "string.pattern.base": "El apellido paterno solo puede contener letras y espacios.",
+        }),
+    apellidoMaterno: Joi.string()
+        .min(2)
+        .max(30)
+        .pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+        .allow(null, "")
+        .messages({
+            "string.base": "El apellido materno debe ser de tipo texto.",
+            "string.min": "El apellido materno debe tener al menos 2 caracteres.",
+            "string.max": "El apellido materno debe tener como máximo 30 caracteres.",
+            "string.pattern.base": "El apellido materno solo puede contener letras y espacios.",
         }),
     rut: Joi.string()
         .min(9)

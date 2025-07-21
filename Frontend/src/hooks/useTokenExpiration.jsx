@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@hooks/useAuth';
-import { showErrorAlert } from '@helpers/sweetAlert';
+// import { showErrorAlert } from '@helpers/sweetAlert'; // No necesario - sesión indefinida
 import { decodeToken, clearTokenCache } from '@helpers/jwt.helper';
 
 export const useTokenExpiration = () => {
@@ -15,10 +15,7 @@ export const useTokenExpiration = () => {
         
         setUser(null);
         
-        showErrorAlert(
-            "Sesión expirada", 
-            "Tu sesión ha expirado por inactividad. Por favor, inicia sesión nuevamente."
-        );
+        // Sesión indefinida - no mostrar alertas molestas
         
         navigate('/auth');
     }, [navigate, setUser]);
@@ -47,31 +44,23 @@ export const useTokenExpiration = () => {
                 return;
             }
 
-            const timeUntilExpiration = tokenExpiration - currentTime;
-            const fiveMinutes = 5 * 60;
-
-            if (timeUntilExpiration <= fiveMinutes && timeUntilExpiration > 0) {
-                const minutesLeft = Math.ceil(timeUntilExpiration / 60);
-                showErrorAlert(
-                    "Sesión por expirar", 
-                    `Tu sesión expirará en ${minutesLeft} minuto(s). Guarda tu trabajo.`
-                );
-            }
+            // Sesión indefinida - no mostrar avisos de expiración
         } catch (error) {
             console.error('Error verificando expiración del token:', error);
-            handleLogout();
+            // handleLogout(); // No auto-logout en sesión indefinida
         }
     }, [isAuthenticated, handleLogout]);
 
     useEffect(() => {
+        // Sesión indefinida - no verificar expiración automáticamente
+        // Solo verificar si hay token válido una vez al cargar
         if (!isAuthenticated) return;
 
-        checkTokenExpiration();
-
-        const interval = setInterval(checkTokenExpiration, 60000);
-
-        return () => clearInterval(interval);
-    }, [isAuthenticated, checkTokenExpiration]);
+        const token = localStorage.getItem('token');
+        if (!token) {
+            handleLogout();
+        }
+    }, [isAuthenticated, handleLogout]);
 
     return { handleLogout, checkTokenExpiration };
 };

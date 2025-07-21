@@ -1,16 +1,48 @@
 import { FaTimes, FaTrash, FaSpinner } from 'react-icons/fa';
+import { useEffect } from 'react';
 import useDeleteProducto from '@hooks/productos/useDeleteProducto';
 import '@styles/crearProducto.css';
 
-const ConfirmarEliminarPopup = ({ show, setShow, producto, onProductoDeleted }) => {
+const ConfirmarEliminarPopup = ({ show, setShow, producto, onConfirm, onProductoDeleted }) => {
     const { handleDelete, loading } = useDeleteProducto((productoId) => {
         setShow(false);
         if (onProductoDeleted) onProductoDeleted(productoId);
     });
 
-    const handleConfirm = () => {
+    useEffect(() => {
+        if (show) {
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.width = '100%';
+            document.body.style.overflow = 'hidden';
+        } else {
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.body.style.overflow = '';
+            if (scrollY) {
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            }
+        }
+
+        return () => {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.body.style.overflow = '';
+        };
+    }, [show]);
+
+    const handleConfirm = async () => {
         if (producto) {
-            handleDelete(producto.id, producto.nombre);
+            try {
+                await handleDelete(producto.id, producto.nombre);
+                if (onConfirm) await onConfirm();
+            } catch (error) {
+                console.error('Error en confirmación:', error);
+            }
         }
     };
 
@@ -21,8 +53,30 @@ const ConfirmarEliminarPopup = ({ show, setShow, producto, onProductoDeleted }) 
     if (!show || !producto) return null;
 
     return (
-        <div className="crear-producto-overlay">
-            <div className="crear-producto-modal" style={{ maxWidth: '500px' }}>
+        <div className="crear-producto-overlay" style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10000,
+            padding: '20px'
+        }} onClick={handleClose}>
+            <div className="crear-producto-modal" style={{ 
+                position: 'relative',
+                maxWidth: '500px',
+                width: '100%',
+                height: 'auto',
+                maxHeight: '90vh',
+                borderRadius: '16px',
+                boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+                overflow: 'hidden',
+                background: 'white'
+            }} onClick={(e) => e.stopPropagation()}>
                 <div className="crear-producto-header" style={{ background: 'linear-gradient(135deg, var(--error-color) 0%, #d32f2f 100%)' }}>
                     <h2>🗑️ Eliminar Producto</h2>
                     <button 
@@ -35,7 +89,12 @@ const ConfirmarEliminarPopup = ({ show, setShow, producto, onProductoDeleted }) 
                     </button>
                 </div>
 
-                <div className="crear-producto-form" style={{ padding: '30px', textAlign: 'center' }}>
+                <div className="crear-producto-form" style={{ 
+                    padding: '30px', 
+                    textAlign: 'center',
+                    overflowY: 'auto',
+                    maxHeight: 'calc(90vh - 80px)'
+                }}>
                     <div style={{ marginBottom: '20px' }}>
                         {producto.imagen_url && (
                             <img 
@@ -78,7 +137,13 @@ const ConfirmarEliminarPopup = ({ show, setShow, producto, onProductoDeleted }) 
                         </p>
                     </div>
 
-                    <div className="form-actions" style={{ marginTop: '25px', borderTop: 'none' }}>
+                    <div className="form-actions" style={{ 
+                        marginTop: '25px', 
+                        borderTop: 'none', 
+                        justifyContent: 'center !important',
+                        display: 'flex',
+                        gap: '16px'
+                    }}>
                         <button
                             type="button"
                             onClick={handleClose}

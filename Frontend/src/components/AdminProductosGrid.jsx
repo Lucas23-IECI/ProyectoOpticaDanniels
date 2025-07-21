@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { getProductos, deleteProducto } from '@services/producto.service';
+import { getProductos } from '@services/producto.service';
 import CrearProductoPopup from '@components/CrearProductoPopup';
 import EditarProductoPopup from '@components/EditarProductoPopup';
 import ConfirmarEliminarPopup from '@components/ConfirmarEliminarPopup';
@@ -211,8 +211,25 @@ const AdminProductosGrid = () => {
 
     const handleProductoEliminado = async () => {
         try {
-            await deleteProducto(productoSeleccionado.id);
-            cargarProductos(false);
+            const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+            
+            setProductos(prevProductos => 
+                prevProductos.filter(producto => producto.id !== productoSeleccionado.id)
+            );
+            setTotalProductos(prev => prev - 1);
+            
+            window.dispatchEvent(new CustomEvent('productoEliminado', { 
+                detail: { productoId: productoSeleccionado.id } 
+            }));
+            
+            setShowEliminarModal(false);
+            setProductoSeleccionado(null);
+            
+            await cargarProductos(false);
+            
+            setTimeout(() => {
+                window.scrollTo(0, scrollPosition);
+            }, 100);
         } catch (error) {
             console.error('Error al eliminar producto:', error);
         }

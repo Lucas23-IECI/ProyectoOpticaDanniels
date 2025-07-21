@@ -71,7 +71,10 @@ export async function updateUserService(query, body) {
         }
 
         const dataUserUpdate = {
-            nombreCompleto: body.nombreCompleto,
+            primerNombre: body.primerNombre,
+            segundoNombre: body.segundoNombre || null,
+            apellidoPaterno: body.apellidoPaterno,
+            apellidoMaterno: body.apellidoMaterno || null,
             rut: body.rut,
             email: body.email,
             rol: body.rol,

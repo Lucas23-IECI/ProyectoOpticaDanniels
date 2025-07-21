@@ -5,6 +5,7 @@ import '@styles/barraBusqueda.css';
 
 const BarraBusqueda = () => {
     const [busqueda, setBusqueda] = useState('');
+    const [expandida, setExpandida] = useState(false);
     const { resultados, cargando, buscar } = useBuscarProductosRapido();
     const [mostrarResultados, setMostrarResultados] = useState(false);
     const navegar = useNavigate();
@@ -26,6 +27,19 @@ const BarraBusqueda = () => {
         return () => clearTimeout(delay);
     }, [busqueda, buscarAutocomplete]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (expandida && !event.target.closest('.barra-busqueda')) {
+                setExpandida(false);
+                setBusqueda('');
+                setMostrarResultados(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [expandida]);
+
     const manejarBuscar = () => {
         if (busqueda.trim() !== '') {
             navegar(`/buscar?query=${encodeURIComponent(busqueda.trim())}`);
@@ -38,9 +52,31 @@ const BarraBusqueda = () => {
         manejarBuscar();
     };
 
+    const toggleBusqueda = () => {
+        setExpandida(!expandida);
+        if (!expandida) {
+            setTimeout(() => {
+                const input = document.querySelector('.navbar .barra-busqueda input');
+                if (input) input.focus();
+            }, 100);
+        } else {
+            setBusqueda('');
+            setMostrarResultados(false);
+        }
+    };
+
     return (
-        <div className="barra-busqueda">
-            <form onSubmit={manejarSubmit}>
+        <div className={`barra-busqueda ${expandida ? 'expandida' : 'colapsada'}`}>
+            <button 
+                type="button" 
+                className="icono-busqueda"
+                onClick={toggleBusqueda}
+                style={{ display: expandida ? 'none' : 'flex' }}
+            >
+                <i className="fas fa-search"></i>
+            </button>
+            
+            <form onSubmit={manejarSubmit} style={{ width: '100%' }}>
                 <input
                     type="text"
                     placeholder="Buscar productos..."
@@ -50,7 +86,12 @@ const BarraBusqueda = () => {
                         if (busqueda.trim()) setMostrarResultados(true);
                     }}
                     onBlur={() => {
-                        setTimeout(() => setMostrarResultados(false), 300);
+                        setTimeout(() => {
+                            setMostrarResultados(false);
+                            if (!busqueda.trim()) {
+                                setExpandida(false);
+                            }
+                        }, 300);
                     }}
                 />
             </form>

@@ -378,44 +378,44 @@
     .detalle-container {
         padding: 16px;
     }
-    
+
     .detalle-header {
         flex-direction: column;
         gap: 16px;
         text-align: center;
     }
-    
+
     .detalle-content {
         grid-template-columns: 1fr;
         gap: 20px;
         padding: 20px;
     }
-    
+
     .imagen-container {
         height: 300px;
     }
-    
+
     .producto-titulo {
         font-size: 24px;
     }
-    
+
     .precio-principal {
         font-size: 20px;
     }
-    
+
     .precio-descuento {
         font-size: 24px;
     }
-    
+
     .info-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .detalle-actions {
         flex-direction: column;
         width: 100%;
     }
-    
+
     .btn {
         width: 100%;
     }
@@ -425,19 +425,19 @@
     .producto-titulo {
         font-size: 20px;
     }
-    
+
     .precio-principal {
         font-size: 18px;
     }
-    
+
     .precio-descuento {
         font-size: 20px;
     }
-    
+
     .info-card {
         padding: 16px;
     }
-    
+
     .descripcion-section {
         padding: 16px;
     }

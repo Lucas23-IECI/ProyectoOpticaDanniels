@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useWishlistContext } from '../context/WishlistContext';
 import ProductCard from '../components/ProductCard';
 import '../styles/wishlist.css';
 
 const Wishlist = () => {
-    const { wishlist, clearWishlist, wishlistCount } = useWishlistContext();
+    const { wishlist, clearWishlist, wishlistCount, validateWishlistProducts } = useWishlistContext();
+
+    useEffect(() => {
+        if (wishlistCount > 0) {
+            validateWishlistProducts();
+        }
+    }, [wishlistCount, validateWishlistProducts]);
 
     if (wishlistCount === 0) {
         return (
@@ -32,8 +38,10 @@ const Wishlist = () => {
         <div className="wishlist-page">
             <div className="container">
                 <div className="wishlist-header">
-                    <h1>Mis Favoritos</h1>
-                    <p>{wishlistCount} {wishlistCount === 1 ? 'producto' : 'productos'} en tu lista</p>
+                    <div className="wishlist-title-section">
+                        <h1>Mis Favoritos</h1>
+                        <p>{wishlistCount} {wishlistCount === 1 ? 'producto' : 'productos'} en tu lista</p>
+                    </div>
                     <button 
                         className="btn btn-secondary"
                         onClick={clearWishlist}
