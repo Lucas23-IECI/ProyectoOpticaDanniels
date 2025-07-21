@@ -683,45 +683,45 @@
     .admin-productos-container {
         padding: 10px;
     }
-    
+
     .admin-header {
         flex-direction: column;
         gap: 20px;
         text-align: center;
     }
-    
+
     .header-actions {
         flex-wrap: wrap;
         justify-content: center;
     }
-    
+
     .productos-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .producto-list-item {
         flex-direction: column;
         text-align: center;
     }
-    
+
     .producto-list-info {
         flex-direction: column;
         gap: 15px;
     }
-    
+
     .productos-table-container {
         overflow-x: auto;
     }
-    
+
     .productos-table {
         min-width: 800px;
     }
-    
+
     .pagination-container {
         flex-direction: column;
         gap: 20px;
     }
-    
+
     .filtros-grid {
         grid-template-columns: 1fr;
     }
@@ -731,15 +731,15 @@
     .header-title h1 {
         font-size: 20px;
     }
-    
+
     .header-icon {
         font-size: 24px;
     }
-    
+
     .pagination-numbers {
         flex-wrap: wrap;
     }
-    
+
     .pagination-numbers .btn {
         width: 35px;
         height: 35px;

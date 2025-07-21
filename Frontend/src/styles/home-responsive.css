@@ -1,0 +1,305 @@
+
+@media (max-width: 1024px) {
+    .historia-intro {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .timeline-container::before {
+        left: 30px;
+    }
+
+    .timeline-item {
+        width: 100%;
+        padding-left: 70px;
+        left: 0 !important;
+    }
+
+    .timeline-item::before {
+        left: 20px !important;
+    }
+
+    .timeline-content::before {
+        left: -30px !important;
+        border-right-color: white !important;
+        border-left-color: transparent !important;
+    }
+
+    .sucursales-mision {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .ubicacion-content {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+
+    .ubicacion-visual {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .cta-main {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+
+    .contacto-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    .contacto-card {
+        padding: 20px 15px;
+        min-height: 140px;
+    }
+
+    .contacto-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+
+    .contacto-content h4 {
+        font-size: 1rem;
+    }
+
+    .contacto-valor {
+        font-size: 0.9rem;
+    }
+
+    .contacto-descripcion {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .testimonios-mini-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .testimonio-card {
+        padding: 30px;
+    }
+
+    .testimonio-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .cliente-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .contacto-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        max-width: 400px;
+        margin: 0 auto 40px;
+    }
+
+    .contacto-card {
+        flex-direction: row;
+        text-align: left;
+        gap: 15px;
+        padding: 20px;
+        min-height: auto;
+    }
+
+    .contacto-content {
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .contacto-icon {
+        margin-bottom: 0;
+    }
+
+    .redes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .imagenes-local {
+        grid-template-columns: 1fr;
+        grid-template-rows: 200px 150px 150px;
+    }
+
+    .imagen-local.principal {
+        grid-column: 1;
+    }
+
+    .cta-final-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cta-final-buttons .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+
+    .ubicacion-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+
+    .mapa-section-full {
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+
+    .mapa-section-full .mapa-frame {
+        height: 300px;
+    }
+
+    .direccion-pin {
+        max-width: 250px;
+        padding: 15px;
+    }
+
+    .mapa-controles {
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px;
+    }
+
+    .mapa-controles .btn {
+        width: 100%;
+        justify-content: center;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .formulario-contacto,
+    .contacto-directo {
+        padding: 30px;
+    }
+
+    .cta-final {
+        padding: 40px 30px;
+    }
+
+    .contacto-opciones {
+        gap: 15px;
+    }
+
+    .contacto-btn {
+        padding: 15px;
+    }
+}
+
+.mapa-section-full {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+.mapa-section-full .mapa-container {
+    padding: 0 20px;
+    margin-bottom: 30px;
+}
+
+.mapa-section-full .mapa-container h3 {
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.mapa-section-full .mapa-estatico {
+    background: white;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+
+}
+
+.mapa-section-full .mapa-frame {
+    height: 500px;
+    width: 100%;
+}
+
+#servicios,
+#productos,
+#contacto,
+#como-llegar {
+    scroll-margin-top: 80px;
+}
+
+.contacto-card[href*="whatsapp"] {
+    border: 2px solid #25d366;
+    background: linear-gradient(135deg, #f0fff4 0%, #e6ffe6 100%);
+    transform: scale(1.02);
+}
+
+.contacto-card[href*="whatsapp"] .contacto-icon {
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+
+.contacto-card[href*="whatsapp"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(37, 211, 102, 0.2);
+}
+
+.contacto-card[href*="whatsapp"] .contacto-valor {
+    color: #25d366;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.contacto-card[href*="tel:"] {
+    border: 2px solid #007bff;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+    transform: scale(1.02);
+}
+
+.contacto-card[href*="tel:"] .contacto-icon {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+}
+
+.contacto-card[href*="tel:"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(0, 123, 255, 0.2);
+}
+
+.contacto-card[href*="tel:"] .contacto-valor {
+    color: #007bff;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.contacto-card[href*="mailto:"] {
+    border: 2px solid #dc3545;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffe6e6 100%);
+    transform: scale(1.02);
+}
+
+.contacto-card[href*="mailto:"] .contacto-icon {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.contacto-card[href*="mailto:"]:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(220, 53, 69, 0.2);
+}
+
+.contacto-card[href*="mailto:"] .contacto-valor {
+    color: #dc3545;
+    font-weight: 700;
+    font-size: 1.1rem;
+}

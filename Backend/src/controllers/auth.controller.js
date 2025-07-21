@@ -12,8 +12,24 @@ import {
 
 export async function profile(req, res) {
     try {
-        const user = req.user;
-        handleSuccess(res, 200, "Perfil obtenido correctamente", user);
+        const userId = req.user.id;
+        const { AppDataSource } = await import("../config/configDb.js");
+        const User = (await import("../entity/user.entity.js")).default;
+        
+        const userRepository = AppDataSource.getRepository(User);
+        const user = await userRepository.findOne({
+            where: { id: userId },
+            relations: ["direcciones"]
+        });
+
+        if (!user) {
+            return handleErrorClient(res, 404, "Usuario no encontrado");
+        }
+
+        // Remover password del resultado
+        const { password, ...userData } = user;
+
+        handleSuccess(res, 200, "Perfil obtenido correctamente", userData);
     } catch (error) {
         handleErrorServer(res, 500, error.message);
     }
@@ -58,6 +74,37 @@ export async function register(req, res) {
 
         handleSuccess(res, 201, "Usuario registrado con éxito", newUser);
     } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+}
+
+export async function updateProfile(req, res) {
+    try {
+        const userId = req.user.id;
+        const updateData = req.body;
+
+        // Validar que el usuario existe
+        if (!userId) {
+            return handleErrorClient(res, 401, "Usuario no autenticado");
+        }
+
+        // Usar el servicio para actualizar el usuario
+        const { updateUserService } = await import("../services/auth.service.js");
+        const [updatedUser, error] = await updateUserService(userId, updateData);
+
+        if (error) {
+            if (error.dataInfo === "password") {
+                return handleErrorClient(res, 401, error.message);
+            }
+            if (error.dataInfo === "email") {
+                return handleErrorClient(res, 409, error.message);
+            }
+            return handleErrorClient(res, 400, error.message);
+        }
+
+        handleSuccess(res, 200, "Perfil actualizado correctamente", updatedUser);
+    } catch (error) {
+        console.error("Error en updateProfile:", error);
         handleErrorServer(res, 500, error.message);
     }
 }

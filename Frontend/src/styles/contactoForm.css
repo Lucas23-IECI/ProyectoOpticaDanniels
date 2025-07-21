@@ -1,0 +1,45 @@
+.contacto-form-group {
+    margin-bottom: 20px;
+}
+
+.contacto-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 14px;
+}
+
+.contacto-form-group input,
+.contacto-form-group select,
+.contacto-form-group textarea {
+    padding: 12px 16px;
+    border: 2px solid #e5e9f5;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #e6f3ff;
+    color: #2d3748;
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+}
+
+.contacto-form-group input:focus,
+.contacto-form-group select:focus,
+.contacto-form-group textarea:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    background: #e6f3ff;
+}
+
+.contacto-form-group input::placeholder,
+.contacto-form-group textarea::placeholder {
+    color: #718096;
+}
+
+.contacto-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+} 

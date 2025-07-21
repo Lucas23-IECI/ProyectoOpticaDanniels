@@ -4,7 +4,7 @@ import {
     FaArrowLeft, FaArrowRight, FaSort, FaSortUp, FaSortDown, FaSpinner,
     FaBox, FaDollarSign, FaPercent, FaEyeSlash, FaImage, FaTimes, FaSync
 } from 'react-icons/fa';
-import { getAllProductos, deleteProducto } from '@services/producto.service';
+import { getAllProductos } from '@services/producto.service';
 import CrearProductoPopup from './CrearProductoPopup';
 import EditarProductoPopup from './EditarProductoPopup';
 import ProductoDetalle from './ProductoDetalle';
@@ -70,6 +70,32 @@ const AdminProductos = () => {
     const [modoEdicion, setModoEdicion] = useState(false);
     
     const [marcas, setMarcas] = useState([]);
+
+    useEffect(() => {
+        if (showDetalleModal) {
+            const scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.width = '100%';
+            document.body.style.overflow = 'hidden';
+        } else {
+            const scrollY = document.body.style.top;
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.body.style.overflow = '';
+            if (scrollY) {
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            }
+        }
+
+        return () => {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.body.style.overflow = '';
+        };
+    }, [showDetalleModal]);
 
     const cargarProductos = useCallback(async () => {
         try {
@@ -221,15 +247,23 @@ const AdminProductos = () => {
 
     const handleConfirmarEliminar = async () => {
         try {
-            await deleteProducto(productoSeleccionado.id);
+            const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
             
             setProductos(prevProductos => 
                 prevProductos.filter(producto => producto.id !== productoSeleccionado.id)
             );
             setTotalItems(prev => prev - 1);
             
+            window.dispatchEvent(new CustomEvent('productoEliminado', { 
+                detail: { productoId: productoSeleccionado.id } 
+            }));
+            
             setShowEliminarModal(false);
             setProductoSeleccionado(null);
+            
+            setTimeout(() => {
+                window.scrollTo(0, scrollPosition);
+            }, 100);
         } catch (error) {
             console.error('Error al eliminar producto:', error);
         }
@@ -358,7 +392,7 @@ const AdminProductos = () => {
                         <FaSearch className="search-icon" />
                         <input
                             type="text"
-                            placeholder="Buscar productos por nombre, marca, categoría o SKU..."
+                            placeholder="Buscar productos..."
                             value={searchTerm}
                             onChange={handleSearchChange}
                             className="search-input"
@@ -637,8 +671,34 @@ const AdminProductos = () => {
                     )}
                     
                     {showDetalleModal && (
-                        <div className="modal-overlay" onClick={() => setShowDetalleModal(false)}>
-                            <div className="modal-content detalle-modal" onClick={e => e.stopPropagation()}>
+                        <div className="modal-overlay" 
+                            style={{
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                background: 'rgba(0, 0, 0, 0.7)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                zIndex: 10000,
+                                padding: '20px'
+                            }}
+                            onClick={() => setShowDetalleModal(false)}>
+                            <div className="modal-content detalle-modal" 
+                                style={{
+                                    position: 'relative',
+                                    maxWidth: '1200px',
+                                    width: '100%',
+                                    height: 'auto',
+                                    maxHeight: '90vh',
+                                    borderRadius: '16px',
+                                    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+                                    overflow: 'hidden',
+                                    background: 'white'
+                                }}
+                                onClick={e => e.stopPropagation()}>
                                 <button 
                                     className="modal-close"
                                     onClick={() => setShowDetalleModal(false)}

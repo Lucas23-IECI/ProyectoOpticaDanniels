@@ -7,21 +7,13 @@ const CategoriasNav = ({
     subcategoria, 
     onCategoriaClick, 
     onSubcategoriaClick,
-    onHomeClick,
     showProductCount = false,
     productCount = 0
 }) => {
     const categoriaInfo = categoria ? getCategoriaInfo(categoria) : null;
     const subcategoriaInfo = categoria && subcategoria ? getSubcategoriaInfo(categoria, subcategoria) : null;
 
-    const breadcrumbs = [
-        {
-            label: 'Inicio',
-            icon: <FaHome />,
-            onClick: onHomeClick,
-            active: !categoria
-        }
-    ];
+    const breadcrumbs = [];
 
     if (categoriaInfo) {
         breadcrumbs.push({

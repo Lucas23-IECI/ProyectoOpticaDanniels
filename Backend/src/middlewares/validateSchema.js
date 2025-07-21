@@ -11,4 +11,18 @@ export const validateSchema = (schema) => {
         next();
     };
 };
+
+export const validateParams = (schema) => {
+    return (req, res, next) => {
+        const { error } = schema.validate(req.params, { abortEarly: false });
+        if (error) {
+            return res.status(400).json({
+                status: "error",
+                message: "Parámetros inválidos",
+                errors: error.details.map((e) => e.message),
+            });
+        }
+        next();
+    };
+};
   

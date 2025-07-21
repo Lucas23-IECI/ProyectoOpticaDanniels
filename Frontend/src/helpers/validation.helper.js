@@ -72,6 +72,122 @@ export const validationRules = {
         return null;
     },
 
+    // Validaciones específicas para nombres
+    nombre: (value, fieldName = 'Nombre') => {
+        if (!value) return null;
+        
+        if (value.length < 2) {
+            return `${fieldName} debe tener al menos 2 caracteres`;
+        }
+        
+        if (value.length > 30) {
+            return `${fieldName} no puede exceder 30 caracteres`;
+        }
+        
+        // Solo letras, sin espacios
+        const nombrePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$/;
+        if (!nombrePattern.test(value)) {
+            return `${fieldName} solo puede contener letras (sin espacios)`;
+        }
+        
+        return null;
+    },
+
+    // Validación de teléfono chileno (WhatsApp)
+    telefonoChileno: (value) => {
+        if (!value) return null;
+        
+        // Limpiar espacios extra y normalizar
+        let cleanValue = value.trim();
+        
+        // Remover +56 si está presente
+        cleanValue = cleanValue.replace(/^\+56\s*/, '');
+        
+        // Patrón para teléfonos chilenos (WhatsApp): 9 XXXX XXXX o 2 XXXX XXXX
+        // Acepta tanto 8 como 9 dígitos
+        const telefonoPattern = /^[29]\s*\d{3,4}\s*\d{4}$/;
+        
+        if (!telefonoPattern.test(cleanValue)) {
+            return 'Formato inválido. Use: 9 XXXX XXXX (móvil) o 2 XXXX XXXX (fijo)';
+        }
+        
+        return null;
+    },
+
+    // Validación de fecha de nacimiento
+    fechaNacimiento: (value) => {
+        if (!value) return null;
+        
+        let fecha;
+        
+        // Si es un input type="date", viene en formato YYYY-MM-DD
+        if (value.includes('-')) {
+            fecha = new Date(value);
+        } else if (value.includes('/')) {
+            // Si viene en formato DD/MM/YYYY, convertirlo
+            const [day, month, year] = value.split('/');
+            // Validar que los números sean válidos
+            const dayNum = parseInt(day);
+            const monthNum = parseInt(month);
+            const yearNum = parseInt(year);
+            
+            if (isNaN(dayNum) || isNaN(monthNum) || isNaN(yearNum)) {
+                return 'Fecha de nacimiento inválida';
+            }
+            
+            if (monthNum < 1 || monthNum > 12) {
+                return 'Mes inválido';
+            }
+            
+            if (dayNum < 1 || dayNum > 31) {
+                return 'Día inválido';
+            }
+            
+            fecha = new Date(yearNum, monthNum - 1, dayNum);
+        } else {
+            fecha = new Date(value);
+        }
+        
+        const hoy = new Date();
+        
+        if (isNaN(fecha.getTime())) {
+            return 'Fecha de nacimiento inválida';
+        }
+        
+        if (fecha > hoy) {
+            return 'La fecha de nacimiento no puede ser futura';
+        }
+        
+        const edadMinima = new Date();
+        edadMinima.setFullYear(hoy.getFullYear() - 120); // Máximo 120 años
+        
+        if (fecha < edadMinima) {
+            return 'La fecha de nacimiento no puede ser anterior a 1904';
+        }
+        
+        const edadMaxima = new Date();
+        edadMaxima.setFullYear(hoy.getFullYear() - 13); // Mínimo 13 años
+        
+        if (fecha > edadMaxima) {
+            return 'Debes tener al menos 13 años';
+        }
+        
+        return null;
+    },
+
+    // Validación de género
+    genero: (value) => {
+        if (!value) return null;
+        
+        const generosValidos = ['Masculino', 'Femenino', 'No binario', 'Prefiero no decir'];
+        
+        if (!generosValidos.includes(value)) {
+            return 'Selecciona un género válido';
+        }
+        
+        return null;
+    },
+
     precio: (value) => {
         if (!value || value.toString().trim() === '') {
             return 'El precio es requerido';
@@ -316,11 +432,30 @@ export const validateDescription = (value) => {
 };
 
 export const validateProductName = (value) => {
-    return validationRules.required(value?.trim(), 'El nombre del producto') ||
-           validationRules.minLength(value?.trim(), 3, 'El nombre del producto') ||
-           validationRules.maxLength(value?.trim(), 100, 'El nombre del producto');
+    if (!value || value.toString().trim() === '') {
+        return 'El nombre del producto es requerido';
+    }
+    
+    if (value.length < 3) {
+        return 'El nombre debe tener al menos 3 caracteres';
+    }
+    
+    if (value.length > 255) {
+        return 'El nombre no puede exceder 255 caracteres';
+    }
+    
+    return null;
 };
 
 export const validateImage = (file) => {
     return validationRules.imagen(file);
 };
+
+// Funciones específicas para validación de perfil
+export const validatePrimerNombre = (value) => validationRules.nombre(value, 'Primer nombre');
+export const validateSegundoNombre = (value) => validationRules.nombre(value, 'Segundo nombre');
+export const validateApellidoPaterno = (value) => validationRules.nombre(value, 'Apellido paterno');
+export const validateApellidoMaterno = (value) => validationRules.nombre(value, 'Apellido materno');
+export const validateTelefono = (value) => validationRules.telefonoChileno(value);
+export const validateFechaNacimiento = (value) => validationRules.fechaNacimiento(value);
+export const validateGenero = (value) => validationRules.genero(value);

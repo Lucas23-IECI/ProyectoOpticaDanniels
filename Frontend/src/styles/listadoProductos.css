@@ -791,45 +791,45 @@
     .listado-productos {
         padding: 10px;
     }
-    
+
     .listado-header {
         flex-direction: column;
         gap: 20px;
         align-items: stretch;
     }
-    
+
     .header-acciones {
         justify-content: space-between;
     }
-    
+
     .filtros-principales {
         flex-direction: column;
         gap: 16px;
     }
-    
+
     .filtros-avanzados {
         grid-template-columns: 1fr;
     }
-    
+
     .productos-grid.cuadricula {
         grid-template-columns: 1fr;
     }
-    
+
     .producto-datos {
         grid-template-columns: 1fr;
         gap: 12px;
     }
-    
+
     .producto-compacto {
         grid-template-columns: 1fr;
         gap: 8px;
     }
-    
+
     .listado-paginacion {
         flex-direction: column;
         gap: 16px;
     }
-    
+
     .paginacion-controles {
         flex-wrap: wrap;
         justify-content: center;
@@ -840,22 +840,22 @@
     .producto-card {
         padding: 16px;
     }
-    
+
     .producto-imagen {
         height: 160px;
     }
-    
+
     .producto-fila {
         flex-direction: column;
         align-items: stretch;
         gap: 16px;
     }
-    
+
     .producto-imagen-pequeña {
         width: 100%;
         height: 120px;
     }
-    
+
     .producto-acciones,
     .producto-acciones-lista {
         flex-direction: column;

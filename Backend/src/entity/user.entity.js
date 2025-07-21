@@ -10,10 +10,25 @@ const UserSchema = new EntitySchema({
             primary: true,
             generated: true,
         },
-        nombreCompleto: {
+        primerNombre: {
             type: "varchar",
-            length: 255,
+            length: 100,
             nullable: false,
+        },
+        segundoNombre: {
+            type: "varchar",
+            length: 100,
+            nullable: true,
+        },
+        apellidoPaterno: {
+            type: "varchar",
+            length: 100,
+            nullable: false,
+        },
+        apellidoMaterno: {
+            type: "varchar",
+            length: 100,
+            nullable: true,
         },
         rut: {
             type: "varchar",
@@ -35,6 +50,20 @@ const UserSchema = new EntitySchema({
         password: {
             type: "varchar",
             nullable: false,
+        },
+        telefono: {
+            type: "varchar",
+            length: 20,
+            nullable: true,
+        },
+        fechaNacimiento: {
+            type: "date",
+            nullable: true,
+        },
+        genero: {
+            type: "varchar",
+            length: 50,
+            nullable: true,
         },
         createdAt: {
             type: "timestamp with time zone",
@@ -65,6 +94,13 @@ const UserSchema = new EntitySchema({
             unique: true,
         },
     ],
+    relations: {
+        direcciones: {
+            target: "Direccion",
+            type: "one-to-many",
+            inverseSide: "user",
+        },
+    },
 });
 
 export default UserSchema;

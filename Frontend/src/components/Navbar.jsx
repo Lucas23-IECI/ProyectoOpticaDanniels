@@ -1,6 +1,7 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@hooks/useAuth';
+import { getNombreCorto } from '@helpers/nameHelpers';
 import BarraBusqueda from '@components/BarraBusqueda';
 import AuthPopup from '@components/AuthPopup';
 import DropdownUsuario from '@components/DropdownUsuario';
@@ -12,6 +13,7 @@ function Navbar() {
     const { user, isAuthenticated } = useAuth();
     const [mostrarPopup, setMostrarPopup] = useState(false);
     const dropdownRef = useRef(null);
+    const location = useLocation();
 
     const togglePopup = () => setMostrarPopup((v) => !v);
 
@@ -25,41 +27,48 @@ function Navbar() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [mostrarPopup]);
 
-    const primerNombre = user?.nombreCompleto?.split(' ')[0] || '';
+    const primerNombre = getNombreCorto(user);
+
+    const isHomePage = location.pathname === '/';
 
     return (
-        <nav>
-            <div className="logo">
-                <NavLink to="/">
-                    <img src={LogoOficial} alt="Óptica Danniels" />
-                </NavLink>
+        <header className={`navbar-container ${isHomePage ? 'navbar-fixed' : ''}`}>
+            <div className="navbar-info">
+                <p>Av. Manuel Rodriguez 426 - Chiguayante - Bio-Bio | Lunes a Viernes 10:30 a 12:30 horas - 15:30 a 17:00 horas</p>
             </div>
-
-            <div className="nav-derecha">
-                <ul>
-                    <li><NavLink to="/quienes-somos">Quienes Somos</NavLink></li>
-                    <li><NavLink to="/productos">Productos</NavLink></li>
-                    <li><NavLink to="/favoritos">Favoritos</NavLink></li>
-                    <li><NavLink to="/contacto">Contacto</NavLink></li>
-                </ul>
-
-                <BarraBusqueda />
-
-                <div className="navbar-icons" ref={dropdownRef}>
-                    <button className="icono-usuario" onClick={togglePopup}>
-                        <span className="usuario-nombre">
-                            {isAuthenticated ? `¡Hola, ${primerNombre}!` : <i className="fa-solid fa-user" />}
-                        </span>
-                    </button>
-
-                    {mostrarPopup && (
-                        isAuthenticated
-                            ? <DropdownUsuario onClose={() => setMostrarPopup(false)} />
-                            : <AuthPopup onClose={() => setMostrarPopup(false)} />
-                    )}
+            <nav className="navbar">
+                <div className="logo">
+                    <NavLink to="/">
+                        <img src={LogoOficial} alt="Óptica Danniels" />
+                    </NavLink>
                 </div>
-            </div>
-        </nav>
+
+                <div className="nav-derecha">
+                    <ul>
+                        <li><NavLink to="/quienes-somos">Quienes Somos</NavLink></li>
+                        <li><NavLink to="/productos">Productos</NavLink></li>
+                        <li><NavLink to="/favoritos">Favoritos</NavLink></li>
+                        <li><NavLink to="/contacto">Contacto</NavLink></li>
+                    </ul>
+
+                    <BarraBusqueda />
+
+                    <div className="navbar-icons" ref={dropdownRef}>
+                        <button className="icono-usuario">
+                            <span className="usuario-nombre" onClick={togglePopup}>
+                                {isAuthenticated ? `¡Hola, ${primerNombre}!` : <i className="fa-solid fa-user" />}
+                            </span>
+                        </button>
+
+                        {mostrarPopup && (
+                            isAuthenticated
+                                ? <DropdownUsuario onClose={() => setMostrarPopup(false)} />
+                                : <AuthPopup onClose={() => setMostrarPopup(false)} />
+                        )}
+                    </div>
+                </div>
+            </nav>
+        </header>
     );
 }
 

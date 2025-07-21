@@ -11,6 +11,7 @@ import { connectDB } from "./config/configDb.js";
 import indexRoutes from "./routes/index.routes.js";
 import { passportJwtSetup } from "./auth/passport.auth.js";
 import { createInitialUsers } from "./config/initialSetup.js";
+import { migrateUsers } from "./helpers/migrateUsers.js";
 
 async function setupServer() {
     try {
@@ -76,6 +77,7 @@ async function setupAPI() {
         await connectDB();
         await setupServer();
         await createInitialUsers();
+        await migrateUsers();
     } catch (error) {
         console.log("❌ Error en index.js -> setupAPI(), el error es: ", error);
     }

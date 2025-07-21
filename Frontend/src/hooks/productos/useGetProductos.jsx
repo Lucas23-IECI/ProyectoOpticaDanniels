@@ -9,10 +9,13 @@ const useGetProductos = () => {
     const fetchProductos = useCallback(async (filtros = {}) => {
         try {
             setLoading(true);
-            const data = await getProductos(filtros);
-            setProductos(data);
+            if (import.meta.env.DEV) {
+                console.log('🔄 Cargando productos con filtros:', filtros);
+            }
+            const productosData = await getProductos(filtros);
+            setProductos(productosData);
             setError('');
-            return data;
+            return productosData;
         } catch (err) {
             console.error('Error al obtener productos:', err);
             setError('Error al obtener productos');

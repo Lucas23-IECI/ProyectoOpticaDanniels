@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { showErrorAlert } from '@helpers/sweetAlert';
+// import { showErrorAlert } from '@helpers/sweetAlert'; // No necesario - sesión indefinida
 import { tokenMiddleware } from '@middlewares/tokenMiddleware';
 
 const API_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000/api';
@@ -30,17 +30,11 @@ instance.interceptors.response.use(
                                window.location.pathname === '/register';
             
             if (!isLoginPage) {
-                showErrorAlert(
-                    "Sesión expirada",
-                    "Tu sesión ha expirado. Por favor, inicia sesión nuevamente."
-                );
-                
+                // Sesión indefinida - solo redirigir sin mostrar alerta molesta
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 
-                setTimeout(() => {
-                    window.location.href = '/auth';
-                }, 1500);
+                window.location.href = '/auth';
             }
         }
         
