@@ -6,6 +6,7 @@ import Navbar from "@components/Navbar";
 import Productos from "@pages/Productos";
 import DetalleProducto from "@pages/DetalleProducto";
 import BusquedaResultados from "@pages/BusquedaResultados";
+import Wishlist from "@pages/Wishlist";
 import Login from "@pages/Login";
 import Register from "@pages/Register";
 import Perfil from "@pages/Perfil";
@@ -23,6 +24,8 @@ function AppContent() {
           <Route path="/productos" element={<Productos />} />
           <Route path="/productos/:nombreProducto" element={<DetalleProducto />} />
           <Route path="/buscar" element={<BusquedaResultados />} />
+          <Route path="/favoritos" element={<Wishlist />} />
+          <Route path="/contacto" element={<div>Contacto - Página en desarrollo</div>} />
           
           <Route 
             path="/login" 

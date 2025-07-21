@@ -62,6 +62,10 @@ export const productSchema = Joi.object({
         .messages({
             "any.only": "La categoría debe ser: opticos, sol o accesorios"
         }),
+    subcategoria: Joi.string()
+        .max(100)
+        .optional()
+        .allow(""),
     imagen_url: Joi.string().max(500).optional().allow(""), 
     stock: Joi.alternatives().try(
         Joi.number().integer().min(0).max(9999),
@@ -98,6 +102,10 @@ export const productUpdateSchema = Joi.object({
         .messages({
             "any.only": "La categoría debe ser: opticos, sol o accesorios"
         }),
+    subcategoria: Joi.string()
+        .max(100)
+        .optional()
+        .allow(""),
     imagen_url: Joi.string().max(500).optional().allow(""), 
     stock: Joi.alternatives().try(
         Joi.number().integer().min(0).max(9999),

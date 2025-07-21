@@ -9,6 +9,7 @@ import CrearProductoPopup from './CrearProductoPopup';
 import EditarProductoPopup from './EditarProductoPopup';
 import ProductoDetalle from './ProductoDetalle';
 import ConfirmarEliminarPopup from './ConfirmarEliminarPopup';
+import LazyImage from './LazyImage';
 import '@styles/adminProductosV2.css';
 
 const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48, 96];

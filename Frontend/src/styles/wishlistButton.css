@@ -1,0 +1,117 @@
+.wishlist-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    color: #6b7280;
+    position: relative;
+    overflow: hidden;
+}
+
+.wishlist-btn:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: #ef4444;
+}
+
+.wishlist-btn.active {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.05);
+}
+
+.wishlist-btn.active:hover {
+    background: #dc2626;
+    transform: scale(1.1);
+}
+
+/* Tamaños */
+.wishlist-btn.small {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+}
+
+.wishlist-btn.small svg {
+    width: 16px;
+    height: 16px;
+}
+
+.wishlist-btn.medium {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+}
+
+.wishlist-btn.medium svg {
+    width: 20px;
+    height: 20px;
+}
+
+.wishlist-btn.large {
+    width: 48px;
+    height: 48px;
+    padding: 10px;
+}
+
+.wishlist-btn.large svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* Animación de corazón */
+.wishlist-btn.active {
+    animation: heartbeat 0.3s ease;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1.05); }
+}
+
+/* Posicionamiento en ProductCard */
+.product-card {
+    position: relative;
+}
+
+.product-card .wishlist-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .wishlist-btn.medium {
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+    }
+    
+    .wishlist-btn.medium svg {
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wishlist-btn.medium {
+        width: 32px;
+        height: 32px;
+        padding: 5px;
+    }
+    
+    .wishlist-btn.medium svg {
+        width: 16px;
+        height: 16px;
+    }
+}

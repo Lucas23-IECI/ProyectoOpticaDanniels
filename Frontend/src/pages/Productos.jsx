@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import useGetProductos from "@hooks/productos/useGetProductos";
 import DropdownFiltro from "@components/DropdownFiltro";
+import ProductCard from "@components/ProductCard";
+import DropdownCategorias from "@components/DropdownCategorias";
+import CategoriasNav from "@components/CategoriasNav";
 import "@styles/productos.css";
 import { Link } from "react-router-dom";
 
 const Productos = () => {
     const [loading, setLoading] = useState(false);
+    const [categoria, setCategoria] = useState("");
+    const [subcategoria, setSubcategoria] = useState("");
     const [disponibilidad, setDisponibilidad] = useState("");
     const [precioMin, setPrecioMin] = useState("");
     const [precioMax, setPrecioMax] = useState("");
@@ -14,28 +19,32 @@ const Productos = () => {
 
     const { productos, fetchProductos } = useGetProductos();
 
-    const obtenerProductos = async () => {
-        setLoading(true);
-        try {
-            const filtros = {};
-            if (precioMin) filtros.precio_min = precioMin;
-            if (precioMax) filtros.precio_max = precioMax;
-            if (disponibilidad) filtros.activo = disponibilidad === "en_stock";
-            if (orden) filtros.orden = orden;
-
-            await fetchProductos(filtros); 
-        } catch (error) {
-            console.error("Error al obtener productos:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
+        const obtenerProductos = async () => {
+            setLoading(true);
+            try {
+                const filtros = {};
+                if (categoria) filtros.categoria = categoria;
+                if (subcategoria) filtros.subcategoria = subcategoria;
+                if (precioMin) filtros.precio_min = precioMin;
+                if (precioMax) filtros.precio_max = precioMax;
+                if (disponibilidad) filtros.activo = disponibilidad === "en_stock";
+                if (orden) filtros.orden = orden;
+
+                await fetchProductos(filtros); 
+            } catch (error) {
+                console.error("Error al obtener productos:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         obtenerProductos();
-    }, [disponibilidad, precioMin, precioMax, orden]);
+    }, [categoria, subcategoria, disponibilidad, precioMin, precioMax, orden, fetchProductos]);
 
     const restablecerFiltros = () => {
+        setCategoria("");
+        setSubcategoria("");
         setDisponibilidad("");
         setPrecioMin("");
         setPrecioMax("");
@@ -46,7 +55,26 @@ const Productos = () => {
         <div className="resultados-container">
             <h1 className="resultados-titulo">Catálogo de Productos</h1>
 
+            <CategoriasNav 
+                categoriaActual={categoria}
+                subcategoriaActual={subcategoria}
+                onCategoriaChange={setCategoria}
+                onSubcategoriaChange={setSubcategoria}
+                onReset={() => {
+                    setCategoria("");
+                    setSubcategoria("");
+                }}
+            />
+
             <div className="filtros-barra">
+                <DropdownCategorias
+                    selectedCategoria={categoria}
+                    selectedSubcategoria={subcategoria}
+                    onCategoriaChange={setCategoria}
+                    onSubcategoriaChange={setSubcategoria}
+                    placeholder="Todas las categorías"
+                />
+
                 <DropdownFiltro
                     id="disponibilidad"
                     titulo="Disponibilidad"
@@ -99,21 +127,9 @@ const Productos = () => {
                             to={`/productos/${producto.nombre
                                 .toLowerCase()
                                 .replace(/\s+/g, "-")}`}
-                            className="producto-item"
+                            className="producto-link"
                         >
-                            <div className="producto-imagen">
-                                <img
-                                    src={producto.imagen_url || "https://via.placeholder.com/300"}
-                                    alt={producto.nombre}
-                                />
-                            </div>
-                            <div className="producto-info">
-                                <p className="producto-nombre">{producto.nombre}</p>
-                                <p className="producto-precio">
-                                    ${parseFloat(producto.precio).toLocaleString("es-CL", { minimumFractionDigits: 0, maximumFractionDigits: 0 })} CLP
-                                </p>
-                                <p className="producto-marca">{producto.marca}</p>
-                            </div>
+                            <ProductCard producto={producto} />
                         </Link>
                     ))}
                 </div>

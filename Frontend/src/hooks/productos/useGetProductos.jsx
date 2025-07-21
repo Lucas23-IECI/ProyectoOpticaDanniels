@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { getProductos } from '@services/producto.service';
 
 const useGetProductos = () => {
@@ -6,7 +6,7 @@ const useGetProductos = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const fetchProductos = async (filtros = {}) => {
+    const fetchProductos = useCallback(async (filtros = {}) => {
         try {
             setLoading(true);
             const data = await getProductos(filtros);
@@ -21,7 +21,7 @@ const useGetProductos = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
     
     return { productos, loading, error, fetchProductos };
 };

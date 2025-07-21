@@ -28,6 +28,11 @@ const ProductSchema = new EntitySchema({
             length: 100,
             nullable: false,
         },
+        subcategoria: {
+            type: "varchar",
+            length: 100,
+            nullable: true,
+        },
         imagen_url: {
             type: "varchar",
             length: 500,

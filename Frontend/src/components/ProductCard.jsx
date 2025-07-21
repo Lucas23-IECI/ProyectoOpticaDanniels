@@ -1,4 +1,5 @@
 import '@styles/productos.css';
+import WishlistButton from './WishlistButton';
 
 const ProductCard = ({ producto }) => {
     const precioConDescuento = producto.oferta
@@ -13,6 +14,7 @@ const ProductCard = ({ producto }) => {
                     alt={producto.nombre}
                 />
                 {producto.oferta && <span className="product-badge">Oferta</span>}
+                <WishlistButton producto={producto} size="medium" />
             </div>
             <div className="product-info">
                 <h3 className="product-name">{producto.nombre}</h3>

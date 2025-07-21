@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  base: "/OpticaDanniels/",
+  base: "/",
   plugins: [react()],
   preview: {
     port: 443,

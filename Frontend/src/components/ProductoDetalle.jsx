@@ -6,6 +6,7 @@ import {
     FaDollarSign, FaPercent, FaEye, FaEyeSlash, FaImage,
     FaSpinner, FaCalendarAlt, FaBarcode
 } from 'react-icons/fa';
+import LazyImage from './LazyImage';
 import '@styles/productoDetalle.css';
 
 const ProductoDetalle = ({ producto: productoProps, onEdit, onDelete, showActions = true, onClose }) => {
@@ -14,7 +15,6 @@ const ProductoDetalle = ({ producto: productoProps, onEdit, onDelete, showAction
     const [producto, setProducto] = useState(productoProps || null);
     const [loading, setLoading] = useState(!productoProps);
     const [error, setError] = useState(null);
-    const [imagenCargando, setImagenCargando] = useState(true);
 
     useEffect(() => {
         const cargarProducto = async () => {
@@ -48,14 +48,6 @@ const ProductoDetalle = ({ producto: productoProps, onEdit, onDelete, showAction
             month: 'long',
             day: 'numeric'
         });
-    };
-
-    const handleImagenCargada = () => {
-        setImagenCargando(false);
-    };
-
-    const handleImagenError = () => {
-        setImagenCargando(false);
     };
 
     const handleVolver = () => {
@@ -137,27 +129,17 @@ const ProductoDetalle = ({ producto: productoProps, onEdit, onDelete, showAction
             <div className="detalle-content">
                 <div className="detalle-imagen-section">
                     <div className="imagen-container">
-                        {producto.imagen_url ? (
-                            <>
-                                {imagenCargando && (
-                                    <div className="imagen-loading">
-                                        <FaSpinner className="spinner" />
-                                    </div>
-                                )}
-                                <img 
-                                    src={producto.imagen_url} 
-                                    alt={producto.nombre}
-                                    onLoad={handleImagenCargada}
-                                    onError={handleImagenError}
-                                    style={{ display: imagenCargando ? 'none' : 'block' }}
-                                />
-                            </>
-                        ) : (
-                            <div className="imagen-placeholder">
-                                <FaImage />
-                                <p>Sin imagen</p>
-                            </div>
-                        )}
+                        <LazyImage
+                            src={producto.imagen_url}
+                            alt={producto.nombre}
+                            className="product-detail"
+                            placeholder={
+                                <div className="imagen-placeholder">
+                                    <FaImage />
+                                    <p>Sin imagen</p>
+                                </div>
+                            }
+                        />
                     </div>
                     
                     <div className="imagen-info">

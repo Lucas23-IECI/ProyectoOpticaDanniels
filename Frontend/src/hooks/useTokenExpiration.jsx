@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@context/AuthContext';
+import { useAuth } from '@hooks/useAuth';
 import { showErrorAlert } from '@helpers/sweetAlert';
 import { decodeToken, clearTokenCache } from '@helpers/jwt.helper';
 

@@ -9,6 +9,10 @@ import CrearProductoPopup from './CrearProductoPopup';
 import EditarProductoPopup from './EditarProductoPopup';
 import ProductoDetalle from './ProductoDetalle';
 import ConfirmarEliminarPopup from './ConfirmarEliminarPopup';
+import LazyImage from './LazyImage';
+import DropdownCategorias from './DropdownCategorias';
+import CategoriasNav from './CategoriasNav';
+import { formatearCategoriaCorta, getCategoriaIcon } from '../constants/categorias.js';
 import '@styles/adminProductosV2.css';
 
 const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48, 96];
@@ -40,6 +44,7 @@ const AdminProductos = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filters, setFilters] = useState({
         categoria: '',
+        subcategoria: '',
         marca: '',
         activo: '',
         oferta: '',
@@ -336,6 +341,17 @@ const AdminProductos = () => {
                 </div>
             </div>
 
+            <CategoriasNav 
+                categoriaActual={filters.categoria}
+                subcategoriaActual={filters.subcategoria}
+                onCategoriaChange={(categoria) => handleFilterChange('categoria', categoria)}
+                onSubcategoriaChange={(subcategoria) => handleFilterChange('subcategoria', subcategoria)}
+                onReset={() => {
+                    handleFilterChange('categoria', '');
+                    handleFilterChange('subcategoria', '');
+                }}
+            />
+
             <div className="search-filters-bar">
                 <div className="search-section">
                     <div className="search-input-container">
@@ -411,16 +427,14 @@ const AdminProductos = () => {
                 <div className="filters-panel">
                     <div className="filters-grid">
                         <div className="filter-group">
-                            <label>Categoría:</label>
-                            <select 
-                                value={filters.categoria} 
-                                onChange={(e) => handleFilterChange('categoria', e.target.value)}
-                            >
-                                <option value="">Todas las categorías</option>
-                                <option value="opticos">Lentes Ópticos</option>
-                                <option value="sol">Lentes de Sol</option>
-                                <option value="accesorios">Accesorios</option>
-                            </select>
+                            <label>Categoría y Subcategoría:</label>
+                            <DropdownCategorias
+                                selectedCategoria={filters.categoria}
+                                selectedSubcategoria={filters.subcategoria}
+                                onCategoriaChange={(categoria) => handleFilterChange('categoria', categoria)}
+                                onSubcategoriaChange={(subcategoria) => handleFilterChange('subcategoria', subcategoria)}
+                                placeholder="Todas las categorías"
+                            />
                         </div>
                         
                         <div className="filter-group">
@@ -657,26 +671,22 @@ const AdminProductos = () => {
 };
 
 const ProductCard = ({ producto, onVerDetalle, onEditar, onEliminar, formatearPrecio }) => {
-    const [imagenError, setImagenError] = useState(false);
-    
     const precioConDescuento = producto.oferta && producto.descuento > 0 ?
         producto.precio * (1 - producto.descuento / 100) : null;
 
     return (
         <div className="product-card">
             <div className="product-image-container">
-                {producto.imagen_url && !imagenError ? (
-                    <img 
-                        src={producto.imagen_url} 
-                        alt={producto.nombre}
-                        onError={() => setImagenError(true)}
-                        className="product-image"
-                    />
-                ) : (
-                    <div className="product-image-placeholder">
-                        <FaImage />
-                    </div>
-                )}
+                <LazyImage
+                    src={producto.imagen_url}
+                    alt={producto.nombre}
+                    className="product-card"
+                    placeholder={
+                        <div className="product-image-placeholder">
+                            <FaImage />
+                        </div>
+                    }
+                />
                 
                 <div className="product-badges">
                     {producto.oferta && (
@@ -721,7 +731,9 @@ const ProductCard = ({ producto, onVerDetalle, onEditar, onEliminar, formatearPr
             <div className="product-info">
                 <h3 className="product-name">{producto.nombre}</h3>
                 <p className="product-brand">{producto.marca}</p>
-                <p className="product-category">{producto.categoria}</p>
+                <p className="product-category">
+                    {getCategoriaIcon(producto.categoria)} {formatearCategoriaCorta(producto.categoria, producto.subcategoria)}
+                </p>
                 
                 <div className="product-price-container">
                     {precioConDescuento ? (
@@ -746,26 +758,22 @@ const ProductCard = ({ producto, onVerDetalle, onEditar, onEliminar, formatearPr
 };
 
 const ProductListItem = ({ producto, onVerDetalle, onEditar, onEliminar, formatearPrecio }) => {
-    const [imagenError, setImagenError] = useState(false);
-    
     const precioConDescuento = producto.oferta && producto.descuento > 0 ?
         producto.precio * (1 - producto.descuento / 100) : null;
 
     return (
         <div className="product-list-item">
             <div className="product-image-container">
-                {producto.imagen_url && !imagenError ? (
-                    <img 
-                        src={producto.imagen_url} 
-                        alt={producto.nombre}
-                        onError={() => setImagenError(true)}
-                        className="product-image"
-                    />
-                ) : (
-                    <div className="product-image-placeholder">
-                        <FaImage />
-                    </div>
-                )}
+                <LazyImage
+                    src={producto.imagen_url}
+                    alt={producto.nombre}
+                    className="product-thumbnail"
+                    placeholder={
+                        <div className="product-image-placeholder">
+                            <FaImage />
+                        </div>
+                    }
+                />
             </div>
             
             <div className="product-info">
@@ -773,7 +781,9 @@ const ProductListItem = ({ producto, onVerDetalle, onEditar, onEliminar, formate
                     <h3 className="product-name">{producto.nombre}</h3>
                     <div className="product-meta">
                         <span className="product-brand">{producto.marca}</span>
-                        <span className="product-category">{producto.categoria}</span>
+                        <span className="product-category">
+                            {getCategoriaIcon(producto.categoria)} {formatearCategoriaCorta(producto.categoria, producto.subcategoria)}
+                        </span>
                         <span className="product-sku">{producto.codigoSKU}</span>
                     </div>
                 </div>
@@ -842,7 +852,7 @@ const ProductTable = ({ productos, onVerDetalle, onEditar, onEliminar, formatear
                     <th>Imagen</th>
                     <th>Nombre</th>
                     <th>Marca</th>
-                    <th>Categoría</th>
+                    <th>Categoría / Subcategoría</th>
                     <th>Precio</th>
                     <th>Stock</th>
                     <th>Estado</th>
@@ -866,8 +876,6 @@ const ProductTable = ({ productos, onVerDetalle, onEditar, onEliminar, formatear
 };
 
 const ProductTableRow = ({ producto, onVerDetalle, onEditar, onEliminar, formatearPrecio }) => {
-    const [imagenError, setImagenError] = useState(false);
-    
     const precioConDescuento = producto.oferta && producto.descuento > 0 ?
         producto.precio * (1 - producto.descuento / 100) : null;
 
@@ -875,18 +883,16 @@ const ProductTableRow = ({ producto, onVerDetalle, onEditar, onEliminar, formate
         <tr className="product-table-row">
             <td>
                 <div className="table-image-container">
-                    {producto.imagen_url && !imagenError ? (
-                        <img 
-                            src={producto.imagen_url} 
-                            alt={producto.nombre}
-                            onError={() => setImagenError(true)}
-                            className="table-product-image"
-                        />
-                    ) : (
-                        <div className="table-image-placeholder">
-                            <FaImage />
-                        </div>
-                    )}
+                    <LazyImage
+                        src={producto.imagen_url}
+                        alt={producto.nombre}
+                        className="product-thumbnail"
+                        placeholder={
+                            <div className="table-image-placeholder">
+                                <FaImage />
+                            </div>
+                        }
+                    />
                 </div>
             </td>
             <td>
@@ -896,7 +902,11 @@ const ProductTableRow = ({ producto, onVerDetalle, onEditar, onEliminar, formate
                 </div>
             </td>
             <td>{producto.marca}</td>
-            <td>{producto.categoria}</td>
+            <td>
+                <div className="category-cell">
+                    {getCategoriaIcon(producto.categoria)} {formatearCategoriaCorta(producto.categoria, producto.subcategoria)}
+                </div>
+            </td>
             <td>
                 <div className="price-cell">
                     {precioConDescuento ? (
