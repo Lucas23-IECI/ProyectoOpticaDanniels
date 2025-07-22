@@ -117,9 +117,9 @@ const Perfil = () => {
             if (errorsPersonal[field]) {
                 const timer = setTimeout(() => {
                     setErrorsPersonal(prev => ({
-                        ...prev,
+            ...prev,
                         [field]: null
-                    }));
+        }));
                 }, 2000);
                 timers.push(timer);
             }
@@ -133,7 +133,7 @@ const Perfil = () => {
             if (errorsDirecciones[field]) {
                 const timer = setTimeout(() => {
                     setErrorsDirecciones(prev => ({
-                        ...prev,
+            ...prev,
                         [field]: null
                     }));
                 }, 2000);
@@ -149,7 +149,7 @@ const Perfil = () => {
             if (errorsSecurity[field]) {
                 const timer = setTimeout(() => {
                     setErrorsSecurity(prev => ({
-                        ...prev,
+            ...prev,
                         [field]: null
                     }));
                 }, 2000);
@@ -368,7 +368,7 @@ const Perfil = () => {
     const showFieldError = (field, message, section = 'personal') => {
         if (section === 'personal') {
             setErrorsPersonal(prev => ({
-                ...prev,
+            ...prev,
                 [field]: message
             }));
         } else if (section === 'direcciones') {
@@ -483,7 +483,7 @@ const Perfil = () => {
         if (Object.keys(errors).length > 0) {
             return;
         }
-
+        
         setLoadingPersonal(true);
         setMessagePersonal({ type: '', text: '' });
 
@@ -602,8 +602,8 @@ const Perfil = () => {
                 setMessageDirecciones({ type: 'error', text: 'Error al establecer dirección principal' });
             }
                          throw error;
-         }
-     };
+        }
+    };
 
     // Handlers para seguridad
     const handleSecurityChange = (e) => {
@@ -622,7 +622,7 @@ const Perfil = () => {
         if (Object.keys(errors).length > 0) {
             return;
         }
-
+        
         if (!securityData.newPassword) {
             setMessageSecurity({ type: 'error', text: 'Ingresa una nueva contraseña para cambiarla' });
             return;
@@ -744,17 +744,17 @@ const Perfil = () => {
                         </p>
                         <div className="section-actions">
                             {!isEditingPersonal ? (
-                                <button 
-                                    className="btn-edit"
+                            <button 
+                                className="btn-edit"
                                     onClick={() => setIsEditingPersonal(true)}
-                                >
-                                    <FaEdit />
+                            >
+                                <FaEdit />
                                     Editar
-                                </button>
-                            ) : (
-                                <div className="edit-actions">
-                                    <button 
-                                        className="btn-cancel"
+                            </button>
+                        ) : (
+                            <div className="edit-actions">
+                                <button 
+                                    className="btn-cancel"
                                         onClick={() => {
                                             setIsEditingPersonal(false);
                                             setErrorsPersonal({});
@@ -774,197 +774,197 @@ const Perfil = () => {
                                             }
                                         }}
                                         disabled={loadingPersonal}
-                                    >
-                                        <FaTimes />
-                                        Cancelar
-                                    </button>
-                                    <button 
-                                        className="btn-save"
+                                >
+                                    <FaTimes />
+                                    Cancelar
+                                </button>
+                                <button 
+                                    className="btn-save"
                                         onClick={handlePersonalSubmit}
                                         disabled={loadingPersonal}
-                                    >
+                                >
                                         {loadingPersonal ? (
-                                            <>
-                                                <FaSpinner className="spinner" />
-                                                Guardando...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <FaSave />
-                                                Guardar
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    
+                                        <>
+                                            <FaSpinner className="spinner" />
+                                            Guardando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaSave />
+                                            Guardar
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        )}
+                </div>
+            </div>
+
                     {messagePersonal.text && (
                         <div className={`message ${messagePersonal.type}`}>
                             {messagePersonal.type === 'success' ? <FaCheckCircle /> : <FaExclamationTriangle />}
                             <span>{messagePersonal.text}</span>
-                        </div>
-                    )}
-                    
-                    <div className="form-grid">
-                        <div className="form-group">
-                            <label>Primer Nombre *</label>
-                            <input
-                                type="text"
-                                name="primerNombre"
+                </div>
+            )}
+                        
+                        <div className="form-grid">
+                            <div className="form-group">
+                                <label>Primer Nombre *</label>
+                                <input
+                                    type="text"
+                                    name="primerNombre"
                                 value={personalData.primerNombre}
                                 onChange={handlePersonalChange}
                                 disabled={!isEditingPersonal}
-                                required
-                                placeholder="Tu primer nombre"
+                                    required
+                                    placeholder="Tu primer nombre"
                                 className={errorsPersonal.primerNombre ? 'error' : ''}
-                            />
+                                />
                             {errorsPersonal.primerNombre && (
                                 <span className="error-message">{errorsPersonal.primerNombre}</span>
                             )}
-                        </div>
-                        <div className="form-group">
-                            <label>Segundo Nombre</label>
-                            <input
-                                type="text"
-                                name="segundoNombre"
+                            </div>
+                            <div className="form-group">
+                                <label>Segundo Nombre</label>
+                                <input
+                                    type="text"
+                                    name="segundoNombre"
                                 value={personalData.segundoNombre}
                                 onChange={handlePersonalChange}
                                 disabled={!isEditingPersonal}
-                                placeholder="Tu segundo nombre (opcional)"
+                                    placeholder="Tu segundo nombre (opcional)"
                                 className={errorsPersonal.segundoNombre ? 'error' : ''}
-                            />
+                                />
                             {errorsPersonal.segundoNombre && (
                                 <span className="error-message">{errorsPersonal.segundoNombre}</span>
                             )}
-                        </div>
-                        <div className="form-group">
-                            <label>Apellido Paterno *</label>
-                            <input
-                                type="text"
-                                name="apellidoPaterno"
+                            </div>
+                            <div className="form-group">
+                                <label>Apellido Paterno *</label>
+                                <input
+                                    type="text"
+                                    name="apellidoPaterno"
                                 value={personalData.apellidoPaterno}
                                 onChange={handlePersonalChange}
                                 disabled={!isEditingPersonal}
-                                required
-                                placeholder="Tu apellido paterno"
+                                    required
+                                    placeholder="Tu apellido paterno"
                                 className={errorsPersonal.apellidoPaterno ? 'error' : ''}
-                            />
+                                />
                             {errorsPersonal.apellidoPaterno && (
                                 <span className="error-message">{errorsPersonal.apellidoPaterno}</span>
                             )}
-                        </div>
-                        <div className="form-group">
-                            <label>Apellido Materno</label>
-                            <input
-                                type="text"
-                                name="apellidoMaterno"
+                            </div>
+                            <div className="form-group">
+                                <label>Apellido Materno</label>
+                                <input
+                                    type="text"
+                                    name="apellidoMaterno"
                                 value={personalData.apellidoMaterno}
                                 onChange={handlePersonalChange}
                                 disabled={!isEditingPersonal}
-                                placeholder="Tu apellido materno (opcional)"
+                                    placeholder="Tu apellido materno (opcional)"
                                 className={errorsPersonal.apellidoMaterno ? 'error' : ''}
-                            />
+                                />
                             {errorsPersonal.apellidoMaterno && (
                                 <span className="error-message">{errorsPersonal.apellidoMaterno}</span>
                             )}
-                        </div>
-                        <div className="form-group">
-                            <label>Email *</label>
-                            <div className="input-with-icon">
-                                <FaEnvelope className="input-icon" />
-                                <input
-                                    type="email"
-                                    name="email"
+                            </div>
+                            <div className="form-group">
+                                <label>Email *</label>
+                                <div className="input-with-icon">
+                                    <FaEnvelope className="input-icon" />
+                                    <input
+                                        type="email"
+                                        name="email"
                                     value={personalData.email}
                                     onChange={handlePersonalChange}
                                     disabled={!isEditingPersonal}
-                                    required
-                                    placeholder="tu@email.com"
+                                        required
+                                        placeholder="tu@email.com"
                                     className={errorsPersonal.email ? 'error' : ''}
-                                />
-                            </div>
+                                    />
+                                </div>
                             {errorsPersonal.email && (
                                 <span className="error-message">{errorsPersonal.email}</span>
                             )}
-                        </div>
-                        <div className="form-group">
-                            <label>Teléfono</label>
-                            <div className="input-with-icon">
-                                <FaPhone className="input-icon" />
-                                <input
-                                    type="tel"
-                                    name="telefono"
+                            </div>
+                            <div className="form-group">
+                                <label>Teléfono</label>
+                                <div className="input-with-icon">
+                                    <FaPhone className="input-icon" />
+                                    <input
+                                        type="tel"
+                                        name="telefono"
                                     value={personalData.telefono}
                                     onChange={handlePersonalChange}
                                     disabled={!isEditingPersonal}
                                     placeholder="9 1234 5678"
                                     className={errorsPersonal.telefono ? 'error' : ''}
-                                />
-                            </div>
+                                    />
+                                </div>
                             {errorsPersonal.telefono && (
                                 <span className="error-message">{errorsPersonal.telefono}</span>
                             )}
-                        </div>
-                        <div className="form-group">
-                            <label>Fecha de Nacimiento</label>
-                            <div className="input-with-icon">
-                                <FaCalendarAlt className="input-icon" />
-                                <input
-                                    type="date"
-                                    name="fechaNacimiento"
+                            </div>
+                            <div className="form-group">
+                                <label>Fecha de Nacimiento</label>
+                                <div className="input-with-icon">
+                                    <FaCalendarAlt className="input-icon" />
+                                    <input
+                                        type="date"
+                                        name="fechaNacimiento"
                                     value={personalData.fechaNacimiento}
                                     onChange={handlePersonalChange}
                                     disabled={!isEditingPersonal}
                                     className={errorsPersonal.fechaNacimiento ? 'error' : ''}
-                                />
-                            </div>
+                                    />
+                                </div>
                             {errorsPersonal.fechaNacimiento && (
                                 <span className="error-message">{errorsPersonal.fechaNacimiento}</span>
                             )}
-                        </div>
-                        <div className="form-group">
-                            <label>Género</label>
-                            <select
-                                name="genero"
+                            </div>
+                            <div className="form-group">
+                                <label>Género</label>
+                                    <select
+                                        name="genero"
                                 value={personalData.genero}
                                 onChange={handlePersonalChange}
                                 disabled={!isEditingPersonal}
                                 className={errorsPersonal.genero ? 'error' : ''}
-                            >
-                                <option value="">Seleccionar...</option>
+                                    >
+                                        <option value="">Seleccionar...</option>
                                 <option value="Masculino">Masculino</option>
                                 <option value="Femenino">Femenino</option>
                                 <option value="No binario">No binario</option>
                                 <option value="Prefiero no decir">Prefiero no decir</option>
-                            </select>
+                                    </select>
                             {errorsPersonal.genero && (
                                 <span className="error-message">{errorsPersonal.genero}</span>
                             )}
+                            </div>
                         </div>
                     </div>
-                </div>
 
                 {/* SECCIÓN DIRECCIONES */}
-                <div className="form-section">
-                    <div className="section-header">
-                        <div className="section-title">
-                            <FaMapMarkerAlt className="section-icon" />
-                            <h2>Direcciones</h2>
-                        </div>
-                        <p className="section-description">
-                            Gestiona tus direcciones para envíos
-                        </p>
+                    <div className="form-section">
+                        <div className="section-header">
+                            <div className="section-title">
+                                <FaMapMarkerAlt className="section-icon" />
+                                <h2>Direcciones</h2>
+                            </div>
+                            <p className="section-description">
+                                Gestiona tus direcciones para envíos
+                            </p>
                         <div className="section-actions">
-                            <button 
-                                type="button" 
-                                className="btn-add"
+                                <button 
+                                    type="button" 
+                                    className="btn-add"
                                 onClick={() => setIsEditingDirecciones(true)}
-                            >
-                                <FaPlus />
-                                Agregar
-                            </button>
+                                >
+                                    <FaPlus />
+                                    Agregar
+                                </button>
                         </div>
                     </div>
                     
@@ -1006,20 +1006,20 @@ const Perfil = () => {
                     {!direccionesApiLoading && direccionesApi.length === 0 && !isEditingDirecciones ? (
                         <div className="direcciones-empty-state">
                             <FaMapMarkerAlt className="direcciones-empty-icon" />
-                            <h3>No tienes direcciones</h3>
-                            <p>Agrega tu primera dirección para recibir envíos</p>
-                            <button 
-                                type="button" 
+                                <h3>No tienes direcciones</h3>
+                                <p>Agrega tu primera dirección para recibir envíos</p>
+                                <button 
+                                    type="button" 
                                 className="btn-add-direccion"
                                 onClick={() => setIsEditingDirecciones(true)}
-                            >
-                                <FaPlus />
-                                Agregar Dirección
-                            </button>
-                        </div>
-                    ) : (
+                                >
+                                    <FaPlus />
+                                    Agregar Dirección
+                                </button>
+                            </div>
+                        ) : (
                         /* Lista de direcciones */
-                        <div className="direcciones-list">
+                            <div className="direcciones-list">
                             {direccionesApi.map((direccion) => (
                                 <DireccionCard
                                     key={direccion.id}
@@ -1030,21 +1030,21 @@ const Perfil = () => {
                                     showFieldError={showFieldError}
                                     errors={errorsDirecciones}
                                 />
-                            ))}
-                        </div>
-                    )}
-                </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
                 {/* SECCIÓN SEGURIDAD */}
-                <div className="form-section security-section">
-                    <div className="section-header">
-                        <div className="section-title">
-                            <FaShieldAlt className="section-icon" />
-                            <h2>Seguridad</h2>
-                        </div>
-                        <p className="section-description">
+                        <div className="form-section security-section">
+                            <div className="section-header">
+                                <div className="section-title">
+                                    <FaShieldAlt className="section-icon" />
+                                    <h2>Seguridad</h2>
+                                </div>
+                                <p className="section-description">
                             {isEditingSecurity ? "Cambia tu contraseña para mantener tu cuenta segura" : "Mantén tu cuenta segura"}
-                        </p>
+                                </p>
                         <div className="section-actions">
                             {!isEditingSecurity ? (
                                 <button 
@@ -1089,8 +1089,8 @@ const Perfil = () => {
                                 </div>
                             )}
                         </div>
-                    </div>
-                    
+                            </div>
+                            
                     {messageSecurity.text && (
                         <div className={`message ${messageSecurity.type}`}>
                             {messageSecurity.type === 'success' ? <FaCheckCircle /> : <FaExclamationTriangle />}
@@ -1099,73 +1099,73 @@ const Perfil = () => {
                     )}
                     
                     {isEditingSecurity && (
-                        <div className="security-notice">
-                            <FaShieldAlt className="notice-icon" />
-                            <div>
-                                <h4>Cambiar Contraseña</h4>
+                            <div className="security-notice">
+                                <FaShieldAlt className="notice-icon" />
+                                <div>
+                                    <h4>Cambiar Contraseña</h4>
                                 <p>Completa todos los campos para cambiar tu contraseña</p>
+                                </div>
                             </div>
-                        </div>
                     )}
-                    
-                    <div className="form-grid">
-                        <div className="form-group">
-                            <label>Contraseña Actual</label>
-                            <div className="password-input">
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    name="password"
+                            
+                            <div className="form-grid">
+                                <div className="form-group">
+                                    <label>Contraseña Actual</label>
+                                    <div className="password-input">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            name="password"
                                     value={securityData.password}
                                     onChange={handleSecurityChange}
                                     disabled={!isEditingSecurity}
                                     placeholder={isEditingSecurity ? "Ingresa tu contraseña actual" : "••••••••"}
                                     className={errorsSecurity.password ? 'error' : ''}
-                                />
+                                        />
                                 {isEditingSecurity && (
-                                    <button
-                                        type="button"
-                                        className="password-toggle"
-                                        onClick={togglePasswordVisibility}
-                                    >
-                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                    </button>
+                                        <button
+                                            type="button"
+                                            className="password-toggle"
+                                            onClick={togglePasswordVisibility}
+                                        >
+                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                        </button>
                                 )}
-                            </div>
+                                    </div>
                             {errorsSecurity.password && (
                                 <span className="error-message">{errorsSecurity.password}</span>
                             )}
-                        </div>
-                        <div className="form-group">
-                            <label>Nueva Contraseña</label>
-                            <div className="password-input">
-                                <input
-                                    type={showNewPassword ? "text" : "password"}
-                                    name="newPassword"
+                                </div>
+                                <div className="form-group">
+                                    <label>Nueva Contraseña</label>
+                                    <div className="password-input">
+                                        <input
+                                            type={showNewPassword ? "text" : "password"}
+                                            name="newPassword"
                                     value={securityData.newPassword}
                                     onChange={handleSecurityChange}
                                     disabled={!isEditingSecurity}
                                     placeholder={isEditingSecurity ? "Mínimo 6 caracteres" : "••••••••"}
                                     className={errorsSecurity.newPassword ? 'error' : ''}
-                                />
+                                        />
                                 {isEditingSecurity && (
-                                    <button
-                                        type="button"
-                                        className="password-toggle"
-                                        onClick={toggleNewPasswordVisibility}
-                                    >
-                                        {showNewPassword ? <FaEyeSlash /> : <FaEye />}
-                                    </button>
+                                        <button
+                                            type="button"
+                                            className="password-toggle"
+                                            onClick={toggleNewPasswordVisibility}
+                                        >
+                                            {showNewPassword ? <FaEyeSlash /> : <FaEye />}
+                                        </button>
                                 )}
-                            </div>
+                                    </div>
                             {errorsSecurity.newPassword && (
                                 <span className="error-message">{errorsSecurity.newPassword}</span>
                             )}
-                        </div>
-                        <div className="form-group">
-                            <label>Confirmar Nueva Contraseña</label>
-                            <input
-                                type="password"
-                                name="confirmPassword"
+                                </div>
+                                <div className="form-group">
+                                    <label>Confirmar Nueva Contraseña</label>
+                                    <input
+                                        type="password"
+                                        name="confirmPassword"
                                 value={securityData.confirmPassword}
                                 onChange={handleSecurityChange}
                                 disabled={!isEditingSecurity}
@@ -1175,9 +1175,9 @@ const Perfil = () => {
                             {errorsSecurity.confirmPassword && (
                                 <span className="error-message">{errorsSecurity.confirmPassword}</span>
                             )}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
             </div>
         </div>
     );

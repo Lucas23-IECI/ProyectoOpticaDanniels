@@ -475,7 +475,7 @@ const Register = () => {
                             showFieldError("email", "⚠️ Este email ya está siendo usado por otra persona");
                         } else if (detailsStr.includes("rut") && (detailsStr.includes("exists") || detailsStr.includes("existe"))) {
                             showFieldError("rut", "⚠️ Este RUT ya está registrado por otra persona");
-                        } else {
+                            } else {
                             const errorDetails = parseBackendError(detailsStr);
                             showFieldError(errorDetails.field, errorDetails.message);
                         }
