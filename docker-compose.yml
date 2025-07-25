@@ -1,0 +1,117 @@
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  database:
+    image: postgres:15
+    container_name: optica-database
+    environment:
+      POSTGRES_DB: optica_danniels
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d optica_danniels"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - optica-network
+
+  # Backend API Node.js
+  backend:
+    build: 
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: optica-backend
+    env_file:
+      - ./Backend/.env
+    environment:
+      # Override para Docker específicamente
+      NODE_ENV: production
+      DB_HOST: database
+      HOST: database
+      DB_USERNAME: admin
+      PASSWORD: admin123
+      DATABASE: optica_danniels
+      FRONTEND_URL: http://OpticaDanniels.com
+    ports:
+      - "3000:3000"
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - backend_uploads:/app/uploads
+      - ./Backend:/app
+      - /app/node_modules
+    restart: unless-stopped
+    networks:
+      - optica-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend React + Nginx
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_BASE_URL=http://OpticaDanniels.com:3000/api
+    container_name: optica-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - optica-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PgAdmin para administrar base de datos (opcional)
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: optica-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@optica.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8080:80"
+    depends_on:
+      - database
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    restart: unless-stopped
+    networks:
+      - optica-network
+    profiles:
+      - admin
+
+volumes:
+  postgres_data:
+    driver: local
+  backend_uploads:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  optica-network:
+    driver: bridge
+    name: optica-network
