@@ -1,33 +1,80 @@
 #!/bin/bash
+set -e
 
-# Colores para output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+echo "🚀 INSTALACIÓN AUTOMÁTICA - ÓPTICA DANNIELS"
+echo "============================================"
 
-# Banner inicial
-echo -e "${CYAN}"
-echo "🏪 ========================================"
-echo "🏪  ÓPTICA DANNIELS - SETUP AUTOMÁTICO"
-echo "🏪 ========================================"
-echo -e "${NC}"
+# Detener actualizaciones automáticas que bloquean el sistema
+echo "⏹️  Deteniendo actualizaciones automáticas..."
+sudo killall unattended-upgrade 2>/dev/null || true
+sudo dpkg --configure -a
 
-DOMAIN="OpticaDanniels.com"
-DOMAIN_WWW="www.OpticaDanniels.com"
+# Actualizar sistema e instalar herramientas básicas
+echo "📦 Actualizando sistema e instalando herramientas..."
+sudo apt update
+sudo apt install -y git curl wget
 
-echo -e "${BLUE}🌐 Configurando dominio: ${GREEN}$DOMAIN${NC}"
+# Instalar Docker
+echo "🐳 Instalando Docker..."
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+rm get-docker.sh
+
+# Instalar Docker Compose
+echo "🔧 Instalando Docker Compose..."
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Clonar proyecto
+echo "📥 Clonando proyecto..."
+if [ -d "ProyectoOpticaDanniels" ]; then
+    rm -rf ProyectoOpticaDanniels
+fi
+git clone https://github.com/Lucas23-IECI/ProyectoOpticaDanniels.git
+cd ProyectoOpticaDanniels
+git checkout docker-testing-servidor
+
+# Configurar dominio local
+echo "� Configurando dominio local..."
+echo "127.0.0.1 OpticaDanniels.com" | sudo tee -a /etc/hosts
+
+# Iniciar Docker
+echo "🚀 Iniciando Docker..."
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Ejecutar aplicación
+echo "🏗️  Construyendo y ejecutando aplicación..."
+newgrp docker << EOF
+docker-compose up --build -d
+EOF
+
+# Verificar estado
+echo "📊 Verificando estado de contenedores..."
+sleep 10
+docker-compose ps
+
+# Mostrar información final
 echo ""
+echo "✅ INSTALACIÓN COMPLETADA"
+echo "========================="
+echo "🌐 Aplicación disponible en: http://OpticaDanniels.com"
+echo "🔧 API disponible en: http://OpticaDanniels.com:3000/api"
+echo ""
+echo "👤 Credenciales de prueba:"
+echo "   📧 Email: admin@optica.com"
+echo "   🔑 Password: password"
+echo ""
+echo "🛠️  Comandos útiles:"
+echo "   Ver logs: docker-compose logs -f"
+echo "   Detener: docker-compose down"
+echo "   Reiniciar: docker-compose restart"
+echo ""
+echo "🌐 Abriendo navegador..."
+firefox http://OpticaDanniels.com &
 
-# Función para imprimir con colores
-print_status() {
-    echo -e "${BLUE}[INFO]${NC} $1"
-}
-
-print_success() {
+echo "🎉 ¡LISTO! Tu aplicación está funcionando."
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
