@@ -1,5 +1,19 @@
-# ProyectoOpticaDanniels
+Para las pruebas:
 
-Proyecto pre-tesis con la finalidad de lanzar un software funcional, con funciones varias como por ejemplo el visualizar los productos de la optica y la venta de los mismos
+sudo apt update && sudo apt upgrade -y && sudo apt install -y git curl
 
-Se ocuparan teconologias que aún estan por definir, y una arquitectura Backend y Frontend
+curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh && sudo usermod -aG docker $USER
+
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
+
+git clone -b docker-testing-servidor https://github.com/Lucas23-IECI/ProyectoOpticaDanniels.git && cd ProyectoOpticaDanniels
+
+echo "127.0.0.1 OpticaDanniels.com" | sudo tee -a /etc/hosts
+
+newgrp docker
+
+docker-compose up --build -d
+
+docker-compose ps
+
+firefox http://OpticaDanniels.com
