@@ -32,7 +32,7 @@ fi
 # Verificar si Docker está instalado
 if ! command -v docker &> /dev/null; then
     echo "🐳 Instalando Docker..."
-    curl -fsSL https://get.docker.com -o get-docker.sh
+    curl -fsSL https://get-docker.com -o get-docker.sh
     sudo sh get-docker.sh
     rm get-docker.sh
 else
@@ -56,11 +56,25 @@ else
     echo "✅ Docker Compose ya está instalado"
 fi
 
-# Clonar proyecto
-echo "📥 Clonando proyecto..."
+# Iniciar Docker
+echo "🚀 Iniciando Docker..."
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Esperar a que Docker inicie
+echo "⏳ Esperando a que Docker inicie..."
+sleep 5
+
+# Crear directorio de trabajo
+echo "📁 Creando directorio de trabajo..."
+cd ~
 if [ -d "ProyectoOpticaDanniels" ]; then
+    echo "🗑️  Eliminando instalación anterior..."
     rm -rf ProyectoOpticaDanniels
 fi
+
+# Clonar proyecto
+echo "📥 Clonando proyecto desde GitHub..."
 git clone https://github.com/Lucas23-IECI/ProyectoOpticaDanniels.git
 cd ProyectoOpticaDanniels
 git checkout docker-testing-servidor
@@ -104,14 +118,6 @@ VITE_API_URL=http://OpticaDanniels.com:3000/api
 VITE_APP_NAME=Óptica Danniels
 EOF
 echo "✅ Archivo .env del frontend creado"
-# Iniciar Docker
-echo "🚀 Iniciando Docker..."
-sudo systemctl start docker
-sudo systemctl enable docker
-
-# Esperar a que Docker inicie
-echo "⏳ Esperando a que Docker inicie..."
-sleep 5
 
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
