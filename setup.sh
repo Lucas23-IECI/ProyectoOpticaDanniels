@@ -81,8 +81,8 @@ git checkout docker-testing-servidor
 
 # Configurar dominio local (solo si no existe)
 echo "🌐 Configurando dominio local..."
-if ! grep -q "OpticaDanniels.com" /etc/hosts; then
-    echo "127.0.0.1 OpticaDanniels.com" | sudo tee -a /etc/hosts
+if ! grep -q "opticadanniels.com" /etc/hosts; then
+    echo "127.0.0.1 opticadanniels.com" | sudo tee -a /etc/hosts
     echo "✅ Dominio agregado"
 else
     echo "✅ Dominio ya configurado"
@@ -106,7 +106,7 @@ ACCESS_TOKEN_SECRET=tu_secreto_super_seguro_aqui_cambiar_en_produccion
 cookieKey=otro_secreto_super_seguro_aqui_cambiar_en_produccion
 
 # Configuración del frontend
-FRONTEND_URL=http://OpticaDanniels.com
+FRONTEND_URL=http://opticadanniels.com
 EOF
 echo "✅ Archivo .env del backend creado"
 
@@ -114,7 +114,7 @@ echo "✅ Archivo .env del backend creado"
 echo "📝 Creando archivo .env para el frontend..."
 cat > Frontend/.env << 'EOF'
 # Configuración del frontend
-VITE_API_URL=http://OpticaDanniels.com:3000/api
+VITE_API_URL=http://opticadanniels.com:3000/api
 VITE_APP_NAME=Óptica Danniels
 EOF
 echo "✅ Archivo .env del frontend creado"
@@ -142,8 +142,8 @@ fi
 echo ""
 echo "✅ INSTALACIÓN COMPLETADA"
 echo "========================="
-echo "🌐 Aplicación disponible en: http://OpticaDanniels.com"
-echo "🔧 API disponible en: http://OpticaDanniels.com:3000/api"
+echo "🌐 Aplicación disponible en: http://opticadanniels.com"
+echo "🔧 API disponible en: http://opticadanniels.com:3000/api"
 echo ""
 echo "👤 Credenciales de prueba:"
 echo "   📧 Email: admin@optica.com"
@@ -155,6 +155,6 @@ echo "   Detener: docker-compose down (o sudo docker-compose down)"
 echo "   Reiniciar: docker-compose restart (o sudo docker-compose restart)"
 echo ""
 echo "🌐 Abriendo navegador..."
-firefox http://OpticaDanniels.com &
+firefox http://opticadanniels.com &
 
 echo "🎉 ¡LISTO! Tu aplicación está funcionando."

@@ -48,8 +48,8 @@ fi
 
 # Eliminar dominio del archivo hosts
 echo "🌐 Eliminando dominio local..."
-if sudo grep -q "OpticaDanniels.com" /etc/hosts; then
-    sudo sed -i '/OpticaDanniels.com/d' /etc/hosts
+if sudo grep -q "opticadanniels.com" /etc/hosts; then
+    sudo sed -i '/opticadanniels.com/d' /etc/hosts
     echo "✅ Dominio eliminado de /etc/hosts"
 else
     echo "ℹ️  Dominio no encontrado en /etc/hosts"
