@@ -102,15 +102,17 @@ sleep 5
 
 # Verificar que Docker esté funcionando
 echo "🔍 Verificando que Docker esté funcionando..."
-if ! docker info &> /dev/null; then
-    echo "⚠️  Docker no responde. Intentando con sudo..."
+if ! sudo docker info &> /dev/null; then
+    echo "❌ Docker no está funcionando correctamente"
+    echo "🔄 Reiniciando Docker..."
+    sudo systemctl restart docker
+    sleep 3
     if ! sudo docker info &> /dev/null; then
-        echo "❌ Docker no está funcionando correctamente"
-        echo "🔄 Reiniciando Docker..."
-        sudo systemctl restart docker
-        sleep 3
+        echo "❌ Docker sigue sin funcionar. Verifica la instalación."
+        exit 1
     fi
 fi
+echo "✅ Docker funcionando correctamente"
 
 # Configurar dominio local (solo si no existe)
 echo "🌐 Configurando dominio local..."
@@ -154,22 +156,14 @@ echo "✅ Archivo .env del frontend creado"
 
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
-if docker-compose up --build -d; then
-    echo "✅ Aplicación iniciada correctamente"
-else
-    echo "⚠️  Intentando con sudo..."
-    sudo docker-compose up --build -d
-fi
+sudo docker-compose up --build -d
+echo "✅ Aplicación iniciada correctamente"
 
 # Verificar estado
 echo "📊 Verificando estado de contenedores..."
 sleep 10
-if docker-compose ps; then
-    echo "✅ Verificación completada"
-else
-    echo "⚠️  Verificando con sudo..."
-    sudo docker-compose ps
-fi
+sudo docker-compose ps
+echo "✅ Verificación completada"
 
 # Mostrar información final
 echo ""
@@ -183,9 +177,9 @@ echo "   📧 Email: admin@optica.com"
 echo "   🔑 Password: password"
 echo ""
 echo "🛠️  Comandos útiles:"
-echo "   Ver logs: docker-compose logs -f (o sudo docker-compose logs -f)"
-echo "   Detener: docker-compose down (o sudo docker-compose down)"
-echo "   Reiniciar: docker-compose restart (o sudo docker-compose restart)"
+echo "   Ver logs: sudo docker-compose logs -f"
+echo "   Detener: sudo docker-compose down"
+echo "   Reiniciar: sudo docker-compose restart"
 echo ""
 echo "🌐 Abriendo navegador..."
 firefox http://opticadanniels.com &
