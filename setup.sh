@@ -149,6 +149,15 @@ VITE_APP_NAME=Óptica Danniels
 EOF
 echo "✅ Archivo .env del frontend creado"
 
+# Verificar que los archivos .env se crearon
+echo "🔍 Verificando archivos .env..."
+if [ -f "Backend/src/config/.env" ] && [ -f "Frontend/.env" ]; then
+    echo "✅ Archivos .env creados correctamente"
+else
+    echo "❌ Error: No se pudieron crear los archivos .env"
+    exit 1
+fi
+
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
 sudo docker-compose up --build -d
@@ -156,9 +165,17 @@ sudo docker-compose up --build -d
 
 # Verificar estado
 echo "📊 Verificando estado de contenedores..."
-sleep 10
+sleep 15
 sudo docker-compose ps
-    echo "✅ Verificación completada"
+
+# Verificar si hay errores
+echo "🔍 Verificando logs del frontend..."
+if sudo docker-compose logs frontend | grep -q "error\|Error\|ERROR"; then
+    echo "⚠️  Hay errores en el frontend. Mostrando logs:"
+    sudo docker-compose logs frontend --tail=20
+fi
+
+echo "✅ Verificación completada"
 
 # Mostrar información final
 echo ""
