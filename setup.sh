@@ -112,9 +112,7 @@ sleep 5
 
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
-newgrp docker << EOF
 docker-compose up --build -d
-EOF
 
 # Verificar estado
 echo "📊 Verificando estado de contenedores..."

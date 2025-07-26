@@ -200,8 +200,4 @@ BEGIN
     RAISE NOTICE '';
     RAISE NOTICE '🚀 ¡Sistema listo para usar!';
     RAISE NOTICE '';
-<<<<<<< HEAD
 END $$;
-=======
-END $$;
->>>>>>> fix/mover-desliz-test
