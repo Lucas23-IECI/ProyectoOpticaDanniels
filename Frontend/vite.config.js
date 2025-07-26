@@ -10,7 +10,7 @@ export default defineConfig({
   base: "/",
   plugins: [react()],
   preview: {
-    port: 443,
+    port: 80,
     host: true
   },
   resolve: {

@@ -102,11 +102,11 @@ sleep 5
 
 # Verificar que Docker esté funcionando
 echo "🔍 Verificando que Docker esté funcionando..."
-if ! sudo docker info &> /dev/null; then
-    echo "❌ Docker no está funcionando correctamente"
-    echo "🔄 Reiniciando Docker..."
-    sudo systemctl restart docker
-    sleep 3
+    if ! sudo docker info &> /dev/null; then
+        echo "❌ Docker no está funcionando correctamente"
+        echo "🔄 Reiniciando Docker..."
+        sudo systemctl restart docker
+        sleep 3
     if ! sudo docker info &> /dev/null; then
         echo "❌ Docker sigue sin funcionar. Verifica la instalación."
         exit 1
@@ -152,13 +152,13 @@ echo "✅ Archivo .env del frontend creado"
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
 sudo docker-compose up --build -d
-echo "✅ Aplicación iniciada correctamente"
+    echo "✅ Aplicación iniciada correctamente"
 
 # Verificar estado
 echo "📊 Verificando estado de contenedores..."
 sleep 10
 sudo docker-compose ps
-echo "✅ Verificación completada"
+    echo "✅ Verificación completada"
 
 # Mostrar información final
 echo ""
@@ -166,6 +166,7 @@ echo "✅ INSTALACIÓN COMPLETADA"
 echo "========================="
 echo "🌐 Aplicación disponible en: http://localhost:5173"
 echo "🔧 API disponible en: http://localhost:3000/api"
+echo "💡 Si la app no carga, prueba: http://localhost:5173/OpticaDanniels"
 echo ""
 echo "👤 Credenciales de prueba:"
 echo "   📧 Email: admin@optica.com"
