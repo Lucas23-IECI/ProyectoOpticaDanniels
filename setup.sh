@@ -12,6 +12,16 @@ trap 'handle_error $LINENO' ERR
 echo "🚀 INSTALACIÓN AUTOMÁTICA - ÓPTICA DANNIELS"
 echo "============================================"
 
+# Verificar que estamos en el directorio correcto
+if [ ! -f "docker-compose.yml" ]; then
+    echo "❌ Error: No se encontró docker-compose.yml"
+    echo "💡 Asegúrate de estar en el directorio del proyecto ProyectoOpticaDanniels"
+    echo "💡 Ejecuta: cd ProyectoOpticaDanniels"
+    exit 1
+fi
+
+echo "✅ Directorio del proyecto verificado"
+
 # Detener actualizaciones automáticas que bloquean el sistema
 echo "⏹️  Deteniendo actualizaciones automáticas..."
 sudo killall unattended-upgrade 2>/dev/null || true
@@ -40,7 +50,7 @@ fi
 # Verificar si Docker está instalado
 if ! command -v docker &> /dev/null; then
     echo "🐳 Instalando Docker..."
-    echo "🔄 Intentando con apt (más confiable)..."
+    echo "🔄 Instalando con apt..."
     sudo apt update
     sudo apt install -y docker.io docker-compose
     sudo systemctl start docker
@@ -87,20 +97,6 @@ if ! docker info &> /dev/null; then
         sleep 3
     fi
 fi
-
-# Crear directorio de trabajo
-echo "📁 Creando directorio de trabajo..."
-cd ~
-if [ -d "ProyectoOpticaDanniels" ]; then
-    echo "🗑️  Eliminando instalación anterior..."
-    sudo rm -rf ProyectoOpticaDanniels 2>/dev/null || true
-fi
-
-# Clonar proyecto
-echo "📥 Clonando proyecto desde GitHub..."
-git clone https://github.com/Lucas23-IECI/ProyectoOpticaDanniels.git
-cd ProyectoOpticaDanniels
-git checkout docker-testing-servidor
 
 # Configurar dominio local (solo si no existe)
 echo "🌐 Configurando dominio local..."
