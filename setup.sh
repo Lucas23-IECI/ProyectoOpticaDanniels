@@ -180,7 +180,7 @@ echo "✅ Archivo .env del backend creado"
 # Crear archivo .env para el frontend
 echo "📝 Creando archivo .env para el frontend..."
 cat > Frontend/.env << 'EOF'
-# Configuración del frontend
+VITE_BASE_URL=http://localhost:3000/api
 VITE_API_URL=http://localhost:3000/api
 VITE_APP_NAME=Óptica Danniels
 EOF
@@ -237,7 +237,6 @@ echo "   Ver logs: sudo docker-compose logs -f"
 echo "   Detener: sudo docker-compose down"
 echo "   Reiniciar: sudo docker-compose restart"
 echo ""
-echo "🌐 Abriendo navegador..."
-firefox http://localhost:5173 &
+
 
 echo "🎉 ¡LISTO! Tu aplicación está funcionando"
