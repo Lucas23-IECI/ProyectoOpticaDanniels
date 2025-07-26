@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:15
+    container_name: optica_danniels_db
+    environment:
+      POSTGRES_DB: optica_danniels
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - optica_network
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: optica_danniels_backend
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./Backend/src/config/.env
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+    volumes:
+      - ./Backend/uploads:/app/uploads
+    networks:
+      - optica_network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: optica_danniels_frontend
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./Frontend/.env
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - optica_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  optica_network:
+    driver: bridge 
