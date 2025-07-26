@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS direcciones (
     nombre VARCHAR(255) NOT NULL,
     direccion TEXT NOT NULL,
     ciudad VARCHAR(100) NOT NULL,
+    region VARCHAR(100) NOT NULL DEFAULT 'Sin región',
     "codigoPostal" VARCHAR(20),
     telefono VARCHAR(20),
     principal BOOLEAN DEFAULT false,

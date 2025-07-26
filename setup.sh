@@ -195,28 +195,36 @@ else
     exit 1
 fi
 
+# Limpiar contenedores anteriores si existen
+echo "🧹 Limpiando contenedores anteriores..."
+sudo docker-compose down -v --remove-orphans 2>/dev/null || true
+
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
-
-# Construir y levantar contenedores en segundo plano. Se omite `docker-compose pull` para
-# reducir fallos por descarga de imágenes; el parámetro `--pull always` hace que
-# Compose actualice las imágenes de servicio que usan la directiva `image:` cuando
-# sea necesario.
-echo "⏳ Construyendo y ejecutando contenedores con Docker Compose (puede tardar unos minutos)..."
-sudo docker-compose up --build --pull always -d
+echo "⏳ Construyendo contenedores con Docker Compose (puede tardar unos minutos)..."
+sudo docker-compose up --build -d
 echo "✅ Aplicación iniciada correctamente"
 
 # Verificar estado
 echo "📊 Verificando estado de contenedores..."
-sleep 15
+sleep 20
 sudo docker-compose ps
 
-# Verificar si hay errores en el frontend
-echo "🔍 Verificando logs del frontend..."
-if sudo docker-compose logs frontend | grep -q "error\|Error\|ERROR"; then
-    echo "⚠️  Hay errores en el frontend. Mostrando logs:" 
-    sudo docker-compose logs frontend --tail=20
+# Verificar si hay errores
+echo "🔍 Verificando logs..."
+if sudo docker-compose logs frontend | grep -q "error\|Error\|ERROR\|emerg"; then
+    echo "⚠️  Errores detectados en frontend:"
+    sudo docker-compose logs frontend --tail=10
 fi
+
+if sudo docker-compose logs backend | grep -q "error\|Error\|ERROR"; then
+    echo "⚠️  Errores detectados en backend:"
+    sudo docker-compose logs backend --tail=10
+fi
+
+# Mostrar puertos abiertos
+echo "🌐 Puertos disponibles:"
+ss -lntp | egrep ':5173|:3000|:5432' || echo "No se detectaron puertos abiertos"
 
 echo "✅ Verificación completada"
 
