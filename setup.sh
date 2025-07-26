@@ -114,14 +114,9 @@ if ! sudo docker info &> /dev/null; then
 fi
 echo "✅ Docker funcionando correctamente"
 
-# Configurar dominio local (solo si no existe)
-echo "🌐 Configurando dominio local..."
-if ! grep -q "opticadanniels.com" /etc/hosts; then
-    echo "127.0.0.1 opticadanniels.com" | sudo tee -a /etc/hosts
-    echo "✅ Dominio agregado"
-else
-    echo "✅ Dominio ya configurado"
-fi
+# Configurar para localhost
+echo "🌐 Configurando para localhost..."
+echo "✅ Usando localhost:5173"
 
 # Crear archivo .env para el backend
 echo "📝 Creando archivo .env para el backend..."
@@ -141,7 +136,7 @@ ACCESS_TOKEN_SECRET=tu_secreto_super_seguro_aqui_cambiar_en_produccion
 cookieKey=otro_secreto_super_seguro_aqui_cambiar_en_produccion
 
 # Configuración del frontend
-FRONTEND_URL=http://opticadanniels.com
+FRONTEND_URL=http://localhost:5173
 EOF
 echo "✅ Archivo .env del backend creado"
 
@@ -149,7 +144,7 @@ echo "✅ Archivo .env del backend creado"
 echo "📝 Creando archivo .env para el frontend..."
 cat > Frontend/.env << 'EOF'
 # Configuración del frontend
-VITE_API_URL=http://opticadanniels.com:3000/api
+VITE_API_URL=http://localhost:3000/api
 VITE_APP_NAME=Óptica Danniels
 EOF
 echo "✅ Archivo .env del frontend creado"
@@ -169,8 +164,8 @@ echo "✅ Verificación completada"
 echo ""
 echo "✅ INSTALACIÓN COMPLETADA"
 echo "========================="
-echo "🌐 Aplicación disponible en: http://opticadanniels.com"
-echo "🔧 API disponible en: http://opticadanniels.com:3000/api"
+echo "🌐 Aplicación disponible en: http://localhost:5173"
+echo "🔧 API disponible en: http://localhost:3000/api"
 echo ""
 echo "👤 Credenciales de prueba:"
 echo "   📧 Email: admin@optica.com"
@@ -182,6 +177,6 @@ echo "   Detener: sudo docker-compose down"
 echo "   Reiniciar: sudo docker-compose restart"
 echo ""
 echo "🌐 Abriendo navegador..."
-firefox http://opticadanniels.com &
+firefox http://localhost:5173 &
 
 echo "🎉 ¡LISTO! Tu aplicación está funcionando."
