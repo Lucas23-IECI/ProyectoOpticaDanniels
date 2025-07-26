@@ -68,13 +68,27 @@ sudo usermod -aG docker $USER
 # Nota: Los cambios de grupo se aplicarán después de reiniciar sesión
 echo "ℹ️  Nota: Si hay problemas de permisos, reinicia la sesión o usa 'sudo'"
 
-# Verificar si Docker Compose está instalado
+# Verificar si Docker Compose está instalado y funcionando
 if ! command -v docker-compose &> /dev/null; then
     echo "🔧 Instalando Docker Compose..."
     sudo apt install -y docker-compose
     echo "✅ Docker Compose instalado con apt"
 else
     echo "✅ Docker Compose ya está instalado"
+fi
+
+# Verificar que Docker Compose funcione correctamente
+echo "🔍 Verificando Docker Compose..."
+if ! docker-compose --version &> /dev/null; then
+    echo "⚠️  Docker Compose no funciona. Instalando versión más reciente..."
+    # Eliminar versión problemática
+    sudo apt remove -y docker-compose
+    sudo apt autoremove -y
+    
+    # Instalar versión más reciente
+    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    echo "✅ Docker Compose actualizado"
 fi
 
 # Iniciar Docker
