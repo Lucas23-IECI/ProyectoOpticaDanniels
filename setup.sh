@@ -44,6 +44,9 @@ echo "👥 Configurando permisos Docker..."
 sudo groupadd docker 2>/dev/null || true
 sudo usermod -aG docker $USER
 
+# Aplicar cambios de grupo sin reiniciar sesión
+newgrp docker
+
 # Verificar si Docker Compose está instalado
 if ! command -v docker-compose &> /dev/null; then
     echo "🔧 Instalando Docker Compose..."
@@ -112,12 +115,22 @@ sleep 5
 
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
-docker-compose up --build -d
+if docker-compose up --build -d; then
+    echo "✅ Aplicación iniciada correctamente"
+else
+    echo "⚠️  Intentando con sudo..."
+    sudo docker-compose up --build -d
+fi
 
 # Verificar estado
 echo "📊 Verificando estado de contenedores..."
 sleep 10
-docker-compose ps
+if docker-compose ps; then
+    echo "✅ Verificación completada"
+else
+    echo "⚠️  Verificando con sudo..."
+    sudo docker-compose ps
+fi
 
 # Mostrar información final
 echo ""
@@ -131,9 +144,9 @@ echo "   📧 Email: admin@optica.com"
 echo "   🔑 Password: password"
 echo ""
 echo "🛠️  Comandos útiles:"
-echo "   Ver logs: docker-compose logs -f"
-echo "   Detener: docker-compose down"
-echo "   Reiniciar: docker-compose restart"
+echo "   Ver logs: docker-compose logs -f (o sudo docker-compose logs -f)"
+echo "   Detener: docker-compose down (o sudo docker-compose down)"
+echo "   Reiniciar: docker-compose restart (o sudo docker-compose restart)"
 echo ""
 echo "🌐 Abriendo navegador..."
 firefox http://OpticaDanniels.com &
