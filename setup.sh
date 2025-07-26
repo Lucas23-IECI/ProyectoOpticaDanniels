@@ -1,47 +1,8 @@
 #!/bin/bash
 set -e
 
-echo "🚀 INSTALACIÓN AUTOMÁTICA - ÓPTICA # Configurar domini# Configurar dominio local (solo si no existe)
-echo "🌐 Configurando dominio local..."
-if ! grep -q "OpticaDanniels.com" /etc/hosts; then
-    echo "127.0.0.1 OpticaDanniels.com" | sudo tee -a /etc/hosts
-    echo "✅ Dominio agregado"
-else
-    echo "✅ Dominio ya configurado"
-fi
-
-# Iniciar Docker
-echo "🚀 Iniciando Docker..."
-sudo systemctl start docker
-sudo systemctl enable docker
-
-# Esperar a que Docker inicie
-echo "⏳ Esperando a que Docker inicie..."
-sleep 5
-
-# Ejecutar aplicación
-echo "🏗️  Construyendo y ejecutando aplicación..."
-sg docker -c "docker-compose up --build -d"si no existe)
-echo "🌐 Configurando dominio local..."
-if ! grep -q "OpticaDanniels.com" /etc/hosts; then
-    echo "127.0.0.1 OpticaDanniels.com" | sudo tee -a /etc/hosts
-    echo "✅ Dominio agregado"
-else
-    echo "✅ Dominio ya configurado"
-fi
-
-# Iniciar Docker
-echo "🚀 Iniciando Docker..."
-sudo systemctl start docker
-sudo systemctl enable docker
-
-# Esperar a que Docker inicie
-echo "⏳ Esperando a que Docker inicie..."
-sleep 5
-
-# Ejecutar aplicación
-echo "🏗️  Construyendo y ejecutando aplicación..."
-sg docker -c "docker-compose up --build -d"o "============================================"
+echo "🚀 INSTALACIÓN AUTOMÁTICA - ÓPTICA DANNIELS"
+echo "============================================"
 
 # Detener actualizaciones automáticas que bloquean el sistema
 echo "⏹️  Deteniendo actualizaciones automáticas..."
@@ -101,14 +62,23 @@ git clone https://github.com/Lucas23-IECI/ProyectoOpticaDanniels.git
 cd ProyectoOpticaDanniels
 git checkout docker-testing-servidor
 
-# Configurar dominio local
-echo "� Configurando dominio local..."
-echo "127.0.0.1 OpticaDanniels.com" | sudo tee -a /etc/hosts
+# Configurar dominio local (solo si no existe)
+echo "🌐 Configurando dominio local..."
+if ! grep -q "OpticaDanniels.com" /etc/hosts; then
+    echo "127.0.0.1 OpticaDanniels.com" | sudo tee -a /etc/hosts
+    echo "✅ Dominio agregado"
+else
+    echo "✅ Dominio ya configurado"
+fi
 
 # Iniciar Docker
 echo "🚀 Iniciando Docker..."
 sudo systemctl start docker
 sudo systemctl enable docker
+
+# Esperar a que Docker inicie
+echo "⏳ Esperando a que Docker inicie..."
+sleep 5
 
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
