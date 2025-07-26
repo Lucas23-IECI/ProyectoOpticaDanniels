@@ -1,4 +1,13 @@
 #!/bin/bash
+#
+# Este script es una versión mejorada del instalador automático para el
+# proyecto Óptica Danniels. Incorpora correcciones y robustez extra para
+# manejar problemas comunes de Docker durante la descarga de imágenes, como
+# el error «open /var/lib/docker/tmp/GetImageBlob…» que se produce cuando
+# Docker intenta usar un directorio temporal inexistente. También pre‑descarga
+# la imagen de la base de datos para reducir las fallas durante el «pull» y
+# simplifica el flujo eliminando el paso redundante de `docker-compose pull`.
+
 set -e
 
 # Función para manejar errores
@@ -95,7 +104,6 @@ if ! docker-compose --version &> /dev/null; then
     # Eliminar versión problemática
     sudo apt remove -y docker-compose
     sudo apt autoremove -y
-    
     # Instalar versión más reciente
     sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     sudo chmod +x /usr/local/bin/docker-compose
@@ -113,17 +121,35 @@ sleep 5
 
 # Verificar que Docker esté funcionando
 echo "🔍 Verificando que Docker esté funcionando..."
-    if ! sudo docker info &> /dev/null; then
-        echo "❌ Docker no está funcionando correctamente"
-        echo "🔄 Reiniciando Docker..."
-        sudo systemctl restart docker
-        sleep 3
+if ! sudo docker info &> /dev/null; then
+    echo "❌ Docker no está funcionando correctamente"
+    echo "🔄 Reiniciando Docker..."
+    sudo systemctl restart docker
+    sleep 3
     if ! sudo docker info &> /dev/null; then
         echo "❌ Docker sigue sin funcionar. Verifica la instalación."
         exit 1
     fi
 fi
 echo "✅ Docker funcionando correctamente"
+
+# Asegurar que el directorio temporal de Docker exista
+if [ ! -d "/var/lib/docker/tmp" ]; then
+    echo "🛠️  Creando directorio temporal de Docker (/var/lib/docker/tmp)..."
+    sudo mkdir -p /var/lib/docker/tmp
+    sudo chown root:root /var/lib/docker/tmp
+fi
+
+# Pre‑descargar imagen de la base de datos para evitar fallos en docker-compose pull
+echo "🐳 Descargando imagen de base de datos (postgres:15)..."
+if ! sudo docker pull postgres:15; then
+    echo "⚠️  Error al descargar la imagen de Postgres. Reiniciando Docker y reintentando..."
+    sudo systemctl restart docker
+    sleep 3
+    sudo docker pull postgres:15 || {
+        echo "❌ No se pudo descargar la imagen postgres:15 después de reintento. Continúa con la instalación, pero la base de datos puede no funcionar."
+    }
+fi
 
 # Configurar para localhost
 echo "🌐 Configurando para localhost..."
@@ -171,10 +197,13 @@ fi
 
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
-echo "⏳ Descargando imágenes de Docker (esto puede tomar varios minutos)..."
-sudo docker-compose pull
-echo "⏳ Construyendo y ejecutando aplicación..."
-sudo docker-compose up --build -d
+
+# Construir y levantar contenedores en segundo plano. Se omite `docker-compose pull` para
+# reducir fallos por descarga de imágenes; el parámetro `--pull always` hace que
+# Compose actualice las imágenes de servicio que usan la directiva `image:` cuando
+# sea necesario.
+echo "⏳ Construyendo y ejecutando contenedores con Docker Compose (puede tardar unos minutos)..."
+sudo docker-compose up --build --pull always -d
 echo "✅ Aplicación iniciada correctamente"
 
 # Verificar estado
@@ -182,10 +211,10 @@ echo "📊 Verificando estado de contenedores..."
 sleep 15
 sudo docker-compose ps
 
-# Verificar si hay errores
+# Verificar si hay errores en el frontend
 echo "🔍 Verificando logs del frontend..."
 if sudo docker-compose logs frontend | grep -q "error\|Error\|ERROR"; then
-    echo "⚠️  Hay errores en el frontend. Mostrando logs:"
+    echo "⚠️  Hay errores en el frontend. Mostrando logs:" 
     sudo docker-compose logs frontend --tail=20
 fi
 
@@ -211,4 +240,4 @@ echo ""
 echo "🌐 Abriendo navegador..."
 firefox http://localhost:5173 &
 
-echo "🎉 ¡LISTO! Tu aplicación está funcionando."
+echo "🎉 ¡LISTO! Tu aplicación está funcionando"
