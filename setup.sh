@@ -40,9 +40,18 @@ fi
 # Verificar si Docker está instalado
 if ! command -v docker &> /dev/null; then
     echo "🐳 Instalando Docker..."
-    curl -fsSL https://get-docker.com -o get-docker.sh
-    sudo sh get-docker.sh
-    rm get-docker.sh
+    if curl -fsSL https://get-docker.com -o get-docker.sh; then
+        sudo sh get-docker.sh
+        rm get-docker.sh
+        echo "✅ Docker instalado correctamente"
+    else
+        echo "❌ Error al descargar Docker. Intentando con apt..."
+        sudo apt update
+        sudo apt install -y docker.io docker-compose
+        sudo systemctl start docker
+        sudo systemctl enable docker
+        echo "✅ Docker instalado con apt"
+    fi
 else
     echo "✅ Docker ya está instalado"
 fi
@@ -58,8 +67,14 @@ echo "ℹ️  Nota: Si hay problemas de permisos, reinicia la sesión o usa 'sud
 # Verificar si Docker Compose está instalado
 if ! command -v docker-compose &> /dev/null; then
     echo "🔧 Instalando Docker Compose..."
-    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
+    if sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose; then
+        sudo chmod +x /usr/local/bin/docker-compose
+        echo "✅ Docker Compose instalado correctamente"
+    else
+        echo "❌ Error al descargar Docker Compose. Intentando con apt..."
+        sudo apt install -y docker-compose
+        echo "✅ Docker Compose instalado con apt"
+    fi
 else
     echo "✅ Docker Compose ya está instalado"
 fi
