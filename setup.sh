@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+# Función para manejar errores
+handle_error() {
+    echo "❌ Error en la línea $1"
+    echo "🔄 Continuando con la instalación..."
+}
+
+trap 'handle_error $LINENO' ERR
+
 echo "🚀 INSTALACIÓN AUTOMÁTICA - ÓPTICA DANNIELS"
 echo "============================================"
 
@@ -70,7 +78,7 @@ echo "📁 Creando directorio de trabajo..."
 cd ~
 if [ -d "ProyectoOpticaDanniels" ]; then
     echo "🗑️  Eliminando instalación anterior..."
-    rm -rf ProyectoOpticaDanniels
+    sudo rm -rf ProyectoOpticaDanniels 2>/dev/null || true
 fi
 
 # Clonar proyecto
