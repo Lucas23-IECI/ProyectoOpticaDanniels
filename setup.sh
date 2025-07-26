@@ -71,8 +71,6 @@ else
     echo "✅ Dominio ya configurado"
 fi
 
-<<<<<<< HEAD
-=======
 # Crear archivo .env para el backend
 echo "📝 Creando archivo .env para el backend..."
 cat > Backend/src/config/.env << 'EOF'
@@ -103,8 +101,6 @@ VITE_API_URL=http://OpticaDanniels.com:3000/api
 VITE_APP_NAME=Óptica Danniels
 EOF
 echo "✅ Archivo .env del frontend creado"
-
->>>>>>> fix/mover-desliz-test
 # Iniciar Docker
 echo "🚀 Iniciando Docker..."
 sudo systemctl start docker
