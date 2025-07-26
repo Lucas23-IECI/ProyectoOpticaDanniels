@@ -22,6 +22,17 @@ fi
 
 echo "✅ Directorio del proyecto verificado"
 
+# Verificar espacio en disco
+echo "💾 Verificando espacio en disco..."
+FREE_SPACE=$(df / | awk 'NR==2 {print $4}')
+if [ "$FREE_SPACE" -lt 5000000 ]; then
+    echo "⚠️  Poco espacio en disco. Se requieren al menos 5GB libres."
+    echo "💡 Espacio disponible: $((FREE_SPACE / 1024 / 1024))GB"
+    echo "🔄 Continuando de todas formas..."
+else
+    echo "✅ Espacio en disco suficiente: $((FREE_SPACE / 1024 / 1024))GB libres"
+fi
+
 # Detener actualizaciones automáticas que bloquean el sistema
 echo "⏹️  Deteniendo actualizaciones automáticas..."
 sudo killall unattended-upgrade 2>/dev/null || true
@@ -160,8 +171,11 @@ fi
 
 # Ejecutar aplicación
 echo "🏗️  Construyendo y ejecutando aplicación..."
+echo "⏳ Descargando imágenes de Docker (esto puede tomar varios minutos)..."
+sudo docker-compose pull
+echo "⏳ Construyendo y ejecutando aplicación..."
 sudo docker-compose up --build -d
-    echo "✅ Aplicación iniciada correctamente"
+echo "✅ Aplicación iniciada correctamente"
 
 # Verificar estado
 echo "📊 Verificando estado de contenedores..."
