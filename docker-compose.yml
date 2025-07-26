@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile
     container_name: optica-backend
     env_file:
-      - ./Backend/.env
+      - ./Backend/src/config/.env
     environment:
       # Override para Docker específicamente
       NODE_ENV: production
@@ -66,9 +66,9 @@ services:
     build:
       context: ./Frontend
       dockerfile: Dockerfile
-      args:
-        - VITE_BASE_URL=http://OpticaDanniels.com:3000/api
     container_name: optica-frontend
+    env_file:
+      - ./Frontend/.env
     ports:
       - "80:80"
     depends_on:
