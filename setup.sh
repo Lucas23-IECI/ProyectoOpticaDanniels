@@ -71,6 +71,40 @@ else
     echo "✅ Dominio ya configurado"
 fi
 
+<<<<<<< HEAD
+=======
+# Crear archivo .env para el backend
+echo "📝 Creando archivo .env para el backend..."
+cat > Backend/src/config/.env << 'EOF'
+# Configuración de la base de datos
+HOST=database
+DB_USERNAME=admin
+PASSWORD=admin123
+DATABASE=optica_danniels
+
+# Configuración del servidor
+PORT=3000
+NODE_ENV=production
+
+# Configuración de autenticación
+ACCESS_TOKEN_SECRET=tu_secreto_super_seguro_aqui_cambiar_en_produccion
+cookieKey=otro_secreto_super_seguro_aqui_cambiar_en_produccion
+
+# Configuración del frontend
+FRONTEND_URL=http://OpticaDanniels.com
+EOF
+echo "✅ Archivo .env del backend creado"
+
+# Crear archivo .env para el frontend
+echo "📝 Creando archivo .env para el frontend..."
+cat > Frontend/.env << 'EOF'
+# Configuración del frontend
+VITE_API_URL=http://OpticaDanniels.com:3000/api
+VITE_APP_NAME=Óptica Danniels
+EOF
+echo "✅ Archivo .env del frontend creado"
+
+>>>>>>> fix/mover-desliz-test
 # Iniciar Docker
 echo "🚀 Iniciando Docker..."
 sudo systemctl start docker
