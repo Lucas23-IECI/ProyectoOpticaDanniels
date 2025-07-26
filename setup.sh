@@ -44,8 +44,8 @@ echo "👥 Configurando permisos Docker..."
 sudo groupadd docker 2>/dev/null || true
 sudo usermod -aG docker $USER
 
-# Aplicar cambios de grupo sin reiniciar sesión
-newgrp docker
+# Nota: Los cambios de grupo se aplicarán después de reiniciar sesión
+echo "ℹ️  Nota: Si hay problemas de permisos, reinicia la sesión o usa 'sudo'"
 
 # Verificar si Docker Compose está instalado
 if ! command -v docker-compose &> /dev/null; then
