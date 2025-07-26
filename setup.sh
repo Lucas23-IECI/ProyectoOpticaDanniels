@@ -40,18 +40,12 @@ fi
 # Verificar si Docker está instalado
 if ! command -v docker &> /dev/null; then
     echo "🐳 Instalando Docker..."
-    if curl -fsSL https://get-docker.com -o get-docker.sh; then
-        sudo sh get-docker.sh
-        rm get-docker.sh
-        echo "✅ Docker instalado correctamente"
-    else
-        echo "❌ Error al descargar Docker. Intentando con apt..."
-        sudo apt update
-        sudo apt install -y docker.io docker-compose
-        sudo systemctl start docker
-        sudo systemctl enable docker
-        echo "✅ Docker instalado con apt"
-    fi
+    echo "🔄 Intentando con apt (más confiable)..."
+    sudo apt update
+    sudo apt install -y docker.io docker-compose
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    echo "✅ Docker instalado con apt"
 else
     echo "✅ Docker ya está instalado"
 fi
@@ -67,14 +61,8 @@ echo "ℹ️  Nota: Si hay problemas de permisos, reinicia la sesión o usa 'sud
 # Verificar si Docker Compose está instalado
 if ! command -v docker-compose &> /dev/null; then
     echo "🔧 Instalando Docker Compose..."
-    if sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose; then
-        sudo chmod +x /usr/local/bin/docker-compose
-        echo "✅ Docker Compose instalado correctamente"
-    else
-        echo "❌ Error al descargar Docker Compose. Intentando con apt..."
-        sudo apt install -y docker-compose
-        echo "✅ Docker Compose instalado con apt"
-    fi
+    sudo apt install -y docker-compose
+    echo "✅ Docker Compose instalado con apt"
 else
     echo "✅ Docker Compose ya está instalado"
 fi
@@ -87,6 +75,18 @@ sudo systemctl enable docker
 # Esperar a que Docker inicie
 echo "⏳ Esperando a que Docker inicie..."
 sleep 5
+
+# Verificar que Docker esté funcionando
+echo "🔍 Verificando que Docker esté funcionando..."
+if ! docker info &> /dev/null; then
+    echo "⚠️  Docker no responde. Intentando con sudo..."
+    if ! sudo docker info &> /dev/null; then
+        echo "❌ Docker no está funcionando correctamente"
+        echo "🔄 Reiniciando Docker..."
+        sudo systemctl restart docker
+        sleep 3
+    fi
+fi
 
 # Crear directorio de trabajo
 echo "📁 Creando directorio de trabajo..."
