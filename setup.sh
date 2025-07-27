@@ -166,7 +166,7 @@ DATABASE=optica_danniels
 
 # Configuración del servidor
 PORT=3000
-NODE_ENV=production
+NODE_ENV=development
 
 # Configuración de autenticación
 ACCESS_TOKEN_SECRET=tu_secreto_super_seguro_aqui_cambiar_en_produccion
@@ -174,14 +174,18 @@ cookieKey=otro_secreto_super_seguro_aqui_cambiar_en_produccion
 
 # Configuración del frontend
 FRONTEND_URL=http://localhost:5173
+
+# Configuración CORS
+CORS_ORIGIN=http://localhost:5173
 EOF
 echo "✅ Archivo .env del backend creado"
 
 # Crear archivo .env para el frontend
 echo "📝 Creando archivo .env para el frontend..."
 cat > Frontend/.env << 'EOF'
-VITE_BASE_URL=http://localhost:3000/api
+# Configuración del frontend
 VITE_API_URL=http://localhost:3000/api
+VITE_BASE_URL=http://localhost:3000/api
 VITE_APP_NAME=Óptica Danniels
 EOF
 echo "✅ Archivo .env del frontend creado"
