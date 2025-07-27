@@ -158,15 +158,21 @@ echo "✅ Usando localhost:5173"
 # Crear archivo .env para el backend
 echo "📝 Creando archivo .env para el backend..."
 cat > Backend/src/config/.env << 'EOF'
-HOST=localhost
+# Host donde escucha Express (solo informativo en tu index.js, pero útil si lo usas en el futuro)
+HOST=0.0.0.0
 PORT=3000
+
+# Host de Postgres dentro de la red de Docker (nombre del servicio en docker-compose)
+DB_HOST=database
 DB_USERNAME=lucas23
 PASSWORD=lucas2323
 DATABASE=ProyectoOpticaDanniels
-ACCESS_TOKEN_SECRET=cTyPgiwvIVADBgOavRnijeQqoFlhaScuWyCVBDpga7q9ZBvCmU20xTzvPxcMEMvfskzPFJjwY2h2AIZ6trcdpkamZerKg7d0FQiI7z2QEAP6y4B4WvZuOKk2OEFXP51a
-cookieKey=KSGXogsKotXZyt0QzFVwk9yy0WY2DNbscCEVMBJ5mp8PcusXKkWFgqIcMpONs6PTiOSFMHweBFjOwMtmVCsuAXDW81fYj6t7p2hMz3cjFpOjXXJ3wJnJCn2ZLVcPdNCS
+
+ACCESS_TOKEN_SECRET=cTyPgiwvIVADBgOavKoLMUQqoFlhaScuWyCVBDpga7q9ZBvCmU20xTzvPxcMEMvfskzPFJjwY2h2AIZ6trcdpkamZerKg7d0FQiI7z2QEAP6y4B4WvZuOKk2OEFXP51a
+cookieKey=KSGXogsKotXZy0afzFVwk9yy0WY2DNbscCEVMBJ5mp8PcusXKkWFgqIcMpONs6PTiOSFMHweBFjOwMtmVCsuAXDW81fYj6t7p2hMz3cjFpOjXXJ3wJnJCn2ZLVcPdNCS
 EOF
 echo "✅ Archivo .env del backend creado"
+
 
 # Crear archivo .env para el frontend
 echo "📝 Creando archivo .env para el frontend..."

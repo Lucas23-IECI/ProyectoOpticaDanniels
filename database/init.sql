@@ -1,8 +1,13 @@
 -- Inicialización de Base de Datos - Óptica Danniels
 -- ================================================
 
--- Crear extensiones necesarias
+-- Extensiones necesarias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS pgcrypto;  -- para crypt('...', gen_salt('bf'))
+
+-- =========================
+-- TABLAS
+-- =========================
 
 -- Tabla usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -64,7 +69,7 @@ CREATE TABLE IF NOT EXISTS ordenes (
     "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabla orden_productos (relación many-to-many entre ordenes y productos)
+-- Tabla orden_productos (relación many-to-many)
 CREATE TABLE IF NOT EXISTS orden_productos (
     id SERIAL PRIMARY KEY,
     "ordenId" INTEGER REFERENCES ordenes(id) ON DELETE CASCADE,
@@ -83,35 +88,63 @@ CREATE TABLE IF NOT EXISTS wishlist (
     UNIQUE("usuarioId", "productoId")
 );
 
--- Crear usuario administrador por defecto
+-- =========================
+-- SEED: USUARIOS
+-- =========================
+
+-- Admin/cliente genéricos (password: "password")
 INSERT INTO usuarios (email, password, nombre, rol) 
 VALUES (
     'admin@optica.com', 
-    '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- password: password
+    '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
     'Administrador Sistema',
     'administrador'
 ) ON CONFLICT (email) DO NOTHING;
 
--- Crear usuario cliente de prueba
 INSERT INTO usuarios (email, password, nombre, rol) 
 VALUES (
     'cliente@test.com', 
-    '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- password: password
+    '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
     'Cliente de Prueba',
     'cliente'
 ) ON CONFLICT (email) DO NOTHING;
 
--- Productos de ejemplo
-INSERT INTO productos (nombre, descripcion, precio, categoria, marca, "codigoSKU", stock) VALUES
-('Ray-Ban Aviator Clásico', 'Gafas de sol icónicas con diseño atemporal', 89990, 'Gafas de Sol', 'Ray-Ban', 'RB-AVIATOR-001', 15),
-('Oakley Holbrook Polarizado', 'Gafas deportivas con lentes polarizadas', 129990, 'Gafas Deportivas', 'Oakley', 'OK-HOLBROOK-001', 10),
-('Lentes Acuvue Oasys Daily', 'Lentes de contacto diarios ultra cómodos', 25990, 'Lentes de Contacto', 'Acuvue', 'AC-OASYS-001', 50),
-('Ray-Ban Wayfarer Negro', 'El modelo más vendido de Ray-Ban', 79990, 'Gafas de Sol', 'Ray-Ban', 'RB-WAYFARER-001', 20),
-('Oakley Frogskins Sport', 'Estilo retro con tecnología moderna', 119990, 'Gafas Deportivas', 'Oakley', 'OK-FROGSKINS-001', 8),
-('Lentes Biofinity Monthly', 'Lentes mensuales de alta hidratación', 35990, 'Lentes de Contacto', 'CooperVision', 'CV-BIOFINITY-001', 30),
-('Ray-Ban Round Metal', 'Diseño circular clásico en metal', 94990, 'Gafas de Sol', 'Ray-Ban', 'RB-ROUND-001', 12),
-('Oakley Radar EV Path', 'Máximo rendimiento para deportistas', 149990, 'Gafas Deportivas', 'Oakley', 'OK-RADAR-001', 6),
-('Lentes Dailies AquaComfort', 'Comodidad todo el día con triple hidratación', 22990, 'Lentes de Contacto', 'Alcon', 'AL-DAILIES-001', 40)
+-- Usuarios del antiguo initialSetup.js (mismas contraseñas)
+INSERT INTO usuarios (email, password, nombre, rol)
+VALUES (
+    'administrador2025@gmail.cl',
+    crypt('Admin12345', gen_salt('bf')),
+    'Lucas Gabriel Méndez Risopatrón',
+    'administrador'
+) ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO usuarios (email, password, nombre, rol)
+VALUES (
+    'usuario1@gmail.cl',
+    crypt('User12345', gen_salt('bf')),
+    'Usuario de Prueba Uno',
+    'usuario'
+) ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO usuarios (email, password, nombre, rol)
+VALUES (
+    'usuario2@gmail.cl',
+    crypt('User12345', gen_salt('bf')),
+    'Usuario de Prueba Dos',
+    'usuario'
+) ON CONFLICT (email) DO NOTHING;
+
+-- =========================
+-- SEED: PRODUCTOS (7) con imagen_url en /uploads/productos/...
+-- =========================
+INSERT INTO productos (nombre, descripcion, precio, categoria, marca, "codigoSKU", stock, imagen_url) VALUES
+('Ray-Ban Aviator Clásico', 'Gafas de sol icónicas con diseño atemporal', 89990, 'Gafas de Sol', 'Ray-Ban', 'RB-AVIATOR-001', 15, '/uploads/productos/imagen-1751688907067-771859604.webp'),
+('Oakley Holbrook Polarizado', 'Gafas deportivas con lentes polarizadas', 129990, 'Gafas Deportivas', 'Oakley', 'OK-HOLBROOK-001', 10, '/uploads/productos/imagen-1751689044390-958899014.webp'),
+('Lentes Acuvue Oasys Daily', 'Lentes de contacto diarios ultra cómodos', 25990, 'Lentes de Contacto', 'Acuvue', 'AC-OASYS-001', 50, '/uploads/productos/imagen-1751689180232-810973486.webp'),
+('Ray-Ban Wayfarer Negro', 'El modelo más vendido de Ray-Ban', 79990, 'Gafas de Sol', 'Ray-Ban', 'RB-WAYFARER-001', 20, '/uploads/productos/imagen-1751689254184-303307536.webp'),
+('Oakley Frogskins Sport', 'Estilo retro con tecnología moderna', 119990, 'Gafas Deportivas', 'Oakley', 'OK-FROGSKINS-001', 8, '/uploads/productos/imagen-1751689422943-911370221.jpg'),
+('Ray-Ban Round Metal', 'Diseño circular clásico en metal', 94990, 'Gafas de Sol', 'Ray-Ban', 'RB-ROUND-001', 12, '/uploads/productos/imagen-1751949381836-127102605.webp'),
+('Oakley Radar EV Path', 'Máximo rendimiento para deportistas', 149990, 'Gafas Deportivas', 'Oakley', 'OK-RADAR-001', 6, '/uploads/productos/imagen-1752381832190-952681585.webp')
 ON CONFLICT ("codigoSKU") DO NOTHING;
 
 -- Dirección de ejemplo para usuario cliente
@@ -128,7 +161,9 @@ FROM usuarios u
 WHERE u.email = 'cliente@test.com'
 ON CONFLICT DO NOTHING;
 
--- Crear índices para mejor performance
+-- =========================
+-- ÍNDICES
+-- =========================
 CREATE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios(email);
 CREATE INDEX IF NOT EXISTS idx_usuarios_activo ON usuarios(activo);
 CREATE INDEX IF NOT EXISTS idx_productos_categoria ON productos(categoria);
@@ -141,16 +176,17 @@ CREATE INDEX IF NOT EXISTS idx_ordenes_estado ON ordenes(estado);
 CREATE INDEX IF NOT EXISTS idx_wishlist_usuario ON wishlist("usuarioId");
 CREATE INDEX IF NOT EXISTS idx_wishlist_producto ON wishlist("productoId");
 
--- Función para actualizar timestamp automáticamente
+-- =========================
+-- TRIGGERS updatedAt
+-- =========================
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
     NEW."updatedAt" = CURRENT_TIMESTAMP;
     RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$ LANGUAGE 'plpgsql';
 
--- Triggers para auto-update de timestamps
 DROP TRIGGER IF EXISTS update_usuarios_updated_at ON usuarios;
 CREATE TRIGGER update_usuarios_updated_at 
     BEFORE UPDATE ON usuarios 
@@ -171,7 +207,9 @@ CREATE TRIGGER update_ordenes_updated_at
     BEFORE UPDATE ON ordenes 
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
--- Mostrar resumen de inicialización
+-- =========================
+-- RESUMEN
+-- =========================
 DO $$
 DECLARE
     usuario_count INTEGER;
@@ -192,12 +230,13 @@ BEGIN
     RAISE NOTICE '✅ Direcciones creadas: %', direccion_count;
     RAISE NOTICE '';
     RAISE NOTICE '👤 Credenciales Admin:';
-    RAISE NOTICE '   📧 Email: admin@optica.com';
-    RAISE NOTICE '   🔑 Password: password';
+    RAISE NOTICE '   📧 Email: admin@optica.com / 🔑 password';
+    RAISE NOTICE '   📧 Email: administrador2025@gmail.cl / 🔑 Admin12345';
     RAISE NOTICE '';
-    RAISE NOTICE '👤 Credenciales Cliente:';
-    RAISE NOTICE '   📧 Email: cliente@test.com';
-    RAISE NOTICE '   🔑 Password: password';
+    RAISE NOTICE '👤 Credenciales Cliente/Usuario:';
+    RAISE NOTICE '   📧 Email: cliente@test.com / 🔑 password';
+    RAISE NOTICE '   📧 Email: usuario1@gmail.cl / 🔑 User12345';
+    RAISE NOTICE '   📧 Email: usuario2@gmail.cl / 🔑 User12345';
     RAISE NOTICE '';
     RAISE NOTICE '🚀 ¡Sistema listo para usar!';
     RAISE NOTICE '';
