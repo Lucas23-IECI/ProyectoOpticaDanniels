@@ -5,9 +5,9 @@ services:
     image: postgres:15
     container_name: optica_danniels_db
     environment:
-      POSTGRES_DB: optica_danniels
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: ProyectoOpticaDanniels
+      POSTGRES_USER: lucas23
+      POSTGRES_PASSWORD: lucas2323
     ports:
       - "5432:5432"
     volumes:

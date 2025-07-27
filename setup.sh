@@ -158,35 +158,20 @@ echo "✅ Usando localhost:5173"
 # Crear archivo .env para el backend
 echo "📝 Creando archivo .env para el backend..."
 cat > Backend/src/config/.env << 'EOF'
-# Configuración de la base de datos
-HOST=database
-DB_USERNAME=admin
-PASSWORD=admin123
-DATABASE=optica_danniels
-
-# Configuración del servidor
+HOST=localhost
 PORT=3000
-NODE_ENV=development
-
-# Configuración de autenticación
-ACCESS_TOKEN_SECRET=tu_secreto_super_seguro_aqui_cambiar_en_produccion
-cookieKey=otro_secreto_super_seguro_aqui_cambiar_en_produccion
-
-# Configuración del frontend
-FRONTEND_URL=http://localhost:5173
-
-# Configuración CORS
-CORS_ORIGIN=http://localhost:5173
+DB_USERNAME=lucas23
+PASSWORD=lucas2323
+DATABASE=ProyectoOpticaDanniels
+ACCESS_TOKEN_SECRET=cTyPgiwvIVADBgOavRnijeQqoFlhaScuWyCVBDpga7q9ZBvCmU20xTzvPxcMEMvfskzPFJjwY2h2AIZ6trcdpkamZerKg7d0FQiI7z2QEAP6y4B4WvZuOKk2OEFXP51a
+cookieKey=KSGXogsKotXZyt0QzFVwk9yy0WY2DNbscCEVMBJ5mp8PcusXKkWFgqIcMpONs6PTiOSFMHweBFjOwMtmVCsuAXDW81fYj6t7p2hMz3cjFpOjXXJ3wJnJCn2ZLVcPdNCS
 EOF
 echo "✅ Archivo .env del backend creado"
 
 # Crear archivo .env para el frontend
 echo "📝 Creando archivo .env para el frontend..."
 cat > Frontend/.env << 'EOF'
-# Configuración del frontend
-VITE_API_URL=http://localhost:3000/api
 VITE_BASE_URL=http://localhost:3000/api
-VITE_APP_NAME=Óptica Danniels
 EOF
 echo "✅ Archivo .env del frontend creado"
 
