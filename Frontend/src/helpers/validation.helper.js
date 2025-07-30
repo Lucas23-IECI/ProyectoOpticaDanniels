@@ -215,6 +215,11 @@ export const validationRules = {
             return 'El stock es requerido';
         }
         
+        // Verificar que solo contenga números
+        if (!/^[0-9]+$/.test(value.toString())) {
+            return 'El stock solo puede contener números enteros';
+        }
+        
         const stock = parseInt(value);
         
         if (isNaN(stock)) {
@@ -237,7 +242,12 @@ export const validationRules = {
             return null;
         }
         
-        const descuento = parseFloat(value);
+        // Verificar que solo contenga números
+        if (!/^[0-9]+$/.test(value.toString())) {
+            return 'El descuento solo puede contener números enteros';
+        }
+        
+        const descuento = parseInt(value);
         
         if (isNaN(descuento)) {
             return 'El descuento debe ser un número válido';
@@ -295,10 +305,6 @@ export const validationRules = {
     sku: (value) => {
         if (!value || value.trim() === '') {
             return 'El código SKU es requerido';
-        }
-        
-        if (value.trim().length < 3) {
-            return 'El SKU debe tener al menos 3 caracteres';
         }
         
         if (value.trim().length > 50) {

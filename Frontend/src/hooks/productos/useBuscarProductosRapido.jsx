@@ -28,7 +28,7 @@ const useBuscarProductosRapido = () => {
                 setCargando(true);
                 ultimaBusquedaRef.current = nombre;
                 
-                const data = await getProductos({ nombre, limit: 5 });
+                const data = await getProductos({ nombre, activo: true, limit: 5 });
                 setResultados(data);
                 setError('');
             } catch (err) {

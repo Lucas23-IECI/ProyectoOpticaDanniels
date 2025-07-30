@@ -5,7 +5,7 @@ import HideIcon from '@assets/HideIcon.svg';
 import ViewIcon from '@assets/ViewIcon.svg';
 
 const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundColor }) => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
 
@@ -19,6 +19,18 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
 
     const onFormSubmit = (data) => {
         onSubmit(data);
+    };
+
+    // Función para manejar cambios en campos numéricos
+    const handleNumericChange = (e, fieldName) => {
+        const value = e.target.value;
+        // Solo permitir números
+        const cleanValue = value.replace(/[^0-9]/g, '');
+        
+        if (value !== cleanValue) {
+            e.target.value = cleanValue;
+            setValue(fieldName, cleanValue);
+        }
     };
 
     return (
@@ -48,7 +60,72 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                                     field.type}
                             defaultValue={field.defaultValue || ''}
                             disabled={field.disabled}
-                            onChange={field.onChange}
+                            onChange={(e) => {
+                                // Para campos numéricos, usar la función personalizada
+                                if (field.type === 'text' && field.pattern && field.pattern.toString().includes('[0-9]')) {
+                                    handleNumericChange(e, field.name);
+                                }
+                                if (field.onChange) {
+                                    field.onChange(e);
+                                }
+                            }}
+                            min={field.min}
+                            max={field.max}
+                            onKeyPress={(e) => {
+                                // Para campos numéricos (tanto type="number" como type="text" con patrón numérico)
+                                if (field.type === 'number' || (field.type === 'text' && field.pattern && field.pattern.toString().includes('[0-9]'))) {
+                                    // Solo permitir números del 0-9
+                                    if (!/[0-9]/.test(e.key)) {
+                                        e.preventDefault();
+                                    }
+                                }
+                            }}
+                            onInput={(e) => {
+                                // Para campos numéricos (tanto type="number" como type="text" con patrón numérico)
+                                if (field.type === 'number' || (field.type === 'text' && field.pattern && field.pattern.toString().includes('[0-9]'))) {
+                                    const value = e.target.value;
+                                    // Eliminar cualquier carácter que no sea número
+                                    let cleanValue = value.replace(/[^0-9]/g, '');
+                                    
+                                    // Verificar límites si están definidos
+                                    if (field.max && cleanValue) {
+                                        const numValue = parseInt(cleanValue);
+                                        if (numValue > field.max) {
+                                            cleanValue = field.max.toString();
+                                        }
+                                    }
+                                    
+                                    if (value !== cleanValue) {
+                                        e.target.value = cleanValue;
+                                        setValue(field.name, cleanValue);
+                                        // Forzar la actualización del formulario
+                                        e.target.dispatchEvent(new Event('input', { bubbles: true }));
+                                        // También disparar el evento change para react-hook-form
+                                        e.target.dispatchEvent(new Event('change', { bubbles: true }));
+                                    }
+                                }
+                            }}
+                            onPaste={(e) => {
+                                // Para campos numéricos (tanto type="number" como type="text" con patrón numérico)
+                                if (field.type === 'number' || (field.type === 'text' && field.pattern && field.pattern.toString().includes('[0-9]'))) {
+                                    e.preventDefault();
+                                    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                                    // Solo permitir números
+                                    const numbersOnly = pastedText.replace(/[^0-9]/g, '');
+                                    e.target.value = numbersOnly;
+                                    setValue(field.name, numbersOnly);
+                                    // Forzar la actualización del formulario
+                                    e.target.dispatchEvent(new Event('input', { bubbles: true }));
+                                    // También disparar el evento change para react-hook-form
+                                    e.target.dispatchEvent(new Event('change', { bubbles: true }));
+                                }
+                            }}
+                            onDrop={(e) => {
+                                // Para campos numéricos (tanto type="number" como type="text" con patrón numérico)
+                                if (field.type === 'number' || (field.type === 'text' && field.pattern && field.pattern.toString().includes('[0-9]'))) {
+                                    e.preventDefault();
+                                }
+                            }}
                         />
                     )}
                     {field.fieldType === 'textarea' && (

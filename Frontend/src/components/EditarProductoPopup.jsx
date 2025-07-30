@@ -180,46 +180,42 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
         }
         
         if (name === 'stock') {
-            if (/[a-zA-Z]/.test(value)) {
-                showAlert('El stock no puede contener letras');
-                return;
-            }
-
-            if (value !== '' && !/^\d+$/.test(value)) {
-                showAlert('El stock solo puede contener números enteros');
-                return;
+            // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
+            if (!/^\d*$/.test(value)) {
+                showAlert('El stock solo puede contener números');
+                return; // Esto previene que se actualice el estado
             }
             
-            const numValue = parseInt(value);
-            if (value !== '' && (isNaN(numValue) || numValue < 0)) {
-                showAlert('El stock no puede ser negativo');
-                return;
-            }
-            if (numValue > 99999) {
-                showAlert('El stock no puede exceder 99,999 unidades');
-                return;
+            if (value !== '') {
+                const numValue = parseInt(value);
+                if (isNaN(numValue) || numValue < 0) {
+                    showAlert('El stock no puede ser negativo');
+                    return;
+                }
+                if (numValue > 99999) {
+                    showAlert('El stock no puede exceder 99,999 unidades');
+                    return;
+                }
             }
         }
         
         if (name === 'descuento') {
-            if (/[a-zA-Z]/.test(value)) {
-                showAlert('El descuento no puede contener letras');
-                return;
+            // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
+            if (!/^\d*$/.test(value)) {
+                showAlert('El descuento solo puede contener números');
+                return; // Esto previene que se actualice el estado
             }
             
-            if (value !== '' && !/^\d+$/.test(value)) {
-                showAlert('El descuento solo puede contener números enteros');
-                return;
-            }
-            
-            const numValue = parseInt(value);
-            if (value !== '' && (isNaN(numValue) || numValue < 0)) {
-                showAlert('El descuento no puede ser negativo');
-                return;
-            }
-            if (numValue > 100) {
-                showAlert('El descuento no puede exceder 100%');
-                return;
+            if (value !== '') {
+                const numValue = parseInt(value);
+                if (isNaN(numValue) || numValue < 0) {
+                    showAlert('El descuento no puede ser negativo');
+                    return;
+                }
+                if (numValue > 100) {
+                    showAlert('El descuento no puede exceder 100%');
+                    return;
+                }
             }
         }
         
@@ -536,6 +532,19 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                                         name="stock"
                                         value={formData.stock}
                                         onChange={handleInputChange}
+                                        onKeyPress={(e) => {
+                                            if (!/[0-9]/.test(e.key)) {
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                        onInput={(e) => {
+                                            // Validación adicional para prevenir pegar texto
+                                            const value = e.target.value;
+                                            if (!/^\d*$/.test(value)) {
+                                                e.target.value = value.replace(/\D/g, '');
+                                                showAlert('El stock solo puede contener números');
+                                            }
+                                        }}
                                         placeholder="50"
                                         min="0"
                                         max="99999"
@@ -553,6 +562,19 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                                         name="descuento"
                                         value={formData.descuento}
                                         onChange={handleInputChange}
+                                        onKeyPress={(e) => {
+                                            if (!/[0-9]/.test(e.key)) {
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                        onInput={(e) => {
+                                            // Validación adicional para prevenir pegar texto
+                                            const value = e.target.value;
+                                            if (!/^\d*$/.test(value)) {
+                                                e.target.value = value.replace(/\D/g, '');
+                                                showAlert('El descuento solo puede contener números');
+                                            }
+                                        }}
                                         placeholder="0"
                                         min="0"
                                         max="100"

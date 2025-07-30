@@ -58,8 +58,10 @@ export const subirImagenProductoController = async (req, res) => {
 
         res.json({
             mensaje: "Imagen del producto actualizada correctamente",
-            imagen_url: imagenBase64,
-            filename: producto.imagen_url
+            producto: {
+                ...producto,
+                imagen_url: imagenBase64,
+            }
         });
     } catch (error) {
         console.error(error);

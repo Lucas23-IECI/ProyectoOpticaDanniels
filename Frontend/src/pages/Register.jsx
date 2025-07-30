@@ -26,7 +26,6 @@ const Register = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [passwordStrength, setPasswordStrength] = useState(0);
 
-    // Auto-clear field errors after 3 seconds
     useEffect(() => {
         Object.keys(fieldErrors).forEach(field => {
             if (fieldErrors[field]) {
@@ -56,7 +55,6 @@ const Register = () => {
     };
 
     const parseBackendError = (errorMessage) => {
-        // Mapeo de errores específicos a campos con mensajes más detallados
         if (errorMessage.includes("primer nombre") || errorMessage.includes("primerNombre")) {
             if (errorMessage.includes("empty") || errorMessage.includes("vacío")) {
                 return { field: "primerNombre", message: "El primer nombre es obligatorio" };
@@ -480,13 +478,11 @@ const Register = () => {
                             showFieldError(errorDetails.field, errorDetails.message);
                         }
                     }
-                    // Verificar cualquier campo del data que indique duplicado
                     else if (JSON.stringify(data).includes("usuario1@gmail.cl") || 
                              JSON.stringify(data).includes("email") && JSON.stringify(data).includes("exist")) {
                         showFieldError("email", "⚠️ Este email ya está siendo usado por otra persona");
                     }
                     else {
-                        // Último intento: verificar si hay cualquier indicio de email o RUT duplicado en toda la respuesta
                         const fullResponse = JSON.stringify(error.response);
                         if (fullResponse.includes("Correo electrónico en uso") || 
                             (fullResponse.includes("email") && fullResponse.includes("en uso")) ||

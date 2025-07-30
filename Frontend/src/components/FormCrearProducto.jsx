@@ -25,7 +25,29 @@ const FormCrearProducto = ({ setShow, onSuccess }) => {
                     ]
                 },
                 { name: "imagen_url", label: "URL Imagen", placeholder: "https://...", fieldType: "input", type: "url", required: true },
-                { name: "stock", label: "Stock", placeholder: "Cantidad", fieldType: "input", type: "number", required: true },
+                { 
+                    name: "stock", 
+                    label: "Stock", 
+                    placeholder: "Cantidad", 
+                    fieldType: "input", 
+                    type: "text", 
+                    required: true,
+                    min: 0,
+                    max: 99999,
+                    pattern: /^[0-9]+$/,
+                    patternMessage: "Solo se permiten números enteros positivos",
+                    validate: {
+                        onlyNumbers: (value) => {
+                            if (!value) return true; // Permitir vacío si no es required
+                            return /^[0-9]+$/.test(value) || "Solo se permiten números";
+                        },
+                        maxValue: (value) => {
+                            if (!value) return true;
+                            const num = parseInt(value);
+                            return num <= 99999 || "El stock no puede exceder 99,999";
+                        }
+                    }
+                },
                 {
                     name: "activo", label: "Activo", fieldType: "select", required: true, options: [
                         { value: true, label: "Sí" },
@@ -40,7 +62,29 @@ const FormCrearProducto = ({ setShow, onSuccess }) => {
                         { value: false, label: "No" }
                     ]
                 },
-                { name: "descuento", label: "Descuento (%)", placeholder: "Ej: 10", fieldType: "input", type: "number", required: true },
+                { 
+                    name: "descuento", 
+                    label: "Descuento (%)", 
+                    placeholder: "Ej: 10", 
+                    fieldType: "input", 
+                    type: "text", 
+                    required: true,
+                    min: 0,
+                    max: 100,
+                    pattern: /^[0-9]+$/,
+                    patternMessage: "Solo se permiten números enteros positivos",
+                    validate: {
+                        onlyNumbers: (value) => {
+                            if (!value) return true; // Permitir vacío si no es required
+                            return /^[0-9]+$/.test(value) || "Solo se permiten números";
+                        },
+                        maxValue: (value) => {
+                            if (!value) return true;
+                            const num = parseInt(value);
+                            return num <= 100 || "El descuento no puede exceder 100%";
+                        }
+                    }
+                },
             ]}
         />
     );

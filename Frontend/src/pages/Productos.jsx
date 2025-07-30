@@ -38,6 +38,9 @@ const Productos = () => {
     };
 
     const filtrosBackend = {};
+    // Siempre filtrar solo productos activos para clientes
+    filtrosBackend.activo = true;
+    
     if (filtrosIniciales.categoria && filtrosIniciales.categoria.trim()) {
         filtrosBackend.categoria = filtrosIniciales.categoria.trim();
     }
@@ -50,8 +53,14 @@ const Productos = () => {
     if (filtrosIniciales.precioMax && filtrosIniciales.precioMax.trim()) {
         filtrosBackend.precio_max = filtrosIniciales.precioMax.trim();
     }
+    // Solo aplicar filtro de disponibilidad si el usuario lo selecciona explícitamente
     if (filtrosIniciales.disponibilidad && filtrosIniciales.disponibilidad.trim()) {
-        filtrosBackend.activo = filtrosIniciales.disponibilidad === "en_stock";
+        if (filtrosIniciales.disponibilidad === "en_stock") {
+            // Ya está filtrado por activo=true, no necesitamos hacer nada más
+        } else if (filtrosIniciales.disponibilidad === "agotado") {
+            // Para productos agotados, quitamos el filtro de activo
+            delete filtrosBackend.activo;
+        }
     }
     if (filtrosIniciales.orden && filtrosIniciales.orden.trim()) {
         filtrosBackend.orden = filtrosIniciales.orden.trim();
@@ -90,11 +99,22 @@ const Productos = () => {
                 setLoading(true);
                 
                 const paramsFiltros = {};
+                // Siempre filtrar solo productos activos para clientes
+                paramsFiltros.activo = true;
+                
                 if (filtros.categoria && filtros.categoria.trim()) paramsFiltros.categoria = filtros.categoria.trim();
                 if (filtros.subcategoria && filtros.subcategoria.trim()) paramsFiltros.subcategoria = filtros.subcategoria.trim();
                 if (filtros.precioMin && filtros.precioMin.trim()) paramsFiltros.precio_min = filtros.precioMin.trim();
                 if (filtros.precioMax && filtros.precioMax.trim()) paramsFiltros.precio_max = filtros.precioMax.trim();
-                if (filtros.disponibilidad && filtros.disponibilidad.trim()) paramsFiltros.activo = filtros.disponibilidad === "en_stock";
+                // Solo aplicar filtro de disponibilidad si el usuario lo selecciona explícitamente
+                if (filtros.disponibilidad && filtros.disponibilidad.trim()) {
+                    if (filtros.disponibilidad === "en_stock") {
+                        // Ya está filtrado por activo=true, no necesitamos hacer nada más
+                    } else if (filtros.disponibilidad === "agotado") {
+                        // Para productos agotados, quitamos el filtro de activo
+                        delete paramsFiltros.activo;
+                    }
+                }
                 if (filtros.orden && filtros.orden.trim()) paramsFiltros.orden = filtros.orden.trim();
                 
                 if (filtros.busqueda && filtros.busqueda.trim() !== '') {
@@ -144,7 +164,8 @@ const Productos = () => {
             const cargarTodosLosProductos = async () => {
                 try {
                     setLoading(true);
-                    await fetchProductos({});
+                    // Siempre cargar solo productos activos para clientes
+                    await fetchProductos({ activo: true });
                 } catch (error) {
                     console.error("Error al cargar productos:", error);
                 } finally {

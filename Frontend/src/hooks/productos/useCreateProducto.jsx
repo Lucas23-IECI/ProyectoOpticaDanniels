@@ -42,8 +42,16 @@ const useCreateProducto = (onSuccess) => {
         const marcaError = validateBrand(formData.get('marca'));
         if (marcaError) newErrors.marca = marcaError;
 
-        const skuError = validateSKU(formData.get('codigoSKU'));
-        if (skuError) newErrors.codigoSKU = skuError;
+        // Solo validar SKU si tiene al menos 3 caracteres
+        const skuValue = formData.get('codigoSKU');
+        if (!skuValue || skuValue.trim() === '') {
+            newErrors.codigoSKU = 'El código SKU es requerido';
+        }
+        // Comentar temporalmente la validación de "solo letras" para debug
+        // if (skuValue && skuValue.trim().length >= 3) {
+        //     const skuError = validateSKU(skuValue);
+        //     if (skuError) newErrors.codigoSKU = skuError;
+        // }
 
         const descuentoError = validateDiscount(formData.get('descuento'));
         if (descuentoError) newErrors.descuento = descuentoError;

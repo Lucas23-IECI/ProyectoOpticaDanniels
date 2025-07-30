@@ -50,10 +50,18 @@ const BusquedaResultados = () => {
         }
         
         try {
-            const filtros = { nombre: searchQuery, ...filtrosAdicionales };
+            const filtros = { nombre: searchQuery, activo: true, ...filtrosAdicionales };
             if (filtros.precioMin) filtros.precio_min = filtros.precioMin;
             if (filtros.precioMax) filtros.precio_max = filtros.precioMax;
-            if (filtros.disponibilidad) filtros.activo = filtros.disponibilidad === "en_stock";
+            // Solo aplicar filtro de disponibilidad si el usuario lo selecciona explícitamente
+            if (filtros.disponibilidad) {
+                if (filtros.disponibilidad === "en_stock") {
+                    // Ya está filtrado por activo=true, no necesitamos hacer nada más
+                } else if (filtros.disponibilidad === "agotado") {
+                    // Para productos agotados, quitamos el filtro de activo
+                    delete filtros.activo;
+                }
+            }
 
             const resultados = await getProductos(filtros);
             setProductos(resultados);

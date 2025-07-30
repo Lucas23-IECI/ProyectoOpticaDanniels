@@ -76,10 +76,26 @@ async function setupAPI() {
     try {
         await connectDB();
         await setupServer();
-        await createInitialUsers();
-        await migrateUsers();
+        
+        // Intentar crear usuarios iniciales si no existen
+        try {
+            await createInitialUsers();
+        } catch (error) {
+            console.log("⚠️  Error al crear usuarios iniciales (puede ser que la tabla no exista aún):", error.message);
+            console.log("ℹ️  Esto es normal si es el primer inicio y la base de datos no está inicializada.");
+        }
+        
+        // Intentar migración solo si no hubo errores graves
+        try {
+            await migrateUsers();
+        } catch (error) {
+            console.log("⚠️  Error en migración de usuarios:", error.message);
+            console.log("ℹ️  La aplicación continuará funcionando.");
+        }
+        
     } catch (error) {
         console.log("❌ Error en index.js -> setupAPI(), el error es: ", error);
+        throw error;
     }
 }
 

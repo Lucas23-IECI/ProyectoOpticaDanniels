@@ -20,7 +20,8 @@ function Home() {
     useEffect(() => {
         const cargarProductosDestacados = async () => {
             try {
-                const productosData = await getProductos();
+                // Solo cargar productos activos para clientes
+                const productosData = await getProductos({ activo: true });
                 const destacados = productosData.slice(0, 6);
                 setProductosDestacados(destacados);
             } catch (error) {

@@ -34,7 +34,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
         codigoSKU: '',
         activo: true,
         oferta: false,
-        descuento: 0
+        descuento: ''
     });
 
     const [imagen, setImagen] = useState(null);
@@ -70,50 +70,68 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
     const handlePriceChange = (e) => {
         const inputValue = e.target.value;
         
-        if (/[a-zA-Z]/.test(inputValue)) {
-            showAlert('El precio no puede contener letras');
-            return;
-        }
-        
+        // Permitir solo números y puntos
         if (/[^0-9.]/.test(inputValue) && inputValue !== '') {
-            showAlert('El precio solo puede contener números');
+            showAlert('El precio solo puede contener números y puntos como separadores');
             return;
         }
         
-        if ((inputValue.match(/\./g) || []).length > 1) {
-            showAlert('El precio no puede tener múltiples puntos decimales');
+        // No permitir múltiples puntos consecutivos
+        if (/\.{2,}/.test(inputValue)) {
+            showAlert('El precio no puede tener múltiples puntos consecutivos');
             return;
         }
         
-        if (inputValue.startsWith('.')) {
-            showAlert('El precio no puede comenzar con un punto decimal');
+        // No permitir que comience con punto
+        if (/^\./.test(inputValue)) {
+            showAlert('El precio no puede comenzar con un punto');
             return;
         }
         
+        // Si está vacío, permitir
+        if (inputValue === '') {
+            setFormData(prev => ({
+                ...prev,
+                precio: ''
+            }));
+            return;
+        }
+        
+        // Extraer solo números para validaciones
         const rawValue = inputValue.replace(/\D/g, '');
         
+        // Validar longitud máxima
         if (rawValue.length > 8) {
-            showAlert('El precio es demasiado largo');
+            showAlert('El precio no puede exceder $10.000.000');
             return;
         }
         
+        // Validar que sea mayor a 0
         const actualPrice = parseInt(rawValue);
         if (rawValue && actualPrice <= 0) {
             showAlert('El precio debe ser mayor a 0');
             return;
         }
         
+        // Validar límite máximo
         if (rawValue && actualPrice > 10000000) {
             showAlert('El precio no puede exceder $10.000.000');
             return;
         }
         
-        const formattedValue = formatPrice(rawValue);
-        
-        setFormData(prev => ({
-            ...prev,
-            precio: formattedValue
-        }));
+        // Formatear automáticamente solo si hay números
+        if (rawValue) {
+            const formattedValue = formatPrice(rawValue);
+            setFormData(prev => ({
+                ...prev,
+                precio: formattedValue
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                precio: inputValue
+            }));
+        }
 
         if (errors.precio) {
             setErrors(prev => ({
@@ -135,7 +153,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             codigoSKU: '',
             activo: true,
             oferta: false,
-            descuento: 0
+            descuento: ''
         });
         setImagen(null);
         setPreviewImagen(null);
@@ -147,10 +165,52 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
         let newValue = type === 'checkbox' ? checked : value;
         
         if (name === 'nombre') {
-            if (/[<>{}[\]\\/'"]/.test(value)) {
-                showAlert('El nombre no puede contener caracteres especiales como < > { } [ ] \\ / \' "');
+            // Si está vacío, permitir
+            if (value === '') {
+                setFormData(prev => ({ ...prev, nombre: '' }));
                 return;
             }
+            
+            // 1. No más de 3 números juntos
+            if (/\d{4,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 3 números juntos');
+                return;
+            }
+            
+            // 2. No más de 2 guiones juntos ni más de 2 guiones en total
+            if (/-{3,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 2 guiones juntos');
+                return;
+            }
+            if ((value.match(/-/g) || []).length > 2) {
+                showAlert('El nombre no puede tener más de 2 guiones en total');
+                return;
+            }
+            
+            // 2.1. No más de 2 puntos juntos ni más de 2 puntos en total
+            if (/\.{3,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 2 puntos juntos');
+                return;
+            }
+            if ((value.match(/\./g) || []).length > 2) {
+                showAlert('El nombre no puede tener más de 2 puntos en total');
+                return;
+            }
+            
+            // 3. Validación estricta de caracteres especiales
+            // Solo permitir letras, números, espacios, guiones y puntos
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.]+$/.test(value)) {
+                showAlert('El nombre solo puede contener letras, números, espacios, guiones (-) y puntos (.)');
+                return;
+            }
+            
+            // 4. No más de 3 caracteres repetidos seguidos
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 3 caracteres repetidos seguidos');
+                return;
+            }
+            
+            // Validaciones adicionales
             if (value.length > 100) {
                 showAlert('El nombre no puede exceder 100 caracteres');
                 return;
@@ -163,9 +223,67 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('El nombre no puede comenzar con números');
                 return;
             }
+            if (/^\s/.test(value)) {
+                showAlert('El nombre no puede comenzar con espacios');
+                return;
+            }
+            if (/\s{2,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 1 espacio juntos');
+                return;
+            }
+            if ((value.match(/\s/g) || []).length > 2) {
+                showAlert('El nombre no puede tener más de 2 espacios en total');
+                return;
+            }
         }
         
         if (name === 'descripcion') {
+            // Si está vacío, permitir
+            if (value === '') {
+                setFormData(prev => ({ ...prev, descripcion: '' }));
+                return;
+            }
+            
+            // 1. No más de 4 números juntos (para permitir años)
+            if (/\d{5,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 4 números juntos');
+                return;
+            }
+            
+            // 2. No más de 2 guiones juntos ni más de 2 guiones en total
+            if (/-{3,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 2 guiones juntos');
+                return;
+            }
+            if ((value.match(/-/g) || []).length > 2) {
+                showAlert('La descripción no puede tener más de 2 guiones en total');
+                return;
+            }
+            
+            // 2.1. No más de 2 puntos juntos ni más de 2 puntos en total
+            if (/\.{3,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 2 puntos juntos');
+                return;
+            }
+            if ((value.match(/\./g) || []).length > 2) {
+                showAlert('La descripción no puede tener más de 2 puntos en total');
+                return;
+            }
+            
+            // 3. Permitir caracteres especiales en descripción (más flexible)
+            // Solo permitir letras, números, espacios, guiones, puntos y caracteres especiales comunes
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.\,\;\:\!\?\"\'\(\)\[\]\{\}\/\+\=\*\&\^\%\$\#\@]+$/.test(value)) {
+                showAlert('La descripción contiene caracteres no permitidos');
+                return;
+            }
+            
+            // 4. No más de 3 caracteres repetidos seguidos
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 3 caracteres repetidos seguidos');
+                return;
+            }
+            
+            // Validaciones adicionales
             if (value.length > 1000) {
                 showAlert('La descripción no puede exceder 1000 caracteres');
                 return;
@@ -174,57 +292,106 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('La descripción no puede ser solo espacios en blanco');
                 return;
             }
+            if (/^\s/.test(value)) {
+                showAlert('La descripción no puede comenzar con espacios');
+                return;
+            }
+            if (/\s{2,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 1 espacio juntos');
+                return;
+            }
         }
         
         if (name === 'stock') {
-            if (/[a-zA-Z]/.test(value)) {
-                showAlert('El stock no puede contener letras');
-                return;
-            }
-
-            if (value !== '' && !/^\d+$/.test(value)) {
-                showAlert('El stock solo puede contener números enteros');
-                return;
+            // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
+            if (!/^\d*$/.test(value)) {
+                showAlert('El stock solo puede contener números');
+                return; // Esto previene que se actualice el estado
             }
             
-            const numValue = parseInt(value);
-            if (value !== '' && (isNaN(numValue) || numValue < 0)) {
-                showAlert('El stock no puede ser negativo');
-                return;
-            }
-            if (numValue > 99999) {
-                showAlert('El stock no puede exceder 99,999 unidades');
-                return;
+            if (value !== '') {
+                const numValue = parseInt(value);
+                if (isNaN(numValue) || numValue < 0) {
+                    showAlert('El stock no puede ser negativo');
+                    return;
+                }
+                if (numValue > 99999) {
+                    showAlert('El stock no puede exceder 99,999 unidades');
+                    return;
+                }
             }
         }
         
         if (name === 'descuento') {
-            if (/[a-zA-Z]/.test(value)) {
-                showAlert('El descuento no puede contener letras');
-                return;
+            // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
+            if (!/^\d*$/.test(value)) {
+                showAlert('El descuento solo puede contener números');
+                return; // Esto previene que se actualice el estado
             }
             
-            if (value !== '' && !/^\d+$/.test(value)) {
-                showAlert('El descuento solo puede contener números enteros');
-                return;
+            if (value !== '') {
+                const numValue = parseInt(value);
+                if (isNaN(numValue) || numValue < 0) {
+                    showAlert('El descuento no puede ser negativo');
+                    return;
+                }
+                if (numValue > 100) {
+                    showAlert('El descuento no puede exceder 100%');
+                    return;
+                }
             }
             
-            const numValue = parseInt(value);
-            if (value !== '' && (isNaN(numValue) || numValue < 0)) {
-                showAlert('El descuento no puede ser negativo');
-                return;
-            }
-            if (numValue > 100) {
-                showAlert('El descuento no puede exceder 100%');
-                return;
-            }
+            // Si el valor está vacío, mantenerlo como string vacío
+            newValue = value === '' ? '' : parseInt(value);
         }
         
         if (name === 'marca') {
-            if (/[<>{}[\]\\/'"]/.test(value)) {
-                showAlert('La marca no puede contener caracteres especiales');
+            // Si está vacío, permitir
+            if (value === '') {
+                setFormData(prev => ({ ...prev, marca: '' }));
                 return;
             }
+            
+            // 1. No más de 3 números juntos
+            if (/\d{4,}/.test(value)) {
+                showAlert('La marca no puede tener más de 3 números juntos');
+                return;
+            }
+            
+            // 2. No más de 2 guiones juntos ni más de 2 guiones en total
+            if (/-{3,}/.test(value)) {
+                showAlert('La marca no puede tener más de 2 guiones juntos');
+                return;
+            }
+            if ((value.match(/-/g) || []).length > 2) {
+                showAlert('La marca no puede tener más de 2 guiones en total');
+                return;
+            }
+            
+            // 2.1. No más de 2 puntos juntos ni más de 2 puntos en total
+            if (/\.{3,}/.test(value)) {
+                showAlert('La marca no puede tener más de 2 puntos juntos');
+                return;
+            }
+            if ((value.match(/\./g) || []).length > 2) {
+                showAlert('La marca no puede tener más de 2 puntos en total');
+                return;
+            }
+            
+            // 3. Validación estricta de caracteres especiales
+            // Solo permitir letras, números, espacios, guiones y puntos
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.]+$/.test(value)) {
+                showAlert('La marca solo puede contener letras, números, espacios, guiones (-) y puntos (.)');
+                return;
+            }
+            
+            // 4. No más de 3 caracteres repetidos seguidos
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('La marca no puede tener más de 3 caracteres repetidos seguidos');
+                return;
+            }
+            
+            // Validaciones adicionales
             if (value.length > 50) {
                 showAlert('La marca no puede exceder 50 caracteres');
                 return;
@@ -237,24 +404,89 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('La marca no puede comenzar con números');
                 return;
             }
+            if (/^\s/.test(value)) {
+                showAlert('La marca no puede comenzar con espacios');
+                return;
+            }
+            if (/\s{2,}/.test(value)) {
+                showAlert('La marca no puede tener más de 1 espacio juntos');
+                return;
+            }
+            if ((value.match(/\s/g) || []).length > 2) {
+                showAlert('La marca no puede tener más de 2 espacios en total');
+                return;
+            }
         }
         
         if (name === 'codigoSKU') {
+            // Si está vacío, permitir
+            if (value === '') {
+                setFormData(prev => ({ ...prev, codigoSKU: '' }));
+                return;
+            }
+            // No puede tener espacios
+            if (value.includes(' ')) {
+                showAlert('El SKU no puede contener espacios');
+                return;
+            }
+            // Solo letras, números, guiones y guiones bajos
             if (/[^a-zA-Z0-9\-_]/.test(value)) {
                 showAlert('El SKU solo puede contener letras, números, guiones y guiones bajos');
                 return;
             }
-            if (value.length > 20) {
-                showAlert('El código SKU no puede exceder 20 caracteres');
+            // No más de 1 guión seguido ni en total
+            if (/-{2,}/.test(value)) {
+                showAlert('El SKU no puede tener más de 1 guión seguido');
                 return;
             }
-            if (/^[-_]/.test(value)) {
-                showAlert('El SKU no puede comenzar con guión o guión bajo');
+            if ((value.match(/-/g) || []).length > 2) {
+                showAlert('El SKU no puede tener más de 2 guiones en total');
                 return;
             }
-            if (value.includes(' ')) {
-                showAlert('El SKU no puede contener espacios');
+            // No más de 1 guión bajo seguido ni en total
+            if (/_{2,}/.test(value)) {
+                showAlert('El SKU no puede tener más de 1 guión bajo seguido');
                 return;
+            }
+            if ((value.match(/_/g) || []).length > 2) {
+                showAlert('El SKU no puede tener más de 2 guiones bajos en total');
+                return;
+            }
+            // No más de 4 letras seguidas
+            if (/[a-zA-Z]{5,}/.test(value)) {
+                showAlert('El SKU no puede tener más de 4 letras seguidas');
+                return;
+            }
+            // No más de 3 números juntos
+            if (/\d{4,}/.test(value)) {
+                showAlert('El SKU no puede tener más de 3 números juntos');
+                return;
+            }
+            // No puede comenzar ni terminar con guión o guión bajo
+            if (/^[-_]/.test(value) || /[-_]$/.test(value)) {
+                showAlert('El SKU no puede comenzar ni terminar con guión o guión bajo');
+                return;
+            }
+            // Longitud máxima 50 (quitar la mínima para permitir escribir)
+            if (value.length > 50) {
+                showAlert('El código SKU no puede exceder 50 caracteres');
+                return;
+            }
+            // No solo números ni solo letras (solo si tiene al menos 5 caracteres)
+            if (value.length >= 5) {
+                if (/^\d+$/.test(value)) {
+                    showAlert('El SKU no puede ser solo números');
+                    return;
+                }
+                if (/^[a-zA-Z]+$/.test(value)) {
+                    showAlert('El SKU no puede ser solo letras');
+                    return;
+                }
+                // No solo caracteres repetidos
+                if (/^(.)\1+$/.test(value)) {
+                    showAlert('El SKU no puede ser solo caracteres repetidos');
+                    return;
+                }
             }
         }
         
@@ -365,6 +597,10 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             if (key === 'precio') {
                 const rawPrice = formData[key].replace(/\D/g, '');
                 submitFormData.append(key, rawPrice);
+            } else if (key === 'descuento') {
+                // Convertir descuento vacío a 0
+                const descuentoValue = formData[key] === '' ? 0 : formData[key];
+                submitFormData.append(key, descuentoValue);
             } else {
                 submitFormData.append(key, formData[key]);
             }
@@ -522,6 +758,30 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                                         max="99999"
                                         inputMode="numeric"
                                         className={errors.stock ? 'error' : ''}
+                                        onKeyPress={(e) => {
+                                            if (!/[0-9]/.test(e.key)) {
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                        onInput={(e) => {
+                                            // Validación adicional para prevenir pegar texto
+                                            const value = e.target.value;
+                                            if (!/^\d*$/.test(value)) {
+                                                e.target.value = value.replace(/\D/g, '');
+                                                showAlert('El stock solo puede contener números');
+                                            }
+                                        }}
+                                        onPaste={(e) => {
+                                            e.preventDefault();
+                                            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                                            const numbersOnly = pastedText.replace(/\D/g, '');
+                                            e.target.value = numbersOnly;
+                                            // Forzar la actualización del estado
+                                            setFormData(prev => ({ ...prev, stock: numbersOnly }));
+                                        }}
+                                        onDrop={(e) => {
+                                            e.preventDefault();
+                                        }}
                                     />
                                     {errors.stock && <span className="error-message">{errors.stock}</span>}
                                 </div>
@@ -532,13 +792,37 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                                         type="number"
                                         id="descuento"
                                         name="descuento"
-                                        value={formData.descuento}
+                                        value={formData.descuento === 0 || formData.descuento === '' ? '' : formData.descuento}
                                         onChange={handleInputChange}
                                         placeholder="0"
                                         min="0"
                                         max="100"
                                         inputMode="numeric"
                                         className={errors.descuento ? 'error' : ''}
+                                        onKeyPress={(e) => {
+                                            if (!/[0-9]/.test(e.key)) {
+                                                e.preventDefault();
+                                            }
+                                        }}
+                                        onInput={(e) => {
+                                            // Validación adicional para prevenir pegar texto
+                                            const value = e.target.value;
+                                            if (!/^\d*$/.test(value)) {
+                                                e.target.value = value.replace(/\D/g, '');
+                                                showAlert('El descuento solo puede contener números');
+                                            }
+                                        }}
+                                        onPaste={(e) => {
+                                            e.preventDefault();
+                                            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                                            const numbersOnly = pastedText.replace(/\D/g, '');
+                                            e.target.value = numbersOnly;
+                                            // Forzar la actualización del estado
+                                            setFormData(prev => ({ ...prev, descuento: numbersOnly }));
+                                        }}
+                                        onDrop={(e) => {
+                                            e.preventDefault();
+                                        }}
                                     />
                                     {errors.descuento && <span className="error-message">{errors.descuento}</span>}
                                 </div>
