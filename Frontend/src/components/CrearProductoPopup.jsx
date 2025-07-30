@@ -231,8 +231,8 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('El nombre no puede tener más de 1 espacio juntos');
                 return;
             }
-            if ((value.match(/\s/g) || []).length > 2) {
-                showAlert('El nombre no puede tener más de 2 espacios en total');
+            if ((value.match(/\s/g) || []).length > 10) {
+                showAlert('El nombre no puede tener más de 10 espacios en total');
                 return;
             }
         }
@@ -462,9 +462,9 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('El SKU no puede tener más de 3 números juntos');
                 return;
             }
-            // No puede comenzar ni terminar con guión o guión bajo
-            if (/^[-_]/.test(value) || /[-_]$/.test(value)) {
-                showAlert('El SKU no puede comenzar ni terminar con guión o guión bajo');
+            // No puede comenzar con guión o guión bajo (permitir terminar con guión mientras se escribe)
+            if (/^[-_]/.test(value)) {
+                showAlert('El SKU no puede comenzar con guión o guión bajo');
                 return;
             }
             // Longitud máxima 50 (quitar la mínima para permitir escribir)

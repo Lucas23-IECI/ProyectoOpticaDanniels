@@ -5,6 +5,7 @@ import userRoutes from "./user.routes.js";
 import authRoutes from "./auth.routes.js";
 import ordenRoutes from "./orden.routes.js";
 import direccionRoutes from "./direccion.routes.js";
+import reporteRoutes from "./reporte.routes.js";
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router
     .use("/user", userRoutes)
     .use("/productos", productoRoutes)
     .use("/ordenes", ordenRoutes)
-    .use("/direcciones", direccionRoutes);
+    .use("/direcciones", direccionRoutes)
+    .use("/reportes", reporteRoutes);
 
 export default router;

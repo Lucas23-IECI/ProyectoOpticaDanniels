@@ -758,26 +758,22 @@ const ProductCard = ({ producto, onVerDetalle, onEditar, onEliminar, formatearPr
 };
 
 const ProductListItem = ({ producto, onVerDetalle, onEditar, onEliminar, formatearPrecio }) => {
-    const [imagenError, setImagenError] = useState(false);
-    
     const precioConDescuento = producto.oferta && producto.descuento > 0 ?
         producto.precio * (1 - producto.descuento / 100) : null;
 
     return (
         <div className="product-list-item">
             <div className="product-image-container">
-                {producto.imagen_url && !imagenError ? (
-                    <img 
-                        src={producto.imagen_url} 
-                        alt={producto.nombre}
-                        onError={() => setImagenError(true)}
-                        className="product-image"
-                    />
-                ) : (
-                    <div className="product-image-placeholder">
-                        <FaImage />
-                    </div>
-                )}
+                <LazyImage
+                    src={producto.imagen_url}
+                    alt={producto.nombre}
+                    className="product-thumbnail"
+                    placeholder={
+                        <div className="product-image-placeholder">
+                            <FaImage />
+                        </div>
+                    }
+                />
             </div>
             
             <div className="product-info">

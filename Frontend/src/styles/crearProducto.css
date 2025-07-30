@@ -92,7 +92,7 @@ body.no-scroll {
     overflow-x: hidden;
     width: 100%;
     box-sizing: border-box;
-    max-width: 1400px;
+    max-width: 1800px;
     margin: 0 auto;
 }
 
@@ -123,9 +123,15 @@ body.no-scroll {
     box-sizing: border-box;
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1200px) {
     .form-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 1400px) {
+    .crear-producto-form {
+        max-width: 2000px;
     }
 }
 

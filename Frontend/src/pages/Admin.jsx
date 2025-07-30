@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAuth } from "@hooks/useAuth";
 import { getNombreCompleto } from "@helpers/nameHelpers";
 import AdminProductos from "@components/AdminProductos";
+import AdminUsuarios from "@components/AdminUsuarios";
+import AdminReportes from "@components/AdminReportes";
 import { FaBox, FaUsers, FaChartBar } from "react-icons/fa";
 import "@styles/admin.css";
 
@@ -14,19 +16,9 @@ const Admin = () => {
             case 'productos':
                 return <AdminProductos />;
             case 'usuarios':
-                return (
-                    <div style={{ padding: '40px', textAlign: 'center' }}>
-                        <h2>👥 Gestión de Usuarios</h2>
-                        <p>Esta funcionalidad estará disponible próximamente.</p>
-                    </div>
-                );
+                return <AdminUsuarios />;
             case 'reportes':
-                return (
-                    <div style={{ padding: '40px', textAlign: 'center' }}>
-                        <h2>📊 Reportes y Estadísticas</h2>
-                        <p>Esta funcionalidad estará disponible próximamente.</p>
-                    </div>
-                );
+                return <AdminReportes />;
             default:
                 return <AdminProductos />;
         }

@@ -149,11 +149,59 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
         const { name, value, type, checked } = e.target;
         let newValue = type === 'checkbox' ? checked : value;
         
+        if (name === 'precio') {
+            handlePriceChange(e);
+            return;
+        }
+        
+        if (name === 'stock') {
+            handleStockChange(e);
+            return;
+        }
+        
+        if (name === 'descuento') {
+            handleDescuentoChange(e);
+            return;
+        }
+        
+        // Validaciones específicas para cada campo (copiadas de CrearProductoPopup)
         if (name === 'nombre') {
-            if (/[<>{}[\]\\/'"]/.test(value)) {
-                showAlert('El nombre no puede contener caracteres especiales como < > { } [ ] \\ / \' "');
+            // Si está vacío, permitir
+            if (value === '') {
+                setFormData(prev => ({ ...prev, nombre: '' }));
                 return;
             }
+            
+            // 1. No más de 4 números juntos
+            if (/\d{5,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 4 números juntos');
+                return;
+            }
+            
+            // 2. No más de 2 guiones juntos ni más de 2 guiones en total
+            if (/-{3,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 2 guiones juntos');
+                return;
+            }
+            if ((value.match(/-/g) || []).length > 2) {
+                showAlert('El nombre no puede tener más de 2 guiones en total');
+                return;
+            }
+            
+            // 3. Validación estricta de caracteres especiales
+            // Solo permitir letras, números, espacios, guiones y puntos
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.]+$/.test(value)) {
+                showAlert('El nombre solo puede contener letras, números, espacios, guiones (-) y puntos (.)');
+                return;
+            }
+            
+            // 4. No más de 3 caracteres repetidos seguidos
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 3 caracteres repetidos seguidos');
+                return;
+            }
+            
+            // Validaciones adicionales
             if (value.length > 100) {
                 showAlert('El nombre no puede exceder 100 caracteres');
                 return;
@@ -166,9 +214,67 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                 showAlert('El nombre no puede comenzar con números');
                 return;
             }
+            if (/^\s/.test(value)) {
+                showAlert('El nombre no puede comenzar con espacios');
+                return;
+            }
+            if (/\s{2,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 1 espacio juntos');
+                return;
+            }
+            if ((value.match(/\s/g) || []).length > 10) {
+                showAlert('El nombre no puede tener más de 10 espacios en total');
+                return;
+            }
         }
         
         if (name === 'descripcion') {
+            // Si está vacío, permitir
+            if (value === '') {
+                setFormData(prev => ({ ...prev, descripcion: '' }));
+                return;
+            }
+            
+            // 1. No más de 4 números juntos (para permitir años)
+            if (/\d{5,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 4 números juntos');
+                return;
+            }
+            
+            // 2. No más de 2 guiones juntos ni más de 2 guiones en total
+            if (/-{3,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 2 guiones juntos');
+                return;
+            }
+            if ((value.match(/-/g) || []).length > 2) {
+                showAlert('La descripción no puede tener más de 2 guiones en total');
+                return;
+            }
+            
+            // 2.1. No más de 2 puntos juntos ni más de 2 puntos en total
+            if (/\.{3,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 2 puntos juntos');
+                return;
+            }
+            if ((value.match(/\./g) || []).length > 2) {
+                showAlert('La descripción no puede tener más de 2 puntos en total');
+                return;
+            }
+            
+            // 3. Permitir caracteres especiales en descripción (más flexible)
+            // Solo permitir letras, números, espacios, guiones, puntos y caracteres especiales comunes
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.\,\;\:\!\?\"\'\(\)\[\]\{\}\/\+\=\*\&\^\%\$\#\@]+$/.test(value)) {
+                showAlert('La descripción contiene caracteres no permitidos');
+                return;
+            }
+            
+            // 4. No más de 3 caracteres repetidos seguidos
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 3 caracteres repetidos seguidos');
+                return;
+            }
+            
+            // Validaciones adicionales
             if (value.length > 1000) {
                 showAlert('La descripción no puede exceder 1000 caracteres');
                 return;
@@ -177,53 +283,46 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                 showAlert('La descripción no puede ser solo espacios en blanco');
                 return;
             }
-        }
-        
-        if (name === 'stock') {
-            // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
-            if (!/^\d*$/.test(value)) {
-                showAlert('El stock solo puede contener números');
-                return; // Esto previene que se actualice el estado
+            if (/^\s/.test(value)) {
+                showAlert('La descripción no puede comenzar con espacios');
+                return;
             }
-            
-            if (value !== '') {
-                const numValue = parseInt(value);
-                if (isNaN(numValue) || numValue < 0) {
-                    showAlert('El stock no puede ser negativo');
-                    return;
-                }
-                if (numValue > 99999) {
-                    showAlert('El stock no puede exceder 99,999 unidades');
-                    return;
-                }
-            }
-        }
-        
-        if (name === 'descuento') {
-            // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
-            if (!/^\d*$/.test(value)) {
-                showAlert('El descuento solo puede contener números');
-                return; // Esto previene que se actualice el estado
-            }
-            
-            if (value !== '') {
-                const numValue = parseInt(value);
-                if (isNaN(numValue) || numValue < 0) {
-                    showAlert('El descuento no puede ser negativo');
-                    return;
-                }
-                if (numValue > 100) {
-                    showAlert('El descuento no puede exceder 100%');
-                    return;
-                }
+            if (/\s{2,}/.test(value)) {
+                showAlert('La descripción no puede tener más de 1 espacio juntos');
+                return;
             }
         }
         
         if (name === 'marca') {
-            if (/[<>{}[\]\\/'"]/.test(value)) {
-                showAlert('La marca no puede contener caracteres especiales');
+            // Si está vacío, permitir
+            if (value === '') {
+                setFormData(prev => ({ ...prev, marca: '' }));
                 return;
             }
+            
+            // 1. Solo letras, números, espacios y guiones (no puntos para marca)
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-]+$/.test(value)) {
+                showAlert('La marca solo puede contener letras, números, espacios y guiones (-)');
+                return;
+            }
+            
+            // 2. No más de 2 guiones juntos ni más de 1 guión en total
+            if (/-{3,}/.test(value)) {
+                showAlert('La marca no puede tener más de 2 guiones juntos');
+                return;
+            }
+            if ((value.match(/-/g) || []).length > 1) {
+                showAlert('La marca no puede tener más de 1 guión en total');
+                return;
+            }
+            
+            // 3. No más de 3 caracteres repetidos seguidos
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('La marca no puede tener más de 3 caracteres repetidos seguidos');
+                return;
+            }
+            
+            // Validaciones adicionales
             if (value.length > 50) {
                 showAlert('La marca no puede exceder 50 caracteres');
                 return;
@@ -236,23 +335,58 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                 showAlert('La marca no puede comenzar con números');
                 return;
             }
+            if (/^\s/.test(value)) {
+                showAlert('La marca no puede comenzar con espacios');
+                return;
+            }
+            if (/\s{2,}/.test(value)) {
+                showAlert('La marca no puede tener más de 1 espacio juntos');
+                return;
+            }
+            if ((value.match(/\s/g) || []).length > 1) {
+                showAlert('La marca no puede tener más de 1 espacio en total');
+                return;
+            }
         }
         
         if (name === 'codigoSKU') {
-            if (/[^a-zA-Z0-9\-_]/.test(value)) {
-                showAlert('El SKU solo puede contener letras, números, guiones y guiones bajos');
+            // Si está vacío, permitir
+            if (value === '') {
+                setFormData(prev => ({ ...prev, codigoSKU: '' }));
                 return;
             }
+            
+            // 1. Solo letras, números y guiones (sin espacios ni puntos para SKU)
+            if (!/^[a-zA-Z0-9\-]+$/.test(value)) {
+                showAlert('El código SKU solo puede contener letras, números y guiones (-), sin espacios');
+                return;
+            }
+            
+            // 2. No más de 2 guiones juntos ni más de 2 guiones en total
+            if (/-{3,}/.test(value)) {
+                showAlert('El código SKU no puede tener más de 2 guiones juntos');
+                return;
+            }
+            if ((value.match(/-/g) || []).length > 2) {
+                showAlert('El código SKU no puede tener más de 2 guiones en total');
+                return;
+            }
+            
+            // 3. No más de 3 caracteres repetidos seguidos
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('El código SKU no puede tener más de 3 caracteres repetidos seguidos');
+                return;
+            }
+            
+            // 4. No puede comenzar con guión (permitir terminar con guión mientras se escribe)
+            if (/^-/.test(value)) {
+                showAlert('El código SKU no puede comenzar con guión');
+                return;
+            }
+            
+            // Validaciones adicionales
             if (value.length > 20) {
                 showAlert('El código SKU no puede exceder 20 caracteres');
-                return;
-            }
-            if (/^[-_]/.test(value)) {
-                showAlert('El SKU no puede comenzar con guión o guión bajo');
-                return;
-            }
-            if (value.includes(' ')) {
-                showAlert('El SKU no puede contener espacios');
                 return;
             }
         }

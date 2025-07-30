@@ -13,10 +13,17 @@ const skuPattern = () => Joi.string()
     .min(3)
     .max(100)
     .pattern(/^[a-zA-Z0-9\-_]+$/)
+    .custom((value, helpers) => {
+        if (value.endsWith('-')) {
+            return helpers.error('string.custom', { message: 'El código SKU no puede terminar con guión' });
+        }
+        return value;
+    })
     .messages({
         "string.pattern.base": "El SKU solo puede contener letras, números, guiones y guiones bajos",
         "string.min": "El SKU debe tener al menos 3 caracteres",
-        "string.max": "El SKU no puede exceder 100 caracteres"
+        "string.max": "El SKU no puede exceder 100 caracteres",
+        "string.custom": "El código SKU no puede terminar con guión"
     });
 
 const priceValidation = () => Joi.alternatives().try(

@@ -1,29 +1,44 @@
-import { useEffect, useState } from 'react';
-import { getUsers } from '@services/user.service.js';
+import { useState, useEffect, useCallback } from 'react';
+import { getUsers } from '@services/user.service';
+import { showErrorAlert } from '@helpers/sweetAlert';
 
 const useUsers = () => {
-    const [users, setUsers] = useState([]);
+    const [usuarios, setUsuarios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchUsers = async () => {
-        setLoading(true);
-        setError(null);
+    const fetchUsuarios = useCallback(async () => {
         try {
+            setLoading(true);
+            setError(null);
+            
             const data = await getUsers();
-            setUsers(data);
+            setUsuarios(data || []);
         } catch (err) {
-            setError(err);
+            console.error('Error al obtener usuarios:', err);
+            setError(err.response?.data?.message || 'Error al cargar usuarios');
+            showErrorAlert('Error', 'No se pudieron cargar los usuarios');
+            setUsuarios([]);
         } finally {
             setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        fetchUsers();
     }, []);
 
-    return { users, fetchUsers, loading, error };
+    useEffect(() => {
+        fetchUsuarios();
+    }, [fetchUsuarios]);
+
+    const refetchUsuarios = useCallback(() => {
+        fetchUsuarios();
+    }, [fetchUsuarios]);
+
+    return {
+        usuarios,
+        loading,
+        error,
+        refetchUsuarios,
+        fetchUsuarios
+    };
 };
 
 export default useUsers;

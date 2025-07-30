@@ -8,17 +8,18 @@ import {
 } from "react-icons/fa";
 import ProductCard from "@components/ProductCard";
 import LazyImage from "@components/LazyImage";
+import { useWishlistContext } from "@context/WishlistContext";
 import "@styles/detalleProducto.css";
 
 function DetalleProducto() {
     const { nombreProducto } = useParams();
     const navigate = useNavigate();
+    const { toggleWishlist, isInWishlist } = useWishlistContext();
     const [producto, setProducto] = useState(null);
     const [productosRecomendados, setProductosRecomendados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [cantidad, setCantidad] = useState(1);
     const [imagenActual, setImagenActual] = useState(0);
-    const [wishlistAdded, setWishlistAdded] = useState(false);
 
     useEffect(() => {
         const fetchProducto = async () => {
@@ -76,8 +77,9 @@ function DetalleProducto() {
     };
 
     const handleAddToWishlist = () => {
-        setWishlistAdded(!wishlistAdded);
-        // Aquí iría la lógica para añadir/quitar de wishlist
+        if (producto) {
+            toggleWishlist(producto);
+        }
     };
 
     const handleShare = () => {
@@ -250,7 +252,7 @@ function DetalleProducto() {
                                     Añadir al carrito
                                 </button>
                                 <button 
-                                    className={`btn-wishlist ${wishlistAdded ? 'active' : ''}`}
+                                    className={`btn-wishlist ${producto && isInWishlist(producto.id) ? 'active' : ''}`}
                                     onClick={handleAddToWishlist}
                                 >
                                     <FaHeart />

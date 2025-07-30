@@ -316,6 +316,11 @@ export const validationRules = {
             return 'El SKU solo puede contener letras, números, guiones y guiones bajos';
         }
         
+        // Validar que no termine con guión solo al enviar el formulario
+        if (value.trim().endsWith('-')) {
+            return 'El código SKU no puede terminar con guión';
+        }
+        
         return null;
     },
 
@@ -448,6 +453,12 @@ export const validateProductName = (value) => {
     
     if (value.length > 255) {
         return 'El nombre no puede exceder 255 caracteres';
+    }
+    
+    // Validar máximo 10 espacios en total
+    const spaceCount = (value.match(/\s/g) || []).length;
+    if (spaceCount > 10) {
+        return 'El nombre no puede tener más de 10 espacios en total';
     }
     
     return null;

@@ -105,3 +105,306 @@
     width: 24px;
     height: 24px;
 }
+
+/* Overlay genérico para popups */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+}
+
+/* Estilos específicos para el popup de editar usuario */
+.editar-usuario-popup {
+    max-width: 1000px;
+    width: 95%;
+    min-height: 500px;
+}
+
+.editar-usuario-popup .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.editar-usuario-popup .popup-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.editar-usuario-popup .header-icon {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+}
+
+.editar-usuario-popup .usuario-form {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.editar-usuario-popup .editar-usuario-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 100%;
+}
+
+.editar-usuario-popup .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.editar-usuario-popup .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.editar-usuario-popup .form-group label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.editar-usuario-popup .label-icon {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+}
+
+.editar-usuario-popup .form-group input,
+.editar-usuario-popup .form-group select {
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    width: 100%;
+}
+
+.editar-usuario-popup .form-group input:focus,
+.editar-usuario-popup .form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    background: var(--bg-card);
+}
+
+.editar-usuario-popup .form-group input.error,
+.editar-usuario-popup .form-group select.error {
+    border-color: var(--error-color);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.editar-usuario-popup .error-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--border-radius-sm);
+    animation: slideInError 0.3s ease-out;
+}
+
+@keyframes slideInError {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.editar-usuario-popup .form-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.editar-usuario-popup .form-section-header {
+    margin-bottom: 1rem;
+}
+
+.editar-usuario-popup .checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+
+.editar-usuario-popup .checkbox-container input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+}
+
+.editar-usuario-popup .password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.editar-usuario-popup .password-input-container input {
+    padding-right: 3rem;
+}
+
+.editar-usuario-popup .password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.editar-usuario-popup .password-toggle:hover {
+    color: var(--primary-color);
+}
+
+.editar-usuario-popup .popup-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.editar-usuario-popup .btn {
+    padding: 0.875rem 2rem;
+    border-radius: var(--border-radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 140px;
+}
+
+.editar-usuario-popup .btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.editar-usuario-popup .btn-secondary:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+
+.editar-usuario-popup .btn-primary {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.editar-usuario-popup .btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.editar-usuario-popup .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .editar-usuario-popup {
+        max-width: 95%;
+        margin: 1rem;
+        width: calc(100vw - 2rem);
+    }
+
+    .editar-usuario-popup .editar-usuario-grid {
+        gap: 1.5rem;
+    }
+
+    .editar-usuario-popup .form-row {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .editar-usuario-popup .popup-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .editar-usuario-popup .btn {
+        width: 100%;
+    }
+
+    .editar-usuario-popup .usuario-form {
+        max-height: 60vh;
+    }
+
+    .editar-usuario-popup .popup-header h2 {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .editar-usuario-popup {
+        margin: 0.5rem;
+        width: calc(100vw - 1rem);
+    }
+
+    .editar-usuario-popup .popup-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .editar-usuario-popup .editar-usuario-grid {
+        gap: 1rem;
+    }
+
+    .editar-usuario-popup .form-row {
+        gap: 1rem;
+    }
+}
