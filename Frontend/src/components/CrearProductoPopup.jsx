@@ -352,9 +352,9 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 return;
             }
             
-            // 1. No más de 3 números juntos
-            if (/\d{4,}/.test(value)) {
-                showAlert('La marca no puede tener más de 3 números juntos');
+            // 1. No más de 4 números seguidos
+            if (/\d{5,}/.test(value)) {
+                showAlert('La marca no puede tener más de 4 números seguidos');
                 return;
             }
             

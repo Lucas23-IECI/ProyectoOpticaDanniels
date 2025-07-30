@@ -306,6 +306,12 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                 return;
             }
             
+            // 1.1. No más de 4 números seguidos
+            if (/\d{5,}/.test(value)) {
+                showAlert('La marca no puede tener más de 4 números seguidos');
+                return;
+            }
+            
             // 2. No más de 2 guiones juntos ni más de 1 guión en total
             if (/-{3,}/.test(value)) {
                 showAlert('La marca no puede tener más de 2 guiones juntos');

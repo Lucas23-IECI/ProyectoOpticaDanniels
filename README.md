@@ -22,12 +22,14 @@ chmod +x setup.sh
 ```
 
 ### 3. ¡Listo! 🎉
+
+- **Docker**: http://localhost:5173/OpticaDanniels
 - **Frontend**: http://opticadanniels.com
 - **API**: http://opticadanniels.com:3000/api
 
 ## 👤 Credenciales de Prueba
-- **Email**: admin@optica.com
-- **Password**: password
+- **Email**: administrador2025@gmail.cl
+- **Password**: Admin12345
 
 ## 🛠️ Comandos Útiles
 
