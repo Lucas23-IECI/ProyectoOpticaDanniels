@@ -1,16 +1,32 @@
 @import './styles/variables.css';
 
+/* Layout global para mantener el footer al final */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 #root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   padding: 0;
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
 
 .contenedor-principal {
+  flex: 1;
   width: 100%;
   padding: var(--spacing-lg);
   box-sizing: border-box;
   background-color: var(--bg-primary);
+}
+
+/* Eliminar padding superior en la página home cuando el navbar es fijo */
+body:has(.navbar-fixed) .contenedor-principal {
+  padding-top: 0;
 }
 
 .logo {

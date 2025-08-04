@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }) => {
             window.dispatchEvent(new CustomEvent('userChanged'));
         }, 300);
         
-        window.location.href = '/';
+        window.location.href = '/OpticaDanniels';
     };
 
     useEffect(() => {

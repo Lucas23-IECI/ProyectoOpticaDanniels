@@ -52,7 +52,7 @@ body {
 }
 
 body:has(.navbar-fixed) {
-    padding-top: 0;
+    padding-top: 100px;
 }
 
 body:not(:has(.navbar-fixed)) {

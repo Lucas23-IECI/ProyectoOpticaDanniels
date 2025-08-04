@@ -1,7 +1,29 @@
+import { useState, useEffect } from 'react';
 import { FaWhatsapp, FaFacebook, FaInstagram } from 'react-icons/fa';
 import '@styles/social-float.css';
 
 const SocialFloat = () => {
+    const [isNearFooter, setIsNearFooter] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const footer = document.querySelector('.footer-container');
+            if (!footer) return;
+
+            const footerRect = footer.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+            
+            // Si el footer está visible en pantalla o cerca de estarlo
+            const footerIsNear = footerRect.top <= windowHeight + 100;
+            setIsNearFooter(footerIsNear);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Ejecutar una vez al cargar
+
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     const socialLinks = [
         {
             name: 'WhatsApp',
@@ -27,7 +49,7 @@ const SocialFloat = () => {
     ];
 
     return (
-        <div className="social-float-container">
+        <div className={`social-float-container ${isNearFooter ? 'hidden-near-footer' : ''}`}>
             {socialLinks.map((social, index) => (
                 <a
                     key={social.name}

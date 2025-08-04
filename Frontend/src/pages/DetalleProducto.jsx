@@ -7,14 +7,20 @@ import {
     FaPlus, FaMinus, FaEye, FaSpinner
 } from "react-icons/fa";
 import ProductCard from "@components/ProductCard";
+import CartButton from "@components/CartButton";
 import LazyImage from "@components/LazyImage";
 import { useWishlistContext } from "@context/WishlistContext";
+import { useCart } from "@context/CartContext";
+import { useAuth } from "@hooks/useAuth";
 import "@styles/detalleProducto.css";
+import "@styles/cartButton.css";
 
 function DetalleProducto() {
     const { nombreProducto } = useParams();
     const navigate = useNavigate();
     const { toggleWishlist, isInWishlist } = useWishlistContext();
+    const { addToCart, isInCart, getItemQuantity } = useCart();
+    const { isAuthenticated } = useAuth();
     const [producto, setProducto] = useState(null);
     const [productosRecomendados, setProductosRecomendados] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -247,16 +253,20 @@ function DetalleProducto() {
                             </div>
 
                             <div className="action-buttons">
-                                <button className="btn-add-cart">
-                                    <FaShoppingCart />
-                                    Añadir al carrito
-                                </button>
-                                <button 
-                                    className={`btn-wishlist ${producto && isInWishlist(producto.id) ? 'active' : ''}`}
-                                    onClick={handleAddToWishlist}
-                                >
-                                    <FaHeart />
-                                </button>
+                                <CartButton 
+                                    producto={producto}
+                                    size="large"
+                                    showQuantity={false}
+                                    className="btn-add-cart"
+                                />
+                                {isAuthenticated && (
+                                    <button 
+                                        className={`btn-wishlist ${producto && isInWishlist(producto.id) ? 'active' : ''}`}
+                                        onClick={handleAddToWishlist}
+                                    >
+                                        <FaHeart />
+                                    </button>
+                                )}
                             </div>
                         </div>
                     )}

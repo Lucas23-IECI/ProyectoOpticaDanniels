@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaEye, FaTag, FaFire, FaStar, FaEdit, FaTrash } from 'react-icons/fa';
+import { useAuth } from '@hooks/useAuth';
 import '@styles/productos/product-card.css';
+import '@styles/cartButton.css';
 import WishlistButton from './WishlistButton';
+import CartButton from './CartButton';
 import LazyImage from './LazyImage';
 
 const ProductCard = ({ 
@@ -15,6 +18,7 @@ const ProductCard = ({
 }) => {
     const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
+    const { isAuthenticated } = useAuth();
     
     // Detectar si estamos en modo administración
     const isAdminMode = !!(onVerDetalle || onEditar || onEliminar);
@@ -115,12 +119,11 @@ const ProductCard = ({
                                     )}
                                 </>
                             ) : (
-                                producto.stock > 0 && (
-                                    <button className="action-btn secondary">
-                                        <FaShoppingCart />
-                                        <span>Añadir</span>
-                                    </button>
-                                )
+                                <CartButton 
+                                    producto={producto}
+                                    size="medium"
+                                    className="action-btn secondary"
+                                />
                             )}
                         </div>
                     </div>
@@ -152,8 +155,8 @@ const ProductCard = ({
                     )}
                 </div>
 
-                {/* Wishlist - Solo en modo cliente */}
-                {!isAdminMode && (
+                {/* Wishlist - Solo en modo cliente y si está autenticado */}
+                {!isAdminMode && isAuthenticated && (
                     <div className="wishlist-container-modern">
                         <WishlistButton producto={producto} size="medium" />
                     </div>

@@ -1,9 +1,16 @@
 import React from 'react';
 import { useWishlistContext } from '../context/WishlistContext';
+import { useAuth } from '@hooks/useAuth';
 import '../styles/wishlistButton.css';
 
 const WishlistButton = ({ producto, size = 'medium' }) => {
     const { toggleWishlist, isInWishlist } = useWishlistContext();
+    const { isAuthenticated } = useAuth();
+    
+    // No mostrar si no está autenticado
+    if (!isAuthenticated) {
+        return null;
+    }
     
     const isFavorite = isInWishlist(producto.id);
     

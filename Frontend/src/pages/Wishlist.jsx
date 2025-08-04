@@ -1,16 +1,37 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useWishlistContext } from '../context/WishlistContext';
+import { useAuth } from '@hooks/useAuth';
 import ProductCard from '../components/ProductCard';
 import '../styles/wishlist.css';
 
 const Wishlist = () => {
     const { wishlist, clearWishlist, wishlistCount, validateWishlistProducts } = useWishlistContext();
+    const { isAuthenticated, loading } = useAuth();
+    const navigate = useNavigate();
+
+    // Redirigir si no está autenticado
+    useEffect(() => {
+        if (!loading && !isAuthenticated) {
+            navigate('/login');
+        }
+    }, [isAuthenticated, loading, navigate]);
 
     useEffect(() => {
         if (wishlistCount > 0) {
             validateWishlistProducts();
         }
     }, [wishlistCount, validateWishlistProducts]);
+
+    // Mostrar loading mientras se verifica autenticación
+    if (loading) {
+        return <div className="loading">Cargando...</div>;
+    }
+
+    // No renderizar si no está autenticado (se redirigirá)
+    if (!isAuthenticated) {
+        return null;
+    }
 
     if (wishlistCount === 0) {
         return (

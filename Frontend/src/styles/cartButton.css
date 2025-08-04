@@ -1,0 +1,290 @@
+/* ===============================================
+   CART BUTTON COMPONENT STYLES
+   =============================================== */
+
+.cart-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: var(--primary-color, #007bff);
+    color: white;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+/* ===============================================
+   TAMAÑOS
+   =============================================== */
+
+.cart-btn-small {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    min-height: 32px;
+}
+
+.cart-btn-small span {
+    display: none;
+}
+
+.cart-btn-small svg {
+    font-size: 0.875rem;
+}
+
+.cart-btn-medium {
+    padding: 0.6rem 1rem;
+    font-size: 0.875rem;
+    min-height: 38px;
+}
+
+.cart-btn-large {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    min-height: 44px;
+}
+
+/* ===============================================
+   ESTADOS
+   =============================================== */
+
+.cart-btn:hover:not(:disabled) {
+    background: var(--primary-dark, #0056b3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+.cart-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.cart-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+}
+
+/* En carrito */
+.cart-btn.in-cart {
+    background: var(--success-color, #28a745);
+    border: 2px solid var(--success-color, #28a745);
+}
+
+.cart-btn.in-cart:hover {
+    background: var(--danger-color, #dc3545);
+    border-color: var(--danger-color, #dc3545);
+}
+
+.cart-btn.in-cart:hover span::after {
+    content: " - Click para eliminar";
+}
+
+/* Agotado */
+.cart-btn.out-of-stock {
+    background: var(--gray-500, #6c757d);
+    border: 2px solid var(--gray-500, #6c757d);
+    cursor: not-allowed;
+}
+
+/* Feedback de agregado */
+.cart-btn.added {
+    background: var(--success-color, #28a745);
+    animation: cartAddedPulse 0.6s ease;
+}
+
+@keyframes cartAddedPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ===============================================
+   CONTROLES DE CANTIDAD
+   =============================================== */
+
+.cart-quantity-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    border: 2px solid var(--primary-color, #007bff);
+    border-radius: 8px;
+    padding: 0.25rem;
+    position: relative;
+}
+
+.cart-controls-small {
+    gap: 0.25rem;
+    padding: 0.2rem;
+}
+
+.cart-controls-medium {
+    gap: 0.5rem;
+    padding: 0.3rem;
+}
+
+.cart-controls-large {
+    gap: 0.75rem;
+    padding: 0.4rem;
+}
+
+.quantity-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 4px;
+    background: var(--primary-color, #007bff);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+}
+
+.cart-controls-large .quantity-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.875rem;
+}
+
+.quantity-btn:hover:not(:disabled) {
+    background: var(--primary-dark, #0056b3);
+    transform: scale(1.1);
+}
+
+.quantity-btn:disabled {
+    background: var(--gray-400, #6c757d);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.quantity-display {
+    min-width: 24px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-primary, #333);
+    font-size: 0.875rem;
+}
+
+.cart-controls-large .quantity-display {
+    min-width: 28px;
+    font-size: 1rem;
+}
+
+.remove-from-cart-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    background: var(--danger-color, #dc3545);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-left: 0.25rem;
+}
+
+.remove-from-cart-btn:hover {
+    background: var(--danger-dark, #c82333);
+    transform: scale(1.1);
+}
+
+/* ===============================================
+   RESPONSIVE
+   =============================================== */
+
+@media (max-width: 768px) {
+    .cart-btn-medium span,
+    .cart-btn-large span {
+        display: none;
+    }
+    
+    .cart-btn-medium,
+    .cart-btn-large {
+        padding: 0.5rem;
+        min-width: 44px;
+    }
+    
+    .cart-quantity-controls {
+        gap: 0.25rem;
+        padding: 0.2rem;
+    }
+    
+    .quantity-display {
+        min-width: 20px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ===============================================
+   INTEGRACIÓN CON PRODUCT CARD
+   =============================================== */
+
+.product-card-modern .cart-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.product-overlay .cart-btn {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--primary-color, #007bff);
+    border: 2px solid var(--primary-color, #007bff);
+    backdrop-filter: blur(10px);
+}
+
+.product-overlay .cart-btn:hover {
+    background: var(--primary-color, #007bff);
+    color: white;
+}
+
+.product-overlay .cart-btn.in-cart {
+    background: var(--success-color, #28a745);
+    color: white;
+    border-color: var(--success-color, #28a745);
+}
+
+.product-overlay .cart-btn.in-cart:hover {
+    background: var(--danger-color, #dc3545);
+    border-color: var(--danger-color, #dc3545);
+}
+
+/* ===============================================
+   ACCESIBILIDAD
+   =============================================== */
+
+.cart-btn:focus-visible {
+    outline: 2px solid var(--primary-color, #007bff);
+    outline-offset: 2px;
+}
+
+.quantity-btn:focus-visible {
+    outline: 2px solid var(--primary-color, #007bff);
+    outline-offset: 1px;
+}
+
+/* ===============================================
+   DARK MODE SUPPORT
+   =============================================== */
+
+@media (prefers-color-scheme: dark) {
+    .cart-quantity-controls {
+        background: var(--bg-secondary, #2d3748);
+        border-color: var(--primary-color, #007bff);
+    }
+    
+    .quantity-display {
+        color: var(--text-primary, #f7fafc);
+    }
+}

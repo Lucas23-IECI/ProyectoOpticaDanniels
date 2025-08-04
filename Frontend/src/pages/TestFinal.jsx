@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWishlist } from '@hooks/useWishlist';
-import { useCart } from '@hooks/useCart';
+import { useCart } from '@context/CartContext';
 import { useAuth } from '@hooks/useAuth';
 
 const TestFinal = () => {

@@ -25,16 +25,16 @@ instance.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            const isLoginPage = window.location.pathname === '/auth' || 
-                               window.location.pathname === '/login' ||
-                               window.location.pathname === '/register';
+            const isLoginPage = window.location.pathname === '/OpticaDanniels/auth' || 
+                               window.location.pathname === '/OpticaDanniels/login' ||
+                               window.location.pathname === '/OpticaDanniels/register';
             
             if (!isLoginPage) {
                 // Sesión indefinida - solo redirigir sin mostrar alerta molesta
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 
-                window.location.href = '/auth';
+                window.location.href = '/OpticaDanniels/auth';
             }
         }
         

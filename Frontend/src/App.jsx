@@ -1,18 +1,23 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@context/AuthContext";
+import { CartProvider } from "@context/CartContext";
 import { useTokenExpiration } from "@hooks/useTokenExpiration";
 import ProtectedRoute from "@components/ProtectedRoute";
 import Navbar from "@components/Navbar";
+import Footer from "@components/Footer";
 import Home from "@pages/Home";
 import Productos from "@pages/Productos";
 import DetalleProducto from "@pages/DetalleProducto";
 import BusquedaResultados from "@pages/BusquedaResultados";
 import Wishlist from "@pages/Wishlist";
+import Carrito from "@pages/Carrito";
 import Login from "@pages/Login";
 import Register from "@pages/Register";
 import Perfil from "@pages/Perfil";
 import QuienesSomos from "@pages/QuienesSomos";
 import Contacto from "@pages/Contacto";
+import Privacidad from "@pages/Privacidad";
+import Terminos from "@pages/Terminos";
 import Admin from "@pages/Admin";
 
 
@@ -29,8 +34,11 @@ function AppContent() {
           <Route path="/productos/:nombreProducto" element={<DetalleProducto />} />
           <Route path="/buscar" element={<BusquedaResultados />} />
           <Route path="/favoritos" element={<Wishlist />} />
+          <Route path="/carrito" element={<Carrito />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/quienes-somos" element={<QuienesSomos />} />
+          <Route path="/privacidad" element={<Privacidad />} />
+          <Route path="/terminos" element={<Terminos />} />
           
           <Route 
             path="/login" 
@@ -100,6 +108,7 @@ function AppContent() {
           />
         </Routes>
       </div>
+      <Footer />
     </>
   );
 }
@@ -107,9 +116,11 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter basename="/OpticaDanniels">
-        <AppContent />
-      </BrowserRouter>
+      <CartProvider>
+        <BrowserRouter basename="/OpticaDanniels">
+          <AppContent />
+        </BrowserRouter>
+      </CartProvider>
     </AuthProvider>
   );
 }

@@ -5,7 +5,9 @@ import { getNombreCorto } from '@helpers/nameHelpers';
 import BarraBusqueda from '@components/BarraBusqueda';
 import AuthPopup from '@components/AuthPopup';
 import DropdownUsuario from '@components/DropdownUsuario';
+import CartIcon from '@components/CartIcon';
 import '@styles/navbar.css';
+import '@styles/cartIcon.css';
 
 import LogoOficial from '/LogoOficial.png';
 
@@ -47,11 +49,16 @@ function Navbar() {
                     <ul>
                         <li><NavLink to="/quienes-somos">Quienes Somos</NavLink></li>
                         <li><NavLink to="/productos">Productos</NavLink></li>
-                        <li><NavLink to="/favoritos">Favoritos</NavLink></li>
+                        {isAuthenticated && (
+                            <li><NavLink to="/favoritos">Favoritos</NavLink></li>
+                        )}
+                        <li><NavLink to="/carrito">Carrito</NavLink></li>
                         <li><NavLink to="/contacto">Contacto</NavLink></li>
                     </ul>
 
                     <BarraBusqueda />
+
+                    <CartIcon />
 
                     <div className="navbar-icons" ref={dropdownRef}>
                         <button className="icono-usuario">
