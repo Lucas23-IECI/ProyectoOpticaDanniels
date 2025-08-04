@@ -177,7 +177,7 @@ echo "✅ Archivo .env del backend creado"
 # Crear archivo .env para el frontend
 echo "📝 Creando archivo .env para el frontend..."
 cat > Frontend/.env << 'EOF'
-VITE_BASE_URL=http://localhost:3000/api
+VITE_BASE_URL=http://146.83.194.168:5173/api
 EOF
 echo "✅ Archivo .env del frontend creado"
 
