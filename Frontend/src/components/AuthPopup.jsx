@@ -20,9 +20,9 @@ function AuthPopup({ onClose }) {
 
     return (
         <div className="popup-auth">
-            <button onClick={handleLogin}>Iniciar sesión</button>
-            <button onClick={handleRegister}>Crear cuenta</button>
-            <button onClick={handleInvitado}>Continuar como invitado</button>
+            <button onClick={handleLogin}>Ingresar</button>
+            <button onClick={handleRegister}>Registrarse</button>
+            <button onClick={handleInvitado}>Invitado</button>
         </div>
     );
 }

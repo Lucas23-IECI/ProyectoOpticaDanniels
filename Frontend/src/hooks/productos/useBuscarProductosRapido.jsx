@@ -38,7 +38,7 @@ const useBuscarProductosRapido = () => {
             } finally {
                 setCargando(false);
             }
-        }, 200);
+        }, 750);
     }, []);
 
     return { resultados, cargando, error, buscar };

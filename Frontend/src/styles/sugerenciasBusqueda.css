@@ -1,0 +1,111 @@
+.sugerencias-busqueda {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 16px auto;
+    overflow: hidden;
+    max-width: 500px;
+    width: 100%;
+}
+
+.sugerencias-header {
+    background: #f8f9fa;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.sugerencias-texto {
+    color: #666;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.sugerencias-lista {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.sugerencia-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: white;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: left;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.sugerencia-item:hover {
+    background: #f8f9fa;
+}
+
+.sugerencia-item:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.sugerencia-texto {
+    flex: 1;
+    margin-right: 8px;
+}
+
+.sugerencia-icono {
+    color: #007bff;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.sugerencias-cargando {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #666;
+    font-size: 0.9rem;
+    gap: 8px;
+}
+
+.sugerencias-vacio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #999;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sugerencias-busqueda {
+        margin-top: 4px;
+    }
+    
+    .sugerencia-item {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+    
+    .sugerencias-header {
+        padding: 10px 12px;
+    }
+} 

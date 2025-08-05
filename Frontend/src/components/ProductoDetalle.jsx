@@ -54,7 +54,14 @@ const ProductoDetalle = ({ producto: productoProps, onEdit, onDelete, showAction
         if (onClose) {
             onClose();
         } else {
-            navigate(-1);
+            // Verificar si hay historial previo y si es una página válida
+            if (window.history.length > 1) {
+                // Intentar volver al historial anterior
+                navigate(-1);
+            } else {
+                // Si no hay historial, ir directamente a productos
+                navigate('/productos');
+            }
         }
     };
 

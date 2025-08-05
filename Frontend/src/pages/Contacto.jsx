@@ -62,16 +62,16 @@ function Contacto() {
                 <div className="container">
                                             <div className="contacto-grid">
                         <div className="ubicacion-info">
-                            <div className="direccion-principal">
-                                <div className="direccion-header">
-                                    <FaMapMarkerAlt className="ubicacion-icon" />
+                            <div className="contacto-direccion-principal">
+                                <div className="contacto-direccion-header">
+                                    <FaMapMarkerAlt className="contacto-ubicacion-icon" />
                                     <h3>Nuestra Ubicación</h3>
                                 </div>
-                                <div className="direccion-detalles">
-                                    <p className="direccion-nombre">Óptica Danniels</p>
-                                    <p className="direccion-calle">Av. Manuel Rodriguez 426</p>
-                                    <p className="direccion-ciudad">Chiguayante - Bio-Bio, Chile</p>
-                                    <p className="direccion-lugar">Galería Paseo Madero</p>
+                                <div className="contacto-direccion-detalles">
+                                    <p className="contacto-direccion-nombre">Óptica Danniels</p>
+                                    <p className="contacto-direccion-calle">Av. Manuel Rodriguez 426</p>
+                                    <p className="contacto-direccion-ciudad">Chiguayante - Bio-Bio, Chile</p>
+                                    <p className="contacto-direccion-lugar">Galería Paseo Madero</p>
                                 </div>
                             </div>
 

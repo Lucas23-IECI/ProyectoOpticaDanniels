@@ -2,7 +2,8 @@ import {
     actualizarProductoService,
     buscarProductosService,
     crearProductoService,
-    eliminarProductoService
+    eliminarProductoService,
+    generarSugerenciasBusqueda
 } from "../services/producto.service.js";
 import { actualizarImagenProductoService } from "../services/producto.service.js";
 import { HOST, PORT } from "../config/configEnv.js";
@@ -162,4 +163,29 @@ export const eliminarProductoController = async (req, res) => {
             mensaje: error.message || "Error al eliminar el producto.",
         });
     }
-  };
+};
+
+export const obtenerSugerenciasBusquedaController = async (req, res) => {
+    try {
+        const { termino } = req.query;
+        
+        if (!termino || termino.trim().length < 2) {
+            return res.status(200).json({
+                mensaje: "Término de búsqueda muy corto.",
+                sugerencias: []
+            });
+        }
+
+        const sugerencias = await generarSugerenciasBusqueda(termino);
+
+        res.status(200).json({
+            mensaje: "Sugerencias generadas correctamente.",
+            sugerencias
+        });
+    } catch (error) {
+        console.error("Error en obtenerSugerenciasBusquedaController:", error);
+        res.status(error.status || 500).json({
+            mensaje: error.message || "Error al obtener sugerencias de búsqueda.",
+        });
+    }
+};

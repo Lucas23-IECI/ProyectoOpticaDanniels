@@ -9,10 +9,15 @@ const DropdownCategorias = ({
     onCategoriaChange, 
     onSubcategoriaChange,
     showSubcategories = true,
-    placeholder = "Seleccionar categoría"
+    placeholder = "Seleccionar categoría",
+    dropdownActivo,
+    setDropdownActivo,
+    id = 'default'
 }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [isSubOpen, setIsSubOpen] = useState(false);
+    const categoriaId = `categorias-${id}`;
+    const subcategoriaId = `subcategorias-${id}`;
+    const isOpen = dropdownActivo === categoriaId;
+    const isSubOpen = dropdownActivo === subcategoriaId;
 
     const categorias = getCategoriasList();
     const subcategorias = selectedCategoria ? getSubcategoriasList(selectedCategoria) : [];
@@ -25,20 +30,18 @@ const DropdownCategorias = ({
         if (valor !== selectedCategoria) {
             onSubcategoriaChange('');
         }
-        setIsOpen(false);
-        setIsSubOpen(false);
+        setDropdownActivo(null);
     };
 
     const handleSubcategoriaSelect = (valor) => {
         onSubcategoriaChange(valor);
-        setIsSubOpen(false);
+        setDropdownActivo(null);
     };
 
     const limpiarSeleccion = () => {
         onCategoriaChange('');
         onSubcategoriaChange('');
-        setIsOpen(false);
-        setIsSubOpen(false);
+        setDropdownActivo(null);
     };
 
     return (
@@ -47,7 +50,7 @@ const DropdownCategorias = ({
                 <button
                     type="button"
                     className={`dropdown-btn ${selectedCategoria ? 'selected' : ''}`}
-                    onClick={() => setIsOpen(!isOpen)}
+                    onClick={() => setDropdownActivo(isOpen ? null : categoriaId)}
                 >
                     <div className="btn-content">
                         {categoriaInfo ? (
@@ -99,7 +102,7 @@ const DropdownCategorias = ({
                     <button
                         type="button"
                         className={`dropdown-btn subcategoria-btn ${selectedSubcategoria ? 'selected' : ''}`}
-                        onClick={() => setIsSubOpen(!isSubOpen)}
+                        onClick={() => setDropdownActivo(isSubOpen ? null : subcategoriaId)}
                     >
                         <div className="btn-content">
                             {subcategoriaInfo ? (
@@ -116,13 +119,16 @@ const DropdownCategorias = ({
                             <div className="dropdown-header">
                                 <h4>Subcategorías</h4>
                                 {selectedSubcategoria && (
-                                    <button 
-                                        type="button"
-                                        className="limpiar-btn"
-                                        onClick={() => onSubcategoriaChange('')}
-                                    >
-                                        Limpiar
-                                    </button>
+                                                                    <button 
+                                    type="button"
+                                    className="limpiar-btn"
+                                    onClick={() => {
+                                        onSubcategoriaChange('');
+                                        setDropdownActivo(null);
+                                    }}
+                                >
+                                    Limpiar
+                                </button>
                                 )}
                             </div>
                             

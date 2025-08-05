@@ -27,6 +27,7 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
     const [imagen, setImagen] = useState(null);
     const [previewImagen, setPreviewImagen] = useState(null);
     const [alert, setAlert] = useState(null);
+    const [dropdownActivo, setDropdownActivo] = useState(null);
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -690,6 +691,9 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                                         onCategoriaChange={(categoria) => setFormData(prev => ({ ...prev, categoria, subcategoria: '' }))}
                                         onSubcategoriaChange={(subcategoria) => setFormData(prev => ({ ...prev, subcategoria }))}
                                         className={errors.categoria || errors.subcategoria ? 'error' : ''}
+                                        dropdownActivo={dropdownActivo}
+                                        setDropdownActivo={setDropdownActivo}
+                                        id="editar-producto"
                                     />
                                     {errors.categoria && <span className="error-message">{errors.categoria}</span>}
                                     {errors.subcategoria && <span className="error-message">{errors.subcategoria}</span>}

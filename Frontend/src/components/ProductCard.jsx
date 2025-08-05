@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaEye, FaTag, FaFire, FaStar, FaEdit, FaTrash } from 'react-icons/fa';
 import { useAuth } from '@hooks/useAuth';
+import { formatearNombreParaURL } from '@helpers/formatData';
 import '@styles/productos/product-card.css';
 import '@styles/cartButton.css';
 import WishlistButton from './WishlistButton';
@@ -40,7 +41,8 @@ const ProductCard = ({
         if (onVerDetalle) {
             onVerDetalle(producto);
         } else {
-            navigate(`/productos/${producto.id}`);
+            const nombreFormateado = formatearNombreParaURL(producto.nombre);
+            navigate(`/productos/${nombreFormateado}`);
         }
     };
 

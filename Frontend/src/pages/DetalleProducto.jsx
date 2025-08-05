@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getProductos } from "@services/producto.service";
+import { formatearNombreParaURL } from "@helpers/formatData";
 import { 
     FaArrowLeft, FaShoppingCart, FaHeart, FaShare, FaFire, 
     FaTag, FaShieldAlt, FaTruck, FaUndo, FaStar, FaCheck,
@@ -31,13 +32,10 @@ function DetalleProducto() {
         const fetchProducto = async () => {
             try {
                 setLoading(true);
-                const limpiarNombre = (nombre) =>
-                    nombre.toLowerCase().replace(/[\s-]+/g, "");
-
-                const nombreBuscado = limpiarNombre(decodeURIComponent(nombreProducto));
+                const nombreBuscado = formatearNombreParaURL(decodeURIComponent(nombreProducto));
                 const productos = await getProductos();
                 const productoEncontrado = productos.find(
-                    (p) => limpiarNombre(p.nombre) === nombreBuscado
+                    (p) => formatearNombreParaURL(p.nombre) === nombreBuscado
                 );
 
                 if (productoEncontrado) {
@@ -99,7 +97,14 @@ function DetalleProducto() {
     };
 
     const handleGoBack = () => {
-        navigate(-1);
+        // Verificar si hay historial previo y si es una página válida
+        if (window.history.length > 1) {
+            // Intentar volver al historial anterior
+            navigate(-1);
+        } else {
+            // Si no hay historial, ir directamente a productos
+            navigate('/productos');
+        }
     };
 
     const getStockStatus = () => {

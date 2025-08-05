@@ -28,21 +28,17 @@ function DropdownUsuario({ onClose }) {
                 Mi perfil
             </button>
             <button onClick={() => { navigate('/favoritos'); onClose(); }}>
-                ❤️ Mis favoritos
+                Mis favoritos
             </button>
             {user?.rol === 'administrador' && (
                 <button 
-                    className="admin-button" 
                     onClick={() => { navigate('/admin'); onClose(); }}
                 >
-                    🛡️ Panel de Admin
+                    Panel de Administración
                 </button>
             )}
             <button onClick={() => { navigate('/mis-compras'); onClose(); }}>
                 Mis compras
-            </button>
-            <button onClick={() => { navigate('/mis-datos'); onClose(); }}>
-                Datos personales
             </button>
             <button onClick={handleLogout}>
                 Cerrar sesión

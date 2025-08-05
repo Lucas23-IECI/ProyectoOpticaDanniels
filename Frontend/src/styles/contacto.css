@@ -16,6 +16,15 @@
     background: var(--background-light);
 }
 
+/* Asegurar que los h3 en contacto no tengan estilos de etiqueta */
+.contacto-container h3 {
+    background: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    position: static !important;
+    color: var(--text-color) !important;
+}
+
 .contacto-hero {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
     color: white;
@@ -52,7 +61,8 @@
 
 .hero-subtitle {
     font-size: 1.3rem;
-    opacity: 0.9;
+    color: white;
+    opacity: 1;
     line-height: 1.6;
     max-width: 600px;
     margin: 0 auto;
@@ -83,43 +93,50 @@
     border: 1px solid var(--border-color);
 }
 
-.direccion-principal {
+.contacto-direccion-principal {
     margin-bottom: 40px;
 }
 
-.direccion-header {
+.contacto-direccion-header {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 0;
     margin-bottom: 25px;
+    position: relative;
+    background: none;
 }
 
-.ubicacion-icon {
+.contacto-ubicacion-icon {
     font-size: 2rem;
     color: var(--primary-color);
+    margin-right: 10px;
 }
 
-.direccion-header h3 {
+.contacto-direccion-header h3 {
     font-size: 1.8rem;
     color: var(--text-color);
     margin: 0;
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    position: static;
 }
 
-.direccion-detalles {
+.contacto-direccion-detalles {
     padding-left: 55px;
 }
 
-.direccion-nombre {
+.contacto-direccion-nombre {
     font-size: 1.3rem;
     font-weight: 600;
     color: var(--text-color);
     margin-bottom: 10px;
 }
 
-.direccion-calle,
-.direccion-ciudad,
-.direccion-lugar {
-    color: var(--text-light);
+.contacto-direccion-calle,
+.contacto-direccion-ciudad,
+.contacto-direccion-lugar {
+    color: #000000;
     margin-bottom: 5px;
     font-size: 1.1rem;
 }

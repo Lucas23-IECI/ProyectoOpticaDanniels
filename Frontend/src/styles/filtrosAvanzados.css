@@ -1,0 +1,218 @@
+.filtros-avanzados {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.filtros-avanzados-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.filtros-avanzados-header h4 {
+    margin: 0;
+    color: #333;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.limpiar-todos {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.limpiar-todos:hover {
+    background: #c82333;
+}
+
+.filtros-avanzados-contenido {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.filtro-seccion {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.filtro-seccion:last-child {
+    border-bottom: none;
+}
+
+.filtro-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: left;
+}
+
+.filtro-header:hover {
+    background: #f8f9fa;
+}
+
+.filtro-header.con-seleccion {
+    background: #e3f2fd;
+}
+
+.filtro-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.filtro-icono {
+    font-size: 0.9rem;
+}
+
+.contador-seleccion {
+    background: #007bff;
+    color: white;
+    padding: 0.1rem 0.4rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.filtro-contenido {
+    padding: 0.75rem 1rem;
+    background: #fafafa;
+    border-top: 1px solid #e0e0e0;
+}
+
+.opciones-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.opcion-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    transition: color 0.2s ease;
+}
+
+.opcion-checkbox:hover {
+    color: #007bff;
+}
+
+.opcion-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ddd;
+    border-radius: 3px;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.opcion-checkbox input[type="checkbox"]:checked + .checkmark {
+    background: #007bff;
+    border-color: #007bff;
+}
+
+.opcion-checkbox input[type="checkbox"]:checked + .checkmark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.opcion-texto {
+    font-size: 0.9rem;
+    color: #555;
+    user-select: none;
+}
+
+.limpiar-seccion {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.limpiar-seccion:hover {
+    background: #545b62;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filtros-avanzados-header {
+        padding: 0.75rem;
+    }
+    
+    .filtro-header {
+        padding: 0.6rem 0.75rem;
+    }
+    
+    .filtro-contenido {
+        padding: 0.6rem 0.75rem;
+    }
+    
+    .opciones-grid {
+        gap: 0.4rem;
+    }
+    
+    .opcion-texto {
+        font-size: 0.85rem;
+    }
+}
+
+/* Scrollbar personalizado */
+.filtros-avanzados-contenido::-webkit-scrollbar {
+    width: 6px;
+}
+
+.filtros-avanzados-contenido::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.filtros-avanzados-contenido::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.filtros-avanzados-contenido::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

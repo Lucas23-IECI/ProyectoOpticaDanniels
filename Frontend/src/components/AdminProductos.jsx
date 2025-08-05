@@ -70,6 +70,7 @@ const AdminProductos = () => {
     const [modoEdicion, setModoEdicion] = useState(false);
     
     const [marcas, setMarcas] = useState([]);
+    const [dropdownActivo, setDropdownActivo] = useState(null);
 
     useEffect(() => {
         if (showDetalleModal) {
@@ -468,6 +469,9 @@ const AdminProductos = () => {
                                 onCategoriaChange={(categoria) => handleFilterChange('categoria', categoria)}
                                 onSubcategoriaChange={(subcategoria) => handleFilterChange('subcategoria', subcategoria)}
                                 placeholder="Todas las categorías"
+                                dropdownActivo={dropdownActivo}
+                                setDropdownActivo={setDropdownActivo}
+                                id="admin-productos"
                             />
                         </div>
                         

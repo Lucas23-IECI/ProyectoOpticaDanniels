@@ -5,6 +5,7 @@ import {
     crearProductoController,
     eliminarProductoController,
     subirImagenProductoController,
+    obtenerSugerenciasBusquedaController,
 } from "../controllers/producto.controller.js";
 import { validateSchema } from "../middlewares/validateSchema.js";
 import { validateProductoMultipart } from "../middlewares/validateProductoMultipart.js";
@@ -26,6 +27,7 @@ router
         crearProductoController
     )
     .get("/", buscarProductosController)
+    .get("/sugerencias", obtenerSugerenciasBusquedaController)
     .put("/:id", 
         authenticateJwt, 
         isAdmin, 

@@ -165,5 +165,26 @@ function formatTelefono(telefono) {
     return `${cleanTelefono.substring(0, 1)} ${cleanTelefono.substring(1, 5)} ${cleanTelefono.substring(5)}`;
 }
 
+/**
+ * Formatea el nombre de un producto para usarlo en URLs
+ * @param {string} nombre - El nombre del producto
+ * @returns {string} - El nombre formateado para URL
+ */
+export const formatearNombreParaURL = (nombre) => {
+    if (!nombre) return '';
+    
+    return nombre
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[áéíóú]/g, (m) => ({
+            á: 'a',
+            é: 'e',
+            í: 'i',
+            ó: 'o',
+            ú: 'u'
+        }[m]))
+        .replace(/[^a-z0-9-]/g, "");
+};
+
 // Exportar formatRut y formatTelefono para que puedan ser usados en otros archivos
 export { formatRut, formatTelefono, validarRutChileno };

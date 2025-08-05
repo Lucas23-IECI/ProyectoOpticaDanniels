@@ -169,5 +169,21 @@ export const buscarProductosRapido = async (query, options = {}) => {
     }
 };
 
+export const obtenerSugerenciasBusqueda = async (termino) => {
+    try {
+        const response = await fetch(`${API_URL}/productos/sugerencias?termino=${encodeURIComponent(termino)}`);
+        
+        if (!response.ok) {
+            throw new Error('Error al obtener sugerencias');
+        }
+        
+        const data = await response.json();
+        return data.sugerencias || [];
+    } catch (error) {
+        console.error('Error obteniendo sugerencias:', error);
+        return [];
+    }
+};
+
 
 

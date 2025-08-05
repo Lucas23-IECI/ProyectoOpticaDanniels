@@ -1,17 +1,19 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import useGetProductos from "@hooks/productos/useGetProductos";
+import { formatearNombreParaURL } from "@helpers/formatData";
 import DropdownFiltro from "@components/DropdownFiltro";
 import ProductCard from "@components/ProductCard";
 import DropdownCategorias from "@components/DropdownCategorias";
 import "@styles/productos.css";
 import { Link } from "react-router-dom";
-import { FaFilter, FaTimes, FaEye, FaHeart, FaShoppingCart, FaStar, FaSearch, FaTh, FaList, FaSort, FaTags, FaEyeSlash } from 'react-icons/fa';
+import { FaFilter, FaTimes, FaEye, FaHeart, FaShoppingCart, FaStar, FaSearch, FaTh, FaList, FaSort, FaTags, FaEyeSlash, FaCog } from 'react-icons/fa';
+import SugerenciasBusqueda from "@components/SugerenciasBusqueda";
+import FiltrosAvanzados from "@components/FiltrosAvanzados";
 
 const Productos = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [loading, setLoading] = useState(false);
-    const [isTransitioning, setIsTransitioning] = useState(false);
     const [categoria, setCategoria] = useState(searchParams.get("categoria") || "");
     const [subcategoria, setSubcategoria] = useState(searchParams.get("subcategoria") || "");
     const [disponibilidad, setDisponibilidad] = useState(searchParams.get("disponibilidad") || "");
@@ -21,82 +23,46 @@ const Productos = () => {
     const [dropdownActivo, setDropdownActivo] = useState(null);
     const [viewMode, setViewMode] = useState('grid');
     const [showFilters, setShowFilters] = useState(false);
+    const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
     const [searchTerm, setSearchTerm] = useState(searchParams.get("busqueda") || "");
     
-    const [displayedProducts, setDisplayedProducts] = useState([]);
     const [isFilteringDebounced, setIsFilteringDebounced] = useState(false);
 
-    
-    const filtrosIniciales = {
-        categoria: searchParams.get("categoria") || "",
-        subcategoria: searchParams.get("subcategoria") || "",
-        disponibilidad: searchParams.get("disponibilidad") || "",
-        precioMin: searchParams.get("precioMin") || "",
-        precioMax: searchParams.get("precioMax") || "",
-        orden: searchParams.get("orden") || "",
-        busqueda: searchParams.get("busqueda") || ""
-    };
+    // Filtros avanzados
+    const [filtrosAvanzados, setFiltrosAvanzados] = useState({
+        forma: [],
+        marca: [],
+        genero: [],
+        material: [],
+        color: [],
+        tamaño: []
+    });
 
-    const filtrosBackend = {};
-    // Siempre filtrar solo productos activos para clientes
-    filtrosBackend.activo = true;
-    
-    if (filtrosIniciales.categoria && filtrosIniciales.categoria.trim()) {
-        filtrosBackend.categoria = filtrosIniciales.categoria.trim();
-    }
-    if (filtrosIniciales.subcategoria && filtrosIniciales.subcategoria.trim()) {
-        filtrosBackend.subcategoria = filtrosIniciales.subcategoria.trim();
-    }
-    if (filtrosIniciales.precioMin && filtrosIniciales.precioMin.trim()) {
-        filtrosBackend.precio_min = filtrosIniciales.precioMin.trim();
-    }
-    if (filtrosIniciales.precioMax && filtrosIniciales.precioMax.trim()) {
-        filtrosBackend.precio_max = filtrosIniciales.precioMax.trim();
-    }
-    // Solo aplicar filtro de disponibilidad si el usuario lo selecciona explícitamente
-    if (filtrosIniciales.disponibilidad && filtrosIniciales.disponibilidad.trim()) {
-        if (filtrosIniciales.disponibilidad === "en_stock") {
-            // Ya está filtrado por activo=true, no necesitamos hacer nada más
-        } else if (filtrosIniciales.disponibilidad === "agotado") {
-            // Para productos agotados, quitamos el filtro de activo
-            delete filtrosBackend.activo;
-        }
-    }
-    if (filtrosIniciales.orden && filtrosIniciales.orden.trim()) {
-        filtrosBackend.orden = filtrosIniciales.orden.trim();
-    }
-    if (filtrosIniciales.busqueda && filtrosIniciales.busqueda.trim()) {
-        filtrosBackend.nombre = filtrosIniciales.busqueda.trim();
-    }
-
-    const { productos, fetchProductos } = useGetProductos(filtrosBackend);
+    const { productos, fetchProductos } = useGetProductos({ activo: true });
     const debounceRef = useRef(null);
 
     const actualizarURL = useCallback((filtros) => {
         const params = new URLSearchParams();
-        
-        if (filtros.categoria && filtros.categoria.trim()) params.set("categoria", filtros.categoria.trim());
-        if (filtros.subcategoria && filtros.subcategoria.trim()) params.set("subcategoria", filtros.subcategoria.trim());
-        if (filtros.disponibilidad && filtros.disponibilidad.trim()) params.set("disponibilidad", filtros.disponibilidad.trim());
-        if (filtros.precioMin && filtros.precioMin.trim()) params.set("precioMin", filtros.precioMin.trim());
-        if (filtros.precioMax && filtros.precioMax.trim()) params.set("precioMax", filtros.precioMax.trim());
-        if (filtros.orden && filtros.orden.trim()) params.set("orden", filtros.orden.trim());
-        if (filtros.busqueda && filtros.busqueda.trim()) params.set("busqueda", filtros.busqueda.trim());
+        if (filtros.categoria) params.set("categoria", filtros.categoria);
+        if (filtros.subcategoria) params.set("subcategoria", filtros.subcategoria);
+        if (filtros.disponibilidad) params.set("disponibilidad", filtros.disponibilidad);
+        if (filtros.precioMin) params.set("precioMin", filtros.precioMin);
+        if (filtros.precioMax) params.set("precioMax", filtros.precioMax);
+        if (filtros.orden) params.set("orden", filtros.orden);
+        if (filtros.busqueda) params.set("busqueda", filtros.busqueda);
         
         setSearchParams(params);
     }, [setSearchParams]);
 
     const obtenerProductosConDebounce = useCallback((filtros) => {
-        setIsFilteringDebounced(true);
-        
         if (debounceRef.current) {
             clearTimeout(debounceRef.current);
         }
 
         debounceRef.current = setTimeout(async () => {
             try {
-                setIsTransitioning(true);
                 setLoading(true);
+                setIsFilteringDebounced(true);
                 
                 const paramsFiltros = {};
                 // Siempre filtrar solo productos activos para clientes
@@ -121,26 +87,20 @@ const Productos = () => {
                     paramsFiltros.nombre = filtros.busqueda.trim();
                 }
 
-                await new Promise(resolve => setTimeout(resolve, 100));
-                
                 await fetchProductos(paramsFiltros);
-                setDisplayedProducts(productos);
                 
             } catch (error) {
                 console.error("Error al obtener productos:", error);
             } finally {
                 setLoading(false);
-                setIsTransitioning(false);
                 setIsFilteringDebounced(false);
             }
-        }, 300);
-    }, [fetchProductos, productos]);
+        }, 750);
+    }, [fetchProductos]);
 
-    useEffect(() => {
-        if (!isTransitioning) {
-            setDisplayedProducts(productos);
-        }
-    }, [productos, isTransitioning]);
+    const displayedProducts = useMemo(() => {
+        return productos || [];
+    }, [productos]);
 
     useEffect(() => {
         const filtros = {
@@ -154,11 +114,9 @@ const Productos = () => {
         };
 
         const hayFiltrosActivos = categoria || subcategoria || disponibilidad || precioMin || precioMax || orden || searchTerm;
+        
         if (hayFiltrosActivos) {
             actualizarURL(filtros);
-        }
-
-        if (hayFiltrosActivos) {
             obtenerProductosConDebounce(filtros);
         } else {
             const cargarTodosLosProductos = async () => {
@@ -184,8 +142,34 @@ const Productos = () => {
         setPrecioMax("");
         setOrden("");
         setSearchTerm("");
+        setFiltrosAvanzados({
+            forma: [],
+            marca: [],
+            genero: [],
+            material: [],
+            color: [],
+            tamaño: []
+        });
         setSearchParams({});
     }, [setSearchParams]);
+
+    const handleFiltroAvanzadoChange = useCallback((campo, valores) => {
+        setFiltrosAvanzados(prev => ({
+            ...prev,
+            [campo]: valores
+        }));
+    }, []);
+
+    const limpiarFiltrosAvanzados = useCallback(() => {
+        setFiltrosAvanzados({
+            forma: [],
+            marca: [],
+            genero: [],
+            material: [],
+            color: [],
+            tamaño: []
+        });
+    }, []);
 
     const activeFiltersCount = [categoria, subcategoria, disponibilidad, precioMin, precioMax, orden, searchTerm].filter(Boolean).length;
 
@@ -194,34 +178,7 @@ const Productos = () => {
             <div className="catalog-header">
                 <div className="catalog-hero">
                     <h1>Catálogo de Productos</h1>
-                    <p>Descubre nuestra amplia selección de lentes y accesorios ópticos</p>
-                </div>
-                
-                <div className="search-bar">
-                    <div className="search-input-wrapper">
-                        <FaSearch className="search-icon" />
-                        <input
-                            type="text"
-                            placeholder="Buscar productos..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="search-input"
-                        />
-                        {searchTerm && (
-                            <button 
-                                type="button"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    setSearchTerm("");
-                                }}
-                                className="clear-search"
-                                title="Limpiar búsqueda"
-                            >
-                                <FaTimes />
-                            </button>
-                        )}
-                    </div>
+                    <p>Encuentra los mejores productos para tu cuidado visual</p>
                 </div>
             </div>
 
@@ -249,6 +206,41 @@ const Productos = () => {
                             {loading ? 'Limpiando...' : 'Limpiar filtros'}
                         </button>
                     )}
+
+                    <button 
+                        className={`advanced-filter-toggle ${showAdvancedFilters ? 'active' : ''}`}
+                        onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                        title="Filtros avanzados"
+                    >
+                        <FaCog />
+                        Avanzados
+                    </button>
+                </div>
+
+                <div className="controls-center">
+                    <div className="search-container">
+                        <FaSearch className="search-icon" />
+                        <input
+                            type="text"
+                            placeholder="Buscar productos..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="search-input"
+                        />
+                        {searchTerm && (
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setSearchTerm("");
+                                }}
+                                className="clear-search"
+                                title="Limpiar búsqueda"
+                            >
+                                <FaTimes />
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 <div className="controls-right">
@@ -256,12 +248,14 @@ const Productos = () => {
                         <button 
                             className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
                             onClick={() => setViewMode('grid')}
+                            title="Vista de cuadrícula"
                         >
                             <FaTh />
                         </button>
                         <button 
                             className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
                             onClick={() => setViewMode('list')}
+                            title="Vista de lista"
                         >
                             <FaList />
                         </button>
@@ -305,13 +299,15 @@ const Productos = () => {
                                 onCategoriaChange={setCategoria}
                                 onSubcategoriaChange={setSubcategoria}
                                 placeholder="Todas las categorías"
+                                dropdownActivo={dropdownActivo}
+                                setDropdownActivo={setDropdownActivo}
+                                id="productos"
                             />
                         </div>
 
                         <div className="filter-section">
                             <h4>Disponibilidad</h4>
                             <DropdownFiltro
-                                id="disponibilidad"
                                 titulo="Disponibilidad"
                                 tipo="checkbox"
                                 opciones={[
@@ -322,13 +318,13 @@ const Productos = () => {
                                 onSeleccion={(valor) => setDisponibilidad(valor)}
                                 dropdownActivo={dropdownActivo}
                                 setDropdownActivo={setDropdownActivo}
+                                id="disponibilidad"
                             />
                         </div>
 
                         <div className="filter-section">
                             <h4>Rango de Precio</h4>
                             <DropdownFiltro
-                                id="precio"
                                 titulo="Precio"
                                 tipo="precio"
                                 precioMin={precioMin}
@@ -337,8 +333,20 @@ const Productos = () => {
                                 setPrecioMax={setPrecioMax}
                                 dropdownActivo={dropdownActivo}
                                 setDropdownActivo={setDropdownActivo}
+                                id="precio"
                             />
                         </div>
+
+                        {showAdvancedFilters && (
+                            <div className="advanced-filters-section">
+                                <FiltrosAvanzados
+                                    filtros={filtrosAvanzados}
+                                    onFiltroChange={handleFiltroAvanzadoChange}
+                                    onLimpiarFiltros={limpiarFiltrosAvanzados}
+                                    productosData={productos || []}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -348,10 +356,10 @@ const Productos = () => {
                             <div className="loading-spinner"></div>
                             <p>Cargando productos...</p>
                         </div>
-                    ) : Array.isArray(displayedProducts || productos) && (displayedProducts || productos).length > 0 ? (
+                    ) : Array.isArray(displayedProducts) && displayedProducts.length > 0 ? (
                         <>
                             <div className="results-info">
-                                <p>Mostrando {(displayedProducts || productos).length} producto{(displayedProducts || productos).length !== 1 ? 's' : ''}</p>
+                                <p>Mostrando {displayedProducts.length} producto{displayedProducts.length !== 1 ? 's' : ''}</p>
                                 {isFilteringDebounced && (
                                     <div className="filtering-indicator">
                                         <div className="mini-spinner"></div>
@@ -360,13 +368,11 @@ const Productos = () => {
                                 )}
                             </div>
                             
-                            <div className={`products-grid ${viewMode === 'list' ? 'list-view' : ''} ${isTransitioning ? 'transitioning' : ''}`}>
-                                {(displayedProducts || productos).map((producto) => (
+                            <div className={`products-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
+                                {displayedProducts.map((producto) => (
                                     <Link
                                         key={producto.id}
-                                        to={`/productos/${producto.nombre
-                                            .toLowerCase()
-                                            .replace(/\s+/g, "-")}`}
+                                        to={`/productos/${formatearNombreParaURL(producto.nombre)}`}
                                         className="product-link"
                                     >
                                         <ProductCard 
@@ -384,6 +390,21 @@ const Productos = () => {
                                 <>
                                     <h3>No se encontraron productos</h3>
                                     <p>No hay productos que coincidan con los filtros aplicados</p>
+                                    {searchTerm && (
+                                        <SugerenciasBusqueda 
+                                            terminoBusqueda={searchTerm}
+                                            onSugerenciaClick={(sugerencia) => {
+                                                setSearchTerm(sugerencia);
+                                                // Limpiar otros filtros y buscar solo con la sugerencia
+                                                setCategoria("");
+                                                setSubcategoria("");
+                                                setDisponibilidad("");
+                                                setPrecioMin("");
+                                                setPrecioMax("");
+                                                setOrden("");
+                                            }}
+                                        />
+                                    )}
                                     <button 
                                         onClick={() => restablecerFiltros()} 
                                         className="empty-state-btn"

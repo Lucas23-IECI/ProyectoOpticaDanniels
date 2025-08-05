@@ -99,23 +99,14 @@ export const buscarProductosService = async (filtros) => {
         }
 
         if (filtros.nombre) {
-            const searchWords = filtros.nombre.toLowerCase().trim().split(/\s+/);
-            searchWords.forEach((word, index) => {
-                queryBuilder.andWhere(
-                    `(LOWER(producto.nombre) LIKE :word${index} OR `
-                    + `LOWER(producto.nombre) LIKE :wordSpace${index} OR `
-                    + `LOWER(producto.marca) LIKE :word${index} OR `
-                    + `LOWER(producto.marca) LIKE :wordSpace${index} OR `
-                    + `LOWER(producto.categoria) LIKE :word${index} OR `
-                    + `LOWER(producto.categoria) LIKE :wordSpace${index} OR `
-                    + `LOWER(producto.codigoSKU) LIKE :word${index} OR `
-                    + `LOWER(producto.codigoSKU) LIKE :wordSpace${index})`,
-                    { 
-                        [`word${index}`]: `${word}%`,
-                        [`wordSpace${index}`]: ` ${word}%`
-                    }
-                );
-            });
+            const searchTerm = filtros.nombre.toLowerCase().trim();
+            queryBuilder.andWhere(
+                `(LOWER(producto.nombre) LIKE :searchTerm OR `
+                + `LOWER(producto.marca) LIKE :searchTerm OR `
+                + `LOWER(producto.categoria) LIKE :searchTerm OR `
+                + `LOWER(producto.codigoSKU) LIKE :searchTerm)`,
+                { searchTerm: `%${searchTerm}%` }
+            );
         }
 
         if (filtros.codigoSKU) {
@@ -388,6 +379,116 @@ export const eliminarProductoService = async (id) => {
             status: error.status || 500,
             message: error.message || "Error al eliminar el producto",
         };
+    }
+};
+
+export const generarSugerenciasBusqueda = async (terminoBusqueda) => {
+    try {
+        const productoRepository = AppDataSource.getRepository(Producto);
+        
+        // Obtener todos los productos activos para generar sugerencias
+        const productos = await productoRepository.find({
+            where: { activo: true },
+            select: ['nombre', 'marca', 'codigoSKU', 'categoria']
+        });
+
+        const termino = terminoBusqueda.toLowerCase().trim();
+        const sugerencias = new Set();
+        
+        // Función para calcular similitud entre dos strings
+        const calcularSimilitud = (str1, str2) => {
+            const longer = str1.length > str2.length ? str1 : str2;
+            const shorter = str1.length > str2.length ? str2 : str1;
+            
+            if (longer.length === 0) return 1.0;
+            
+            const editDistance = levenshteinDistance(longer, shorter);
+            return (longer.length - editDistance) / longer.length;
+        };
+
+        // Función para calcular distancia de Levenshtein
+        const levenshteinDistance = (str1, str2) => {
+            const matrix = [];
+            for (let i = 0; i <= str2.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= str1.length; j++) {
+                matrix[0][j] = j;
+            }
+            for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                    if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            return matrix[str2.length][str1.length];
+        };
+
+        // Generar sugerencias basadas en diferentes campos
+        productos.forEach(producto => {
+            const campos = [
+                producto.nombre,
+                producto.marca,
+                producto.codigoSKU,
+                producto.categoria
+            ].filter(campo => campo && campo.trim());
+
+            campos.forEach(campo => {
+                const campoLower = campo.toLowerCase();
+                
+                // Verificar si el término está contenido en el campo
+                if (campoLower.includes(termino) && termino.length >= 2) {
+                    sugerencias.add(campo);
+                }
+                
+                // Verificar similitud si el término tiene al menos 3 caracteres
+                if (termino.length >= 3) {
+                    const similitud = calcularSimilitud(termino, campoLower);
+                    if (similitud >= 0.6) { // Umbral de similitud del 60%
+                        sugerencias.add(campo);
+                    }
+                }
+                
+                // Buscar palabras que empiecen con el término
+                const palabras = campoLower.split(/\s+/);
+                palabras.forEach(palabra => {
+                    if (palabra.startsWith(termino) && termino.length >= 2) {
+                        sugerencias.add(campo);
+                    }
+                });
+            });
+        });
+
+        // Convertir a array y ordenar por relevancia
+        const sugerenciasArray = Array.from(sugerencias);
+        
+        // Ordenar por relevancia (primero las que contienen el término exacto)
+        sugerenciasArray.sort((a, b) => {
+            const aLower = a.toLowerCase();
+            const bLower = b.toLowerCase();
+            
+            const aExacta = aLower.includes(termino);
+            const bExacta = bLower.includes(termino);
+            
+            if (aExacta && !bExacta) return -1;
+            if (!aExacta && bExacta) return 1;
+            
+            // Si ambas son exactas o ambas no, ordenar por longitud
+            return a.length - b.length;
+        });
+
+        // Limitar a 5 sugerencias
+        return sugerenciasArray.slice(0, 5);
+    } catch (error) {
+        console.error("Error generando sugerencias:", error);
+        return [];
     }
 };
 

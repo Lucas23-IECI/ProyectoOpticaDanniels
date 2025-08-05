@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useBuscarProductosRapido from '@hooks/productos/useBuscarProductosRapido';
+import { formatearNombreParaURL } from '@helpers/formatData';
 import '@styles/barraBusqueda.css';
 
 const BarraBusqueda = () => {
@@ -22,7 +23,7 @@ const BarraBusqueda = () => {
     useEffect(() => {
         const delay = setTimeout(() => {
             buscarAutocomplete(busqueda);
-        }, 400);
+        }, 750);
 
         return () => clearTimeout(delay);
     }, [busqueda, buscarAutocomplete]);
@@ -102,16 +103,7 @@ const BarraBusqueda = () => {
                     {resultados.map((producto) => (
                         <Link
                             key={producto.id}
-                            to={`/productos/${producto.nombre
-                                .toLowerCase()
-                                .replace(/\s+/g, '-')
-                                .replace(/[áéíóú]/g, (m) => ({
-                                    á: 'a',
-                                    é: 'e',
-                                    í: 'i',
-                                    ó: 'o',
-                                    ú: 'u'
-                                }[m]))}`}
+                            to={`/productos/${formatearNombreParaURL(producto.nombre)}`}
                             className="resultado-item"
                         >
                             <div className="resultado-info">
