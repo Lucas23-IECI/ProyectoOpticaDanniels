@@ -21,10 +21,7 @@
 }
 
 .admin-usuarios .header-title h1 {
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #2147A2;
     font-size: 2rem;
     font-weight: 700;
     margin: 0 0 0.5rem 0;
@@ -53,7 +50,7 @@
 }
 
 .admin-usuarios .btn-refresh:hover {
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
+    background: #2147A2;
     color: white;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(33, 71, 162, 0.3);
@@ -251,7 +248,7 @@
 /* ===== PANEL DE FILTROS ===== */
 
 .admin-usuarios .filters-panel {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff;
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(33, 71, 162, 0.1);
     border: 1px solid rgba(33, 71, 162, 0.1);
@@ -260,7 +257,7 @@
 }
 
 .admin-usuarios .filters-header {
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
+    background: #2147A2;
     color: white;
     padding: 1rem 1.5rem;
     font-weight: 600;
@@ -321,7 +318,7 @@
     align-items: center;
     margin-bottom: 1.5rem;
     padding: 1rem 1.5rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(33, 71, 162, 0.08);
     border: 1px solid rgba(33, 71, 162, 0.1);
@@ -339,7 +336,7 @@
 }
 
 .admin-usuarios .btn-sort {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    background: #f1f5f9;
     color: #64748b;
     border: 1px solid #cbd5e1;
     padding: 0.5rem 1rem;
@@ -354,7 +351,7 @@
 
 .admin-usuarios .btn-sort.active,
 .admin-usuarios .btn-sort:hover {
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
+    background: #2147A2;
     color: white;
     border-color: #2147A2;
     transform: translateY(-1px);
@@ -380,7 +377,7 @@
 /* ===== CONTENIDO PRINCIPAL ===== */
 
 .admin-usuarios .usuarios-content {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff;
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(33, 71, 162, 0.1);
     border: 1px solid rgba(33, 71, 162, 0.1);
@@ -399,10 +396,7 @@
 
 .admin-usuarios .spinner {
     font-size: 2rem;
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #2147A2;
     animation: spin 1s linear infinite;
     margin-bottom: 1rem;
 }
@@ -441,7 +435,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
+    background: #2147A2;
 }
 
 .admin-usuarios .usuario-card:hover {
@@ -453,7 +447,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
+    background: #2147A2;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -461,8 +455,9 @@
 }
 
 .admin-usuarios .avatar-icon {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .admin-usuarios .usuario-badges {
@@ -478,15 +473,23 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.admin-usuarios .role-icon {
+    font-size: 0.9rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .admin-usuarios .badge-usuario {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    background: #2147A2;
     color: white;
 }
 
 .admin-usuarios .badge-administrador {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: #29A937;
     color: white;
 }
 
@@ -517,11 +520,14 @@
     font-size: 0.9rem;
     width: 16px;
     flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .admin-usuarios .gender-icon,
 .admin-usuarios .calendar-icon {
     color: #29A937;
+    font-size: 0.9rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .admin-usuarios .usuario-actions {
@@ -563,7 +569,8 @@
 }
 
 .admin-usuarios .usuario-list-item .avatar-icon {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
 }
 
 .admin-usuarios .usuario-list-item .usuario-info {
@@ -623,7 +630,7 @@
 }
 
 .admin-usuarios .usuarios-table th {
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
+    background: #2147A2;
     color: white;
     padding: 1rem;
     text-align: left;
@@ -641,7 +648,7 @@
 }
 
 .admin-usuarios .usuario-table-row:hover {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    background: #f8fafc;
 }
 
 .admin-usuarios .usuario-name-cell strong {
@@ -655,6 +662,23 @@
     justify-content: flex-end;
 }
 
+.admin-usuarios .usuarios-table .badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-usuarios .usuarios-table .role-icon {
+    font-size: 0.9rem;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
 /* ===== PAGINACIÓN ===== */
 
 .admin-usuarios .pagination-container {
@@ -665,7 +689,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff;
     border-radius: 12px;
     padding: 1rem 1.5rem;
     box-shadow: 0 4px 20px rgba(33, 71, 162, 0.08);
@@ -685,7 +709,7 @@
 }
 
 .admin-usuarios .btn-pagination {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    background: #f1f5f9;
     color: #64748b;
     border: 1px solid #cbd5e1;
     padding: 0.5rem 1rem;
@@ -699,7 +723,7 @@
 }
 
 .admin-usuarios .btn-pagination:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
+    background: #2147A2;
     color: white;
     border-color: #2147A2;
     transform: translateY(-1px);
@@ -716,7 +740,7 @@
 }
 
 .admin-usuarios .btn-page {
-    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    background: #f1f5f9;
     color: #64748b;
     border: 1px solid #cbd5e1;
     padding: 0.5rem 0.75rem;
@@ -729,14 +753,14 @@
 }
 
 .admin-usuarios .btn-page.active {
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
+    background: #2147A2;
     color: white;
     border-color: #2147A2;
     font-weight: 600;
 }
 
 .admin-usuarios .btn-page:hover:not(.disabled):not(.active) {
-    background: linear-gradient(135deg, #2147A2 0%, #29A937 100%);
+    background: #2147A2;
     color: white;
     border-color: #2147A2;
     transform: translateY(-1px);
@@ -751,17 +775,17 @@
 
 .crear-usuario-popup,
 .editar-usuario-popup {
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff;
     border: 1px solid rgba(33, 71, 162, 0.1);
 }
 
 .confirmar-eliminar-popup {
-    background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+    background: #ffffff;
     border: 1px solid rgba(220, 38, 38, 0.1);
 }
 
 .usuario-form .form-grid {
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    background: #f8fafc;
     border-radius: 12px;
     padding: 1.5rem;
 }

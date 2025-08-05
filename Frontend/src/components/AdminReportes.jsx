@@ -35,6 +35,13 @@ const AdminReportes = () => {
                 getEstadisticasProductos()
             ]);
 
+            console.log('=== FRONTEND DEBUG ===');
+            console.log('Datos generales completos:', generales);
+            console.log('Productos en generales:', generales?.productos);
+            console.log('Stock bajo en frontend:', generales?.productos?.stockBajo);
+            console.log('Tipo de stock bajo en frontend:', typeof generales?.productos?.stockBajo);
+            console.log('=== FIN FRONTEND DEBUG ===');
+
             setEstadisticasGenerales(generales);
             setEstadisticasUsuarios(usuarios);
             setEstadisticasProductos(productos);
@@ -131,9 +138,15 @@ const AdminReportes = () => {
                             <h3>{formatearPrecio(productos.valorInventario)}</h3>
                             <p>Valor Inventario</p>
                             <div className="stat-breakdown">
-                                <span className={`stock-alert ${productos.stockBajo > 0 ? 'alert' : 'ok'}`}>
-                                    {productos.stockBajo > 0 ? '⚠️' : '✅'} {productos.stockBajo} con stock bajo
-                                </span>
+                                {(() => {
+                                    const stockBajo = Number(productos.stockBajo) || 0;
+                                    const tieneStockBajo = stockBajo > 0;
+                                    return (
+                                        <span className={`stock-alert ${tieneStockBajo ? 'alert' : 'ok'}`}>
+                                            {tieneStockBajo ? '⚠️' : '✅'} {stockBajo} con stock bajo
+                                        </span>
+                                    );
+                                })()}
                             </div>
                         </div>
                         <div className="stat-trend">

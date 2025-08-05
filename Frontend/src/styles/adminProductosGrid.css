@@ -3,7 +3,9 @@
     max-width: 1400px;
     margin: 0 auto;
     background: #f8faff;
+    height: auto;
     min-height: 100vh;
+    overflow-y: auto;
 }
 
 .admin-header {
@@ -12,10 +14,10 @@
     align-items: center;
     margin-bottom: 30px;
     padding: 20px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: #29A937;
     border-radius: 16px;
     color: white;
-    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 8px 32px rgba(41, 169, 55, 0.3);
 }
 
 .header-title {
@@ -91,24 +93,31 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: #ffffff;
+    color: #29A937;
+    border: 2px solid #ffffff;
+    font-weight: 600;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    background: #f8f9fa;
+    border-color: #f8f9fa;
 }
 
 .btn-secondary {
-    background: #f8faff;
-    color: #4a5568;
-    border: 1px solid #e2e8f0;
+    background: #29A937;
+    color: white;
+    border: 2px solid #29A937;
 }
 
 .btn-secondary:hover {
-    background: #edf2f7;
-    border-color: #cbd5e0;
+    background: #25a030;
+    border-color: #25a030;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(41, 169, 55, 0.3);
 }
 
 .btn-danger {
@@ -477,7 +486,7 @@
 }
 
 .productos-table th {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: #29A937;
     color: white;
     padding: 15px;
     text-align: left;
@@ -488,7 +497,7 @@
 }
 
 .productos-table th:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    background: #25a030;
 }
 
 .productos-table th svg {

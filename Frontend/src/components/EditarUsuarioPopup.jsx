@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { FaTimes, FaUser, FaEnvelope, FaIdCard, FaPhone, FaCalendar, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaTimes, FaUser, FaEnvelope, FaIdCard, FaPhone, FaCalendar, FaLock, FaEye, FaEyeSlash, FaSpinner } from 'react-icons/fa';
 import useEditUser from '@hooks/users/useEditUser';
-import { validateRUT } from '@helpers/validation.helper';
-import { formatRut } from '@helpers/formatData';
+import { validationRules } from '@helpers/validation.helper';
+import { formatRut, formatTelefono } from '@helpers/formatData';
 import { getNombreCompleto } from '@helpers/nameHelpers';
-import '@styles/popup.css';
-import '@styles/form.css';
+import DatePicker from './DatePicker';
+import '@styles/crearUsuario.css';
 
 const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
     const { handleEditUser, loading } = useEditUser();
@@ -32,6 +32,24 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [changePassword, setChangePassword] = useState(false);
     const [rutModified, setRutModified] = useState(false);
+    const [alert, setAlert] = useState(null);
+
+    useEffect(() => {
+        if (show) {
+            document.body.classList.add('no-scroll');
+        } else {
+            document.body.classList.remove('no-scroll');
+        }
+
+        return () => {
+            document.body.classList.remove('no-scroll');
+        };
+    }, [show]);
+
+    const showAlert = (message) => {
+        setAlert(message);
+        setTimeout(() => setAlert(null), 2000);
+    };
 
     // Cargar datos del usuario cuando se abre el modal
     useEffect(() => {
@@ -54,23 +72,192 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
             setChangePassword(false);
             setErrors({});
             setRutModified(false);
+            setAlert(null);
         }
     }, [show, usuario]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+        let newValue = value;
         
+        // Validaciones específicas durante la escritura
         if (name === 'rut') {
-            const formattedRut = formatRut(value);
-            setFormData(prev => ({ ...prev, [name]: formattedRut }));
+            // Solo permitir números y K
+            if (!/^[0-9kK\.\-]*$/.test(value)) {
+                showAlert('El RUT solo puede contener números y la letra K');
+                return;
+            }
+            newValue = formatRut(value);
             setRutModified(true);
         } else if (name === 'telefono') {
-            // Formatear teléfono permitiendo solo números y el símbolo +
-            const cleanedValue = value.replace(/[^+\d]/g, '');
-            setFormData(prev => ({ ...prev, [name]: cleanedValue }));
-        } else {
-            setFormData(prev => ({ ...prev, [name]: value }));
+            // Solo permitir números y el símbolo +
+            if (!/^[\+\d\s]*$/.test(value)) {
+                showAlert('El teléfono solo puede contener números y el símbolo +');
+                return;
+            }
+            newValue = value.replace(/[^\+\d]/g, '');
+        } else if (['primerNombre', 'apellidoPaterno'].includes(name)) {
+            // Validaciones para nombres sin espacios
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]*$/.test(value)) {
+                showAlert('Los nombres solo pueden contener letras (sin espacios)');
+                return;
+            }
+            
+            // No permitir espacios
+            if (/\s/.test(value)) {
+                showAlert('El nombre no puede contener espacios');
+                return;
+            }
+            
+            // No permitir completamente en mayúsculas
+            if (value === value.toUpperCase() && value.length > 1) {
+                showAlert('El nombre no puede estar completamente en mayúsculas');
+                return;
+            }
+            
+            // Validar mayúsculas correctas (solo si tiene más de 1 carácter)
+            if (value.length > 1) {
+                // La primera letra debe ser mayúscula
+                if (value[0] !== value[0].toUpperCase()) {
+                    showAlert('El nombre debe tener mayúscula al inicio');
+                    return;
+                }
+                // El resto debe ser minúscula
+                if (value.slice(1) !== value.slice(1).toLowerCase()) {
+                    showAlert('El nombre solo debe tener mayúscula al inicio');
+                    return;
+                }
+            }
+            
+            // No más de 2 letras iguales consecutivas
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('El nombre no puede tener más de 2 letras iguales consecutivas');
+                return;
+            }
+            
+            // Limitar longitud
+            if (value.length > 50) {
+                showAlert('El nombre no puede exceder 50 caracteres');
+                return;
+            }
+        } else if (name === 'segundoNombre') {
+            // Validaciones para segundo nombre (puede tener 1 espacio)
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
+                showAlert('El segundo nombre solo puede contener letras y espacios');
+                return;
+            }
+            
+            // No permitir más de 1 espacio consecutivo
+            if (/\s{2,}/.test(value)) {
+                showAlert('No se permiten más de 1 espacio consecutivo');
+                return;
+            }
+            
+            // No permitir empezar con espacio
+            if (/^\s/.test(value) && value.length === 1) {
+                showAlert('El segundo nombre no puede empezar con un espacio');
+                return;
+            }
+            
+            // No permitir completamente en mayúsculas
+            if (value === value.toUpperCase() && value.length > 1) {
+                showAlert('El segundo nombre no puede estar completamente en mayúsculas');
+                return;
+            }
+            
+            // Validar mayúsculas correctas (solo si tiene más de 1 carácter)
+            if (value.length > 1) {
+                const words = value.split(' ');
+                for (let i = 0; i < words.length; i++) {
+                    const word = words[i];
+                    if (word.length > 0) {
+                        // La primera letra debe ser mayúscula
+                        if (word[0] !== word[0].toUpperCase()) {
+                            showAlert('El segundo nombre debe tener mayúscula al inicio de cada palabra');
+                            return;
+                        }
+                        // El resto debe ser minúscula
+                        if (word.length > 1 && word.slice(1) !== word.slice(1).toLowerCase()) {
+                            showAlert('El segundo nombre solo debe tener mayúscula al inicio de cada palabra');
+                            return;
+                        }
+                    }
+                }
+            }
+            
+            // No más de 2 letras iguales consecutivas
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('El segundo nombre no puede tener más de 2 letras iguales consecutivas');
+                return;
+            }
+            
+            // Limitar longitud
+            if (value.length > 50) {
+                showAlert('El segundo nombre no puede exceder 50 caracteres');
+                return;
+            }
+        } else if (name === 'apellidoMaterno') {
+            // Validaciones para apellido materno (hasta 2 espacios)
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/.test(value)) {
+                showAlert('El apellido materno solo puede contener letras y espacios');
+                return;
+            }
+            
+            // No permitir más de 1 espacio consecutivo
+            if (/\s{2,}/.test(value)) {
+                showAlert('No se permiten más de 1 espacio consecutivo');
+                return;
+            }
+            
+            // No permitir empezar con espacio
+            if (/^\s/.test(value) && value.length === 1) {
+                showAlert('El apellido materno no puede empezar con un espacio');
+                return;
+            }
+            
+            // No permitir completamente en mayúsculas
+            if (value === value.toUpperCase() && value.length > 1) {
+                showAlert('El apellido materno no puede estar completamente en mayúsculas');
+                return;
+            }
+            
+            // Validar mayúsculas correctas (solo si tiene más de 1 carácter)
+            if (value.length > 1) {
+                const words = value.split(' ');
+                for (let i = 0; i < words.length; i++) {
+                    const word = words[i];
+                    if (word.length > 0) {
+                        // La primera letra debe ser mayúscula
+                        if (word[0] !== word[0].toUpperCase()) {
+                            showAlert('El apellido materno debe tener mayúscula al inicio de cada palabra');
+                            return;
+                        }
+                        // El resto debe ser minúscula
+                        if (word.length > 1 && word.slice(1) !== word.slice(1).toLowerCase()) {
+                            showAlert('El apellido materno solo debe tener mayúscula al inicio de cada palabra');
+                            return;
+                        }
+                    }
+                }
+            }
+            
+            // No más de 2 letras iguales consecutivas
+            if (/(.)\1{2,}/.test(value)) {
+                showAlert('El apellido materno no puede tener más de 2 letras iguales consecutivas');
+                return;
+            }
+            
+            // Limitar longitud
+            if (value.length > 50) {
+                showAlert('El apellido materno no puede exceder 50 caracteres');
+                return;
+            }
+        } else if (name === 'email') {
+            // Básicamente no validar durante escritura, solo al enviar
+            newValue = value.toLowerCase();
         }
+        
+        setFormData(prev => ({ ...prev, [name]: newValue }));
         
         // Limpiar error al escribir
         if (errors[name]) {
@@ -78,35 +265,69 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
         }
     };
 
+    const isFormValid = () => {
+        return (
+            formData.primerNombre.trim().length >= 2 &&
+            formData.apellidoPaterno.trim().length >= 2 &&
+            formData.rut.trim().length >= 11 &&
+            formData.email.trim().length >= 5 &&
+            (!changePassword || (
+                formData.password.length >= 6 &&
+                formData.newPassword.length >= 6 &&
+                formData.confirmNewPassword.length >= 6 &&
+                formData.newPassword === formData.confirmNewPassword
+            ))
+        );
+    };
+
     const validateForm = () => {
         const newErrors = {};
 
-        // Validar campos requeridos
-        if (!formData.primerNombre.trim()) {
-            newErrors.primerNombre = 'El primer nombre es requerido';
+        // Validar primer nombre
+        const primerNombreError = validationRules.nombre(formData.primerNombre, 'Primer nombre');
+        if (primerNombreError || !formData.primerNombre.trim()) {
+            newErrors.primerNombre = primerNombreError || 'El primer nombre es requerido';
         }
 
-        if (!formData.apellidoPaterno.trim()) {
-            newErrors.apellidoPaterno = 'El apellido paterno es requerido';
-        }
-
-        if (!formData.rut.trim()) {
-            newErrors.rut = 'El RUT es requerido';
-        } else if (rutModified) {
-            // Solo validar si el RUT ha sido modificado por el usuario
-            const isValid = validateRUT(formData.rut);
-            if (!isValid) {
-                newErrors.rut = 'El RUT no es válido';
+        // Validar segundo nombre (opcional)
+        if (formData.segundoNombre.trim()) {
+            const segundoNombreError = validationRules.segundoNombre(formData.segundoNombre, 'Segundo nombre');
+            if (segundoNombreError) {
+                newErrors.segundoNombre = segundoNombreError;
             }
         }
 
-        if (!formData.email.trim()) {
-            newErrors.email = 'El email es requerido';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-            newErrors.email = 'El email no es válido';
+        // Validar apellido paterno
+        const apellidoPaternoError = validationRules.apellidoPaterno(formData.apellidoPaterno, 'Apellido paterno');
+        if (apellidoPaternoError || !formData.apellidoPaterno.trim()) {
+            newErrors.apellidoPaterno = apellidoPaternoError || 'El apellido paterno es requerido';
         }
 
-        // Validar contraseña actual si se quiere cambiar contraseña
+        // Validar apellido materno (opcional)
+        if (formData.apellidoMaterno.trim()) {
+            const apellidoMaternoError = validationRules.apellidoMaterno(formData.apellidoMaterno, 'Apellido materno');
+            if (apellidoMaternoError) {
+                newErrors.apellidoMaterno = apellidoMaternoError;
+            }
+        }
+
+        // Validar RUT solo si ha sido modificado
+        if (rutModified) {
+            const rutError = validationRules.rut(formData.rut);
+            if (rutError) {
+                newErrors.rut = rutError;
+            }
+        } else if (!formData.rut.trim()) {
+            newErrors.rut = 'El RUT es requerido';
+        }
+
+        // Validar email
+        const emailError = validationRules.email(formData.email);
+        if (emailError || !formData.email.trim()) {
+            newErrors.email = emailError || 'El email es requerido';
+        }
+
+        // Validar contraseña solo si se quiere cambiar
         if (changePassword) {
             if (!formData.password.trim()) {
                 newErrors.password = 'La contraseña actual es requerida';
@@ -114,8 +335,11 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
 
             if (!formData.newPassword.trim()) {
                 newErrors.newPassword = 'La nueva contraseña es requerida';
-            } else if (formData.newPassword.length < 6) {
-                newErrors.newPassword = 'La nueva contraseña debe tener al menos 6 caracteres';
+            } else {
+                const newPasswordError = validationRules.newPassword(formData.newPassword);
+                if (newPasswordError) {
+                    newErrors.newPassword = newPasswordError;
+                }
             }
 
             if (!formData.confirmNewPassword.trim()) {
@@ -125,41 +349,53 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
             }
         }
 
-        // Validar teléfono si se proporciona
-        if (formData.telefono) {
-            const cleanPhone = formData.telefono.replace(/\s/g, '');
-            if (!/^\+?[1-9]\d{7,14}$/.test(cleanPhone)) {
-                newErrors.telefono = 'El teléfono debe tener entre 8 y 15 dígitos (ej: +56912345678)';
+        // Validar teléfono (opcional)
+        if (formData.telefono.trim()) {
+            const telefonoError = validationRules.telefonoChileno(formData.telefono);
+            if (telefonoError) {
+                newErrors.telefono = telefonoError;
             }
         }
 
-        // Validar fecha de nacimiento si se proporciona
+        // Validar fecha de nacimiento (opcional)
         if (formData.fechaNacimiento) {
-            const birthDate = new Date(formData.fechaNacimiento);
-            const today = new Date();
-            const age = today.getFullYear() - birthDate.getFullYear();
-            
-            if (age < 18 || age > 120) {
-                newErrors.fechaNacimiento = 'La edad debe estar entre 18 y 120 años';
+            const fechaError = validationRules.fechaNacimiento(formData.fechaNacimiento);
+            if (fechaError) {
+                newErrors.fechaNacimiento = fechaError;
             }
         }
 
         setErrors(newErrors);
-        
-        // Auto-dismiss errors after 2 seconds
-        if (Object.keys(newErrors).length > 0) {
-            setTimeout(() => {
-                setErrors({});
-            }, 2000);
-        }
-        
         return Object.keys(newErrors).length === 0;
+    };
+
+    const resetForm = () => {
+        setFormData({
+            primerNombre: '',
+            segundoNombre: '',
+            apellidoPaterno: '',
+            apellidoMaterno: '',
+            rut: '',
+            email: '',
+            password: '',
+            newPassword: '',
+            confirmNewPassword: '',
+            telefono: '',
+            fechaNacimiento: '',
+            genero: '',
+            rol: 'usuario'
+        });
+        setErrors({});
+        setChangePassword(false);
+        setRutModified(false);
+        setAlert(null);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         if (!validateForm()) {
+            showAlert('Por favor, corrige los errores en el formulario');
             return;
         }
 
@@ -190,57 +426,47 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
             handleClose();
         } else if (result.field) {
             setErrors(prev => ({ ...prev, [result.field]: result.error }));
+        } else {
+            showAlert(result.error || 'Error al actualizar el usuario');
         }
     };
 
     const handleClose = () => {
-        setFormData({
-            primerNombre: '',
-            segundoNombre: '',
-            apellidoPaterno: '',
-            apellidoMaterno: '',
-            rut: '',
-            email: '',
-            password: '',
-            newPassword: '',
-            confirmNewPassword: '',
-            telefono: '',
-            fechaNacimiento: '',
-            genero: '',
-            rol: 'usuario'
-        });
-        setErrors({});
-        setChangePassword(false);
-        setRutModified(false);
         setShow(false);
+        resetForm();
     };
 
     if (!show || !usuario) return null;
 
     return (
-        <div className="popup-overlay" onClick={handleClose}>
-            <div className="popup-content editar-usuario-popup" onClick={(e) => e.stopPropagation()}>
-                <div className="popup-header">
-                    <h2>
-                        <FaUser className="header-icon" />
-                        Editar Usuario: {getNombreCompleto(usuario)}
-                    </h2>
+        <div className="crear-usuario-overlay">
+            <div className="crear-usuario-modal">
+                {alert && (
+                    <div className="alert-notification">
+                        <span>{alert}</span>
+                    </div>
+                )}
+                
+                <div className="crear-usuario-header">
+                    <h2>✏️ Editar Usuario: {getNombreCompleto(usuario)}</h2>
                     <button 
-                        className="popup-close"
+                        className="close-button" 
                         onClick={handleClose}
+                        type="button"
                         disabled={loading}
                     >
                         <FaTimes />
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="usuario-form">
-                    <div className="editar-usuario-grid">
+                <form onSubmit={handleSubmit} className="crear-usuario-form">
+                    <div className="usuario-form-grid">
+                        <div className="form-section">
+                            <h3>📝 Información Personal</h3>
+                            
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="primerNombre">
-                                    Primer Nombre *
-                                </label>
+                                    <label htmlFor="primerNombre">Primer Nombre *</label>
                                 <input
                                     type="text"
                                     id="primerNombre"
@@ -249,32 +475,32 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                     onChange={handleInputChange}
                                     className={errors.primerNombre ? 'error' : ''}
                                     disabled={loading}
-                                    placeholder="Ingrese el primer nombre"
+                                        placeholder="Ej: Juan"
+                                        maxLength={50}
                                 />
                                 {errors.primerNombre && <span className="error-message">{errors.primerNombre}</span>}
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="segundoNombre">
-                                    Segundo Nombre
-                                </label>
+                                    <label htmlFor="segundoNombre">Segundo Nombre</label>
                                 <input
                                     type="text"
                                     id="segundoNombre"
                                     name="segundoNombre"
                                     value={formData.segundoNombre}
                                     onChange={handleInputChange}
+                                        className={errors.segundoNombre ? 'error' : ''}
                                     disabled={loading}
-                                    placeholder="Ingrese el segundo nombre (opcional)"
+                                        placeholder="Ej: Carlos (opcional)"
+                                        maxLength={50}
                                 />
+                                    {errors.segundoNombre && <span className="error-message">{errors.segundoNombre}</span>}
                             </div>
                         </div>
 
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="apellidoPaterno">
-                                    Apellido Paterno *
-                                </label>
+                                    <label htmlFor="apellidoPaterno">Apellido Paterno *</label>
                                 <input
                                     type="text"
                                     id="apellidoPaterno"
@@ -283,26 +509,32 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                     onChange={handleInputChange}
                                     className={errors.apellidoPaterno ? 'error' : ''}
                                     disabled={loading}
-                                    placeholder="Ingrese el apellido paterno"
+                                        placeholder="Ej: Pérez"
+                                        maxLength={50}
                                 />
                                 {errors.apellidoPaterno && <span className="error-message">{errors.apellidoPaterno}</span>}
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="apellidoMaterno">
-                                    Apellido Materno
-                                </label>
+                                    <label htmlFor="apellidoMaterno">Apellido Materno</label>
                                 <input
                                     type="text"
                                     id="apellidoMaterno"
                                     name="apellidoMaterno"
                                     value={formData.apellidoMaterno}
                                     onChange={handleInputChange}
+                                        className={errors.apellidoMaterno ? 'error' : ''}
                                     disabled={loading}
-                                    placeholder="Ingrese el apellido materno (opcional)"
+                                        placeholder="Ej: González (opcional)"
+                                        maxLength={50}
                                 />
+                                    {errors.apellidoMaterno && <span className="error-message">{errors.apellidoMaterno}</span>}
+                                </div>
                             </div>
                         </div>
+
+                        <div className="form-section">
+                            <h3>🆔 Identificación y Contacto</h3>
 
                         <div className="form-row">
                             <div className="form-group">
@@ -319,7 +551,13 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                     className={errors.rut ? 'error' : ''}
                                     disabled={loading}
                                     placeholder="12.345.678-9"
+                                        maxLength={12}
                                 />
+                                    {rutModified && formData.rut && (
+                                        <small className="rut-formatted">
+                                            RUT: {formData.rut}
+                                        </small>
+                                    )}
                                 {errors.rut && <span className="error-message">{errors.rut}</span>}
                             </div>
 
@@ -337,6 +575,7 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                     className={errors.email ? 'error' : ''}
                                     disabled={loading}
                                     placeholder="usuario@ejemplo.com"
+                                        maxLength={100}
                                 />
                                 {errors.email && <span className="error-message">{errors.email}</span>}
                             </div>
@@ -356,8 +595,14 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                     onChange={handleInputChange}
                                     className={errors.telefono ? 'error' : ''}
                                     disabled={loading}
-                                    placeholder="+56 9 1234 5678"
+                                        placeholder="+56912345678"
+                                        maxLength={15}
                                 />
+                                    {formData.telefono && (
+                                        <small className="telefono-formatted">
+                                            Teléfono: {formatTelefono(formData.telefono)}
+                                        </small>
+                                    )}
                                 {errors.telefono && <span className="error-message">{errors.telefono}</span>}
                             </div>
 
@@ -366,24 +611,28 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                     <FaCalendar className="label-icon" />
                                     Fecha de Nacimiento
                                 </label>
-                                <input
-                                    type="date"
-                                    id="fechaNacimiento"
-                                    name="fechaNacimiento"
+                                    <DatePicker
                                     value={formData.fechaNacimiento}
-                                    onChange={handleInputChange}
-                                    className={errors.fechaNacimiento ? 'error' : ''}
+                                        onChange={(value) => {
+                                            setFormData(prev => ({ ...prev, fechaNacimiento: value }));
+                                            if (errors.fechaNacimiento) {
+                                                setErrors(prev => ({ ...prev, fechaNacimiento: '' }));
+                                            }
+                                        }}
+                                        placeholder="Seleccionar fecha"
                                     disabled={loading}
                                 />
                                 {errors.fechaNacimiento && <span className="error-message">{errors.fechaNacimiento}</span>}
+                                </div>
                             </div>
                         </div>
 
+                        <div className="form-section">
+                            <h3>⚙️ Configuración</h3>
+
                         <div className="form-row">
                             <div className="form-group">
-                                <label htmlFor="genero">
-                                    Género
-                                </label>
+                                    <label htmlFor="genero">Género</label>
                                 <select
                                     id="genero"
                                     name="genero"
@@ -400,9 +649,7 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                             </div>
 
                             <div className="form-group">
-                                <label htmlFor="rol">
-                                    Rol *
-                                </label>
+                                    <label htmlFor="rol">Rol *</label>
                                 <select
                                     id="rol"
                                     name="rol"
@@ -413,11 +660,13 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                     <option value="usuario">Usuario</option>
                                     <option value="administrador">Administrador</option>
                                 </select>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Sección de cambio de contraseña */}
                         <div className="form-section">
+                            <h3>🔐 Cambio de Contraseña</h3>
+                            
                             <div className="form-section-header">
                                 <label className="checkbox-container">
                                     <input
@@ -449,6 +698,7 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                                     className={errors.password ? 'error' : ''}
                                                     disabled={loading}
                                                     placeholder="Contraseña actual"
+                                                    maxLength={50}
                                                 />
                                                 <button
                                                     type="button"
@@ -459,10 +709,8 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                                 </button>
                                             </div>
                                             {errors.password && <span className="error-message">{errors.password}</span>}
-                                        </div>
                                     </div>
 
-                                    <div className="form-row">
                                         <div className="form-group">
                                             <label htmlFor="newPassword">
                                                 <FaLock className="label-icon" />
@@ -478,6 +726,7 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                                     className={errors.newPassword ? 'error' : ''}
                                                     disabled={loading}
                                                     placeholder="Mínimo 6 caracteres"
+                                                    maxLength={50}
                                                 />
                                                 <button
                                                     type="button"
@@ -489,7 +738,9 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                             </div>
                                             {errors.newPassword && <span className="error-message">{errors.newPassword}</span>}
                                         </div>
+                                        </div>
 
+                                    <div className="form-row">
                                         <div className="form-group">
                                             <label htmlFor="confirmNewPassword">
                                                 <FaLock className="label-icon" />
@@ -505,6 +756,7 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                                     className={errors.confirmNewPassword ? 'error' : ''}
                                                     disabled={loading}
                                                     placeholder="Confirme la nueva contraseña"
+                                                    maxLength={50}
                                                 />
                                                 <button
                                                     type="button"
@@ -522,21 +774,28 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                         </div>
                     </div>
 
-                    <div className="popup-actions">
+                    <div className="form-actions">
                         <button 
                             type="button" 
-                            className="btn btn-secondary"
                             onClick={handleClose}
+                            className="btn-cancel"
                             disabled={loading}
                         >
                             Cancelar
                         </button>
                         <button 
                             type="submit" 
-                            className="btn btn-primary"
-                            disabled={loading}
+                            className="btn-create"
+                            disabled={loading || !isFormValid()}
                         >
-                            {loading ? 'Actualizando...' : 'Actualizar Usuario'}
+                            {loading ? (
+                                <>
+                                    <FaSpinner className="spinner" />
+                                    Actualizando usuario...
+                                </>
+                            ) : (
+                                'Actualizar Usuario'
+                            )}
                         </button>
                     </div>
                 </form>

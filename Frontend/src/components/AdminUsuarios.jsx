@@ -3,7 +3,7 @@ import {
     FaPlus, FaSearch, FaFilter, FaEye, FaEdit, FaTrash, FaTh, FaList, FaTable,
     FaArrowLeft, FaArrowRight, FaSort, FaSortUp, FaSortDown, FaSpinner,
     FaUsers, FaCalendar, FaEnvelope, FaPhone, FaTimes, FaSync, FaIdCard,
-    FaUserShield, FaUser, FaVenus, FaMars, FaGenderless
+    FaUserShield, FaUser, FaVenus, FaMars, FaGenderless, FaCrown, FaUserTie
 } from 'react-icons/fa';
 import useUsers from '@hooks/users/useUsers';
 import CrearUsuarioPopup from './CrearUsuarioPopup';
@@ -236,8 +236,8 @@ const AdminUsuarios = () => {
 
     const getRoleIcon = (rol) => {
         return rol === 'administrador' ? 
-            <FaUserShield className="role-icon" /> : 
-            <FaUser className="role-icon" />;
+            <FaCrown className="role-icon" /> : 
+            <FaUserTie className="role-icon" />;
     };
 
     return (
@@ -538,7 +538,10 @@ const UsuarioCard = ({ usuario, onEditar, onEliminar, formatearFecha, getGenderI
     return (
         <div className="usuario-card">
             <div className="usuario-avatar">
-                <FaUser className="avatar-icon" />
+                {usuario.rol === 'administrador' ? 
+                    <FaCrown className="avatar-icon" /> : 
+                    <FaUserTie className="avatar-icon" />
+                }
                 <div className="usuario-badges">
                     <span className={`badge badge-${usuario.rol}`}>
                         {getRoleIcon(usuario.rol)}
@@ -604,7 +607,10 @@ const UsuarioListItem = ({ usuario, onEditar, onEliminar, formatearFecha, getGen
     return (
         <div className="usuario-list-item">
             <div className="usuario-avatar">
-                <FaUser className="avatar-icon" />
+                {usuario.rol === 'administrador' ? 
+                    <FaCrown className="avatar-icon" /> : 
+                    <FaUserTie className="avatar-icon" />
+                }
             </div>
             
             <div className="usuario-info">

@@ -155,13 +155,46 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
         }
         
         if (name === 'stock') {
-            handleStockChange(e);
-            return;
+            // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
+            if (!/^\d*$/.test(value)) {
+                showAlert('El stock solo puede contener números');
+                return; // Esto previene que se actualice el estado
+            }
+            
+            if (value !== '') {
+                const numValue = parseInt(value);
+                if (isNaN(numValue) || numValue < 0) {
+                    showAlert('El stock no puede ser negativo');
+                    return;
+                }
+                if (numValue > 99999) {
+                    showAlert('El stock no puede exceder 99,999 unidades');
+                    return;
+                }
+            }
         }
         
         if (name === 'descuento') {
-            handleDescuentoChange(e);
-            return;
+            // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
+            if (!/^\d*$/.test(value)) {
+                showAlert('El descuento solo puede contener números');
+                return; // Esto previene que se actualice el estado
+            }
+            
+            if (value !== '') {
+                const numValue = parseInt(value);
+                if (isNaN(numValue) || numValue < 0) {
+                    showAlert('El descuento no puede ser negativo');
+                    return;
+                }
+                if (numValue > 100) {
+                    showAlert('El descuento no puede exceder 100%');
+                    return;
+                }
+            }
+            
+            // Si el valor está vacío, mantenerlo como string vacío
+            newValue = value === '' ? '' : parseInt(value);
         }
         
         // Validaciones específicas para cada campo (copiadas de CrearProductoPopup)

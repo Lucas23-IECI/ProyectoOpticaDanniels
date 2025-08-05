@@ -10,21 +10,76 @@ function startCase(str) {
         .join(' ');
 }
 
-// Función nativa para formatear RUT (reemplaza rut.js)
-function formatRut(rut) {
-    if (!rut) return rut;
+// Función para validar RUT chileno
+function validarRutChileno(rut) {
+    if (!rut) return false;
     
-    // Limpiar el RUT de puntos y guiones
-    let cleanRut = rut.replace(/[.-]/g, '');
+    // Limpiar el RUT
+    let cleanRut = rut.replace(/[^0-9kK]/g, '');
     
-    // Si no tiene dígito verificador, no formatear
-    if (cleanRut.length < 2) return rut;
+    // Verificar longitud mínima
+    if (cleanRut.length < 7) return false;
+    
+    // Convertir a mayúscula
+    cleanRut = cleanRut.toUpperCase();
     
     // Separar número y dígito verificador
     const numero = cleanRut.slice(0, -1);
     const dv = cleanRut.slice(-1);
     
-    // Formatear número con puntos
+    // Verificar que el número sea válido
+    if (!/^\d+$/.test(numero)) return false;
+    
+    // Calcular dígito verificador
+    let suma = 0;
+    let multiplicador = 2;
+    
+    for (let i = numero.length - 1; i >= 0; i--) {
+        suma += parseInt(numero[i]) * multiplicador;
+        multiplicador = multiplicador === 7 ? 2 : multiplicador + 1;
+    }
+    
+    const resto = suma % 11;
+    let dvCalculado;
+    
+    if (resto === 0) {
+        dvCalculado = '0';
+    } else if (resto === 1) {
+        dvCalculado = 'K';
+    } else {
+        dvCalculado = (11 - resto).toString();
+    }
+    
+    return dv === dvCalculado;
+}
+
+// Función nativa para formatear RUT (reemplaza rut.js)
+function formatRut(rut) {
+    if (!rut) return '';
+    
+    // Limpiar el RUT de todo lo que no sea número o letras (K)
+    let cleanRut = rut.replace(/[^0-9kK]/g, '');
+    
+    // Si está vacío o muy corto, devolver tal como está
+    if (cleanRut.length === 0) return '';
+    if (cleanRut.length === 1) return cleanRut;
+    
+    // Convertir a mayúscula si es K
+    cleanRut = cleanRut.toUpperCase();
+    
+    // Si no tiene dígito verificador aún, devolver sin formatear
+    if (cleanRut.length < 2) return cleanRut;
+    
+    // Separar número y dígito verificador
+    const numero = cleanRut.slice(0, -1);
+    const dv = cleanRut.slice(-1);
+    
+    // Si el número es muy corto, no formatear con puntos aún
+    if (numero.length < 4) {
+        return `${numero}-${dv}`;
+    }
+    
+    // Formatear número con puntos cada 3 dígitos desde la derecha
     let formattedNumero = '';
     for (let i = numero.length - 1, j = 0; i >= 0; i--, j++) {
         if (j > 0 && j % 3 === 0) {
@@ -80,5 +135,35 @@ export function convertirMinusculas(obj) {
     return result;
 }
 
-// Exportar formatRut para que pueda ser usado en otros archivos
-export { formatRut };
+// Función para formatear teléfonos
+function formatTelefono(telefono) {
+    if (!telefono) return '';
+    
+    // Limpiar todo lo que no sea número o el símbolo +
+    let cleanTelefono = telefono.replace(/[^+\d]/g, '');
+    
+    // Si está vacío, devolver vacío
+    if (cleanTelefono.length === 0) return '';
+    
+    // Si empieza con +56, mantenerlo
+    if (cleanTelefono.startsWith('+56')) {
+        const numero = cleanTelefono.substring(3);
+        if (numero.length === 0) return '+56';
+        if (numero.length <= 4) return `+56 ${numero}`;
+        return `+56 ${numero.substring(0, 1)} ${numero.substring(1, 5)} ${numero.substring(5)}`;
+    }
+    
+    // Si empieza con 56 (sin +), añadir el +
+    if (cleanTelefono.startsWith('56') && cleanTelefono.length > 2) {
+        const numero = cleanTelefono.substring(2);
+        if (numero.length <= 4) return `+56 ${numero}`;
+        return `+56 ${numero.substring(0, 1)} ${numero.substring(1, 5)} ${numero.substring(5)}`;
+    }
+    
+    // Si no tiene prefijo, asumir que es número local
+    if (cleanTelefono.length <= 4) return cleanTelefono;
+    return `${cleanTelefono.substring(0, 1)} ${cleanTelefono.substring(1, 5)} ${cleanTelefono.substring(5)}`;
+}
+
+// Exportar formatRut y formatTelefono para que puedan ser usados en otros archivos
+export { formatRut, formatTelefono, validarRutChileno };

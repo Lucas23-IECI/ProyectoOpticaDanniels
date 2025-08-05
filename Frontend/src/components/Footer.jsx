@@ -13,7 +13,7 @@ const Footer = () => {
             <div className="footer-content">
                 <div className="footer-section footer-about">
                     <div className="footer-logo">
-                        <img src="/LogoOficial.png" alt="Óptica Danniels" className="footer-logo-img" />
+                        <img src="LogoOficial.png" alt="Óptica Danniels" className="footer-logo-img" />
                         <h3>Óptica Danniels</h3>
                     </div>
                     <p className="footer-description">
@@ -21,13 +21,13 @@ const Footer = () => {
                         Ofrecemos productos de la más alta calidad y un servicio profesional personalizado.
                     </p>
                     <div className="footer-social">
-                        <a href="#" className="social-link facebook" aria-label="Facebook">
+                        <a href="https://facebook.com/opticadanniels" className="social-link facebook" aria-label="Facebook">
                             <FaFacebook />
                         </a>
-                        <a href="#" className="social-link instagram" aria-label="Instagram">
+                        <a href="https://instagram.com/opticadanniels" className="social-link instagram" aria-label="Instagram">
                             <FaInstagram />
                         </a>
-                        <a href="https://wa.me/YOUR_WHATSAPP_NUMBER" className="social-link whatsapp" aria-label="WhatsApp">
+                        <a href="https://api.whatsapp.com/send?phone=56937692691&text=Hola!%20Quisiera%20información%20sobre%20sus%20servicios" className="social-link whatsapp" aria-label="WhatsApp">
                             <FaWhatsapp />
                         </a>
                     </div>

@@ -59,7 +59,18 @@ export async function registerService(user) {
     try {
         const userRepository = AppDataSource.getRepository(User);
 
-        const { primerNombre, segundoNombre, apellidoPaterno, apellidoMaterno, rut, email } = user;
+        const { 
+            primerNombre, 
+            segundoNombre, 
+            apellidoPaterno, 
+            apellidoMaterno, 
+            rut, 
+            email, 
+            telefono, 
+            fechaNacimiento, 
+            genero, 
+            rol 
+        } = user;
 
         const createErrorMessage = (dataInfo, message) => ({
             dataInfo,
@@ -89,8 +100,11 @@ export async function registerService(user) {
             apellidoMaterno: apellidoMaterno || null,
             email,
             rut,
+            telefono: telefono || null,
+            fechaNacimiento: fechaNacimiento || null,
+            genero: genero || null,
             password: await encryptPassword(user.password),
-            rol: "usuario",
+            rol: rol || "usuario",
         });
 
         await userRepository.save(newUser);

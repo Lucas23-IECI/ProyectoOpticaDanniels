@@ -1,3 +1,5 @@
+import { validarRutChileno } from './formatData.js';
+
 export const validationRules = {
     required: (value, fieldName = 'Campo') => {
         if (!value || value.toString().trim() === '') {
@@ -72,43 +74,301 @@ export const validationRules = {
         return null;
     },
 
-    // Validaciones específicas para nombres
+    // Validaciones específicas para nombres (sin espacios)
     nombre: (value, fieldName = 'Nombre') => {
         if (!value) return null;
+        
+        // Si está vacío después de hacer trim, no validar
+        if (value.trim() === '') {
+            return null;
+        }
         
         if (value.length < 2) {
             return `${fieldName} debe tener al menos 2 caracteres`;
         }
         
-        if (value.length > 30) {
-            return `${fieldName} no puede exceder 30 caracteres`;
+        if (value.length > 50) {
+            return `${fieldName} no puede exceder 50 caracteres`;
         }
         
-        // Solo letras, sin espacios
+        // Solo letras (incluye acentos), sin espacios ni números ni caracteres especiales
         const nombrePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$/;
         if (!nombrePattern.test(value)) {
             return `${fieldName} solo puede contener letras (sin espacios)`;
         }
         
+        // No puede empezar con espacio
+        if (/^\s/.test(value)) {
+            return `${fieldName} no puede empezar con espacios`;
+        }
+        
+        // No puede terminar con espacio
+        if (/\s$/.test(value)) {
+            return `${fieldName} no puede terminar con espacios`;
+        }
+        
+        // No puede contener espacios
+        if (/\s/.test(value)) {
+            return `${fieldName} no puede contener espacios`;
+        }
+        
+        // No más de 2 letras iguales consecutivas
+        if (/(.)\1{2,}/.test(value)) {
+            return `${fieldName} no puede tener más de 2 letras iguales consecutivas`;
+        }
+        
+        // No puede estar completamente en mayúsculas
+        if (value === value.toUpperCase() && value.length > 1) {
+            return `${fieldName} no puede estar completamente en mayúsculas`;
+        }
+        
+        // Validar que solo la primera letra sea mayúscula
+        if (value.length > 0) {
+            // La primera letra debe ser mayúscula
+            if (value[0] !== value[0].toUpperCase()) {
+                return `${fieldName} debe tener mayúscula al inicio`;
+            }
+            // El resto debe ser minúscula
+            if (value.length > 1 && value.slice(1) !== value.slice(1).toLowerCase()) {
+                return `${fieldName} solo debe tener mayúscula al inicio`;
+            }
+        }
+        
         return null;
     },
 
-    // Validación de teléfono chileno (WhatsApp)
+    // Validación específica para segundo nombre (máximo 1 espacio)
+    segundoNombre: (value, fieldName = 'Segundo nombre') => {
+        if (!value) return null;
+        
+        // Si está vacío después de hacer trim, no validar
+        if (value.trim() === '') {
+            return null;
+        }
+        
+        if (value.length < 2) {
+            return `${fieldName} debe tener al menos 2 caracteres`;
+        }
+        
+        if (value.length > 50) {
+            return `${fieldName} no puede exceder 50 caracteres`;
+        }
+        
+        // Solo letras (incluye acentos), sin números ni caracteres especiales
+        const nombrePattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+        if (!nombrePattern.test(value)) {
+            return `${fieldName} solo puede contener letras y espacios`;
+        }
+        
+        // No puede empezar con espacio
+        if (/^\s/.test(value)) {
+            return `${fieldName} no puede empezar con espacios`;
+        }
+        
+        // No puede terminar con espacio
+        if (/\s$/.test(value)) {
+            return `${fieldName} no puede terminar con espacios`;
+        }
+        
+        // No más de 1 espacio seguido
+        if (/\s{2,}/.test(value)) {
+            return `${fieldName} no puede tener espacios consecutivos`;
+        }
+        
+        // Máximo 1 espacio en total
+        const spaceCount = (value.match(/\s/g) || []).length;
+        if (spaceCount > 1) {
+            return `${fieldName} no puede tener más de 1 espacio`;
+        }
+        
+        // No más de 2 letras iguales consecutivas
+        if (/(.)\1{2,}/.test(value)) {
+            return `${fieldName} no puede tener más de 2 letras iguales consecutivas`;
+        }
+        
+        // No puede estar completamente en mayúsculas
+        if (value === value.toUpperCase() && value.length > 1) {
+            return `${fieldName} no puede estar completamente en mayúsculas`;
+        }
+        
+        // Validar que solo la primera letra de cada palabra sea mayúscula
+        const words = value.split(' ');
+        for (let i = 0; i < words.length; i++) {
+            const word = words[i];
+            if (word.length > 0) {
+                // La primera letra debe ser mayúscula
+                if (word[0] !== word[0].toUpperCase()) {
+                    return `${fieldName} debe tener mayúscula al inicio de cada palabra`;
+                }
+                // El resto debe ser minúscula
+                if (word.length > 1 && word.slice(1) !== word.slice(1).toLowerCase()) {
+                    return `${fieldName} solo debe tener mayúscula al inicio de cada palabra`;
+                }
+            }
+        }
+        
+        return null;
+    },
+
+    // Validación específica para apellido paterno (sin espacios)
+    apellidoPaterno: (value, fieldName = 'Apellido paterno') => {
+        if (!value) return null;
+        
+        // Si está vacío después de hacer trim, no validar
+        if (value.trim() === '') {
+            return null;
+        }
+        
+        if (value.length < 2) {
+            return `${fieldName} debe tener al menos 2 caracteres`;
+        }
+        
+        if (value.length > 50) {
+            return `${fieldName} no puede exceder 50 caracteres`;
+        }
+        
+        // Solo letras (incluye acentos), sin espacios ni números ni caracteres especiales
+        const apellidoPattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+$/;
+        if (!apellidoPattern.test(value)) {
+            return `${fieldName} solo puede contener letras (sin espacios)`;
+        }
+        
+        // No puede empezar con espacio
+        if (/^\s/.test(value)) {
+            return `${fieldName} no puede empezar con espacios`;
+        }
+        
+        // No puede terminar con espacio
+        if (/\s$/.test(value)) {
+            return `${fieldName} no puede terminar con espacios`;
+        }
+        
+        // No puede contener espacios
+        if (/\s/.test(value)) {
+            return `${fieldName} no puede contener espacios`;
+        }
+        
+        // No más de 2 letras iguales consecutivas
+        if (/(.)\1{2,}/.test(value)) {
+            return `${fieldName} no puede tener más de 2 letras iguales consecutivas`;
+        }
+        
+        // No puede estar completamente en mayúsculas
+        if (value === value.toUpperCase() && value.length > 1) {
+            return `${fieldName} no puede estar completamente en mayúsculas`;
+        }
+        
+        // Validar que solo la primera letra sea mayúscula
+        if (value.length > 0) {
+            // La primera letra debe ser mayúscula
+            if (value[0] !== value[0].toUpperCase()) {
+                return `${fieldName} debe tener mayúscula al inicio`;
+            }
+            // El resto debe ser minúscula
+            if (value.length > 1 && value.slice(1) !== value.slice(1).toLowerCase()) {
+                return `${fieldName} solo debe tener mayúscula al inicio`;
+            }
+        }
+        
+        return null;
+    },
+
+    // Validación específica para apellido materno (hasta 2 espacios)
+    apellidoMaterno: (value, fieldName = 'Apellido materno') => {
+        if (!value) return null;
+        
+        // Si está vacío después de hacer trim, no validar
+        if (value.trim() === '') {
+            return null;
+        }
+        
+        if (value.length < 2) {
+            return `${fieldName} debe tener al menos 2 caracteres`;
+        }
+        
+        if (value.length > 50) {
+            return `${fieldName} no puede exceder 50 caracteres`;
+        }
+        
+        // Solo letras (incluye acentos), con espacios ni números ni caracteres especiales
+        const apellidoPattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+        if (!apellidoPattern.test(value)) {
+            return `${fieldName} solo puede contener letras y espacios`;
+        }
+        
+        // No puede empezar con espacio
+        if (/^\s/.test(value)) {
+            return `${fieldName} no puede empezar con espacios`;
+        }
+        
+        // No puede terminar con espacio
+        if (/\s$/.test(value)) {
+            return `${fieldName} no puede terminar con espacios`;
+        }
+        
+        // No más de 1 espacio seguido
+        if (/\s{2,}/.test(value)) {
+            return `${fieldName} no puede tener espacios consecutivos`;
+        }
+        
+        // Máximo 2 espacios en total
+        const spaceCount = (value.match(/\s/g) || []).length;
+        if (spaceCount > 2) {
+            return `${fieldName} no puede tener más de 2 espacios`;
+        }
+        
+        // No más de 2 letras iguales consecutivas
+        if (/(.)\1{2,}/.test(value)) {
+            return `${fieldName} no puede tener más de 2 letras iguales consecutivas`;
+        }
+        
+        // No puede estar completamente en mayúsculas
+        if (value === value.toUpperCase() && value.length > 1) {
+            return `${fieldName} no puede estar completamente en mayúsculas`;
+        }
+        
+        // Validar que solo la primera letra de cada palabra sea mayúscula
+        const words = value.split(' ');
+        for (let i = 0; i < words.length; i++) {
+            const word = words[i];
+            if (word.length > 0) {
+                // La primera letra debe ser mayúscula
+                if (word[0] !== word[0].toUpperCase()) {
+                    return `${fieldName} debe tener mayúscula al inicio de cada palabra`;
+                }
+                // El resto debe ser minúscula
+                if (word.length > 1 && word.slice(1) !== word.slice(1).toLowerCase()) {
+                    return `${fieldName} solo debe tener mayúscula al inicio de cada palabra`;
+                }
+            }
+        }
+        
+        return null;
+    },
+
+    // Validación de teléfono chileno (WhatsApp) - Solo números
     telefonoChileno: (value) => {
         if (!value) return null;
         
+        // Debe contener solo números y el símbolo +
+        if (!/^[\+\d\s]+$/.test(value)) {
+            return 'El teléfono solo puede contener números y el símbolo +';
+        }
+        
         // Limpiar espacios extra y normalizar
-        let cleanValue = value.trim();
+        let cleanValue = value.trim().replace(/\s/g, '');
         
         // Remover +56 si está presente
-        cleanValue = cleanValue.replace(/^\+56\s*/, '');
+        cleanValue = cleanValue.replace(/^\+56/, '');
         
-        // Patrón para teléfonos chilenos (WhatsApp): 9 XXXX XXXX o 2 XXXX XXXX
-        // Acepta tanto 8 como 9 dígitos
-        const telefonoPattern = /^[29]\s*\d{3,4}\s*\d{4}$/;
+        // Debe tener exactamente 8 o 9 dígitos
+        if (!/^\d{8,9}$/.test(cleanValue)) {
+            return 'Formato inválido. Use: +56912345678 o 912345678 (8-9 dígitos)';
+        }
         
-        if (!telefonoPattern.test(cleanValue)) {
-            return 'Formato inválido. Use: 9 XXXX XXXX (móvil) o 2 XXXX XXXX (fijo)';
+        // Validar que empiece con 9 (móvil) o 2 (fijo)
+        if (!cleanValue.startsWith('9') && !cleanValue.startsWith('2')) {
+            return 'Debe empezar con 9 (móvil) o 2 (fijo)';
         }
         
         return null;
@@ -333,16 +593,48 @@ export const validationRules = {
             return `Contraseña muy corta. Mínimo 6 caracteres (tienes ${value.length})`;
         }
         
+        if (value.length > 50) {
+            return `Contraseña muy larga. Máximo 50 caracteres (tienes ${value.length})`;
+        }
+        
         if (!/(?=.*[a-z])/.test(value)) {
-            return 'Debe incluir al menos una letra minúscula';
+            return 'La contraseña debe incluir al menos una letra minúscula (a-z)';
         }
         
         if (!/(?=.*[A-Z])/.test(value)) {
-            return 'Debe incluir al menos una letra mayúscula';
+            return 'La contraseña debe incluir al menos una letra mayúscula (A-Z)';
         }
         
         if (!/(?=.*\d)/.test(value)) {
-            return 'Debe incluir al menos un número';
+            return 'La contraseña debe incluir al menos un número (0-9)';
+        }
+        
+        return null;
+    },
+
+    newPassword: (value) => {
+        if (!value) {
+            return null; // La nueva contraseña es opcional
+        }
+        
+        if (value.length < 6) {
+            return `Nueva contraseña muy corta. Mínimo 6 caracteres (tienes ${value.length})`;
+        }
+        
+        if (value.length > 50) {
+            return `Nueva contraseña muy larga. Máximo 50 caracteres (tienes ${value.length})`;
+        }
+        
+        if (!/(?=.*[a-z])/.test(value)) {
+            return 'La nueva contraseña debe incluir al menos una letra minúscula (a-z)';
+        }
+        
+        if (!/(?=.*[A-Z])/.test(value)) {
+            return 'La nueva contraseña debe incluir al menos una letra mayúscula (A-Z)';
+        }
+        
+        if (!/(?=.*\d)/.test(value)) {
+            return 'La nueva contraseña debe incluir al menos un número (0-9)';
         }
         
         return null;
@@ -353,9 +645,22 @@ export const validationRules = {
             return 'El RUT es requerido';
         }
         
-        const rutRegex = /^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/;
-        if (!rutRegex.test(value)) {
-            return 'Formato de RUT inválido. Usa: 12.345.678-9';
+        // Limpiar el RUT para validación
+        const cleanRut = value.replace(/[^0-9kK]/g, '');
+        
+        // Verificar longitud mínima
+        if (cleanRut.length < 7) {
+            return 'RUT inválido. Debe tener al menos 7 dígitos';
+        }
+        
+        // Verificar longitud máxima
+        if (cleanRut.length > 9) {
+            return 'RUT inválido. No puede tener más de 9 dígitos';
+        }
+        
+        // Validar usando la función de validación chilena
+        if (!validarRutChileno(value)) {
+            return 'El dígito verificador del RUT es incorrecto';
         }
         
         return null;
@@ -470,9 +775,9 @@ export const validateImage = (file) => {
 
 // Funciones específicas para validación de perfil
 export const validatePrimerNombre = (value) => validationRules.nombre(value, 'Primer nombre');
-export const validateSegundoNombre = (value) => validationRules.nombre(value, 'Segundo nombre');
-export const validateApellidoPaterno = (value) => validationRules.nombre(value, 'Apellido paterno');
-export const validateApellidoMaterno = (value) => validationRules.nombre(value, 'Apellido materno');
+export const validateSegundoNombre = (value) => validationRules.segundoNombre(value, 'Segundo nombre');
+export const validateApellidoPaterno = (value) => validationRules.apellidoPaterno(value, 'Apellido paterno');
+export const validateApellidoMaterno = (value) => validationRules.apellidoMaterno(value, 'Apellido materno');
 export const validateTelefono = (value) => validationRules.telefonoChileno(value);
 export const validateFechaNacimiento = (value) => validationRules.fechaNacimiento(value);
 export const validateGenero = (value) => validationRules.genero(value);

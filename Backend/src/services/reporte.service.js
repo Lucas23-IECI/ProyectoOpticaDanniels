@@ -48,30 +48,36 @@ export async function getEstadisticasGeneralesService() {
             .groupBy("producto.categoria")
             .getRawMany();
 
-        // Productos con stock bajo (menos de 10 unidades o stock = 0)
+        // Productos con stock bajo (menos de 5 unidades para test)
         const productosStockBajo = await productoRepository
             .createQueryBuilder("producto")
-            .where("(producto.stock < :stock OR producto.stock = 0) AND producto.activo = :activo", { stock: 10, activo: true })
+            .where("producto.stock < :stock AND producto.activo = :activo", { stock: 5, activo: true })
             .getCount();
 
         // Debug: obtener productos con stock bajo para verificar
         const productosStockBajoDebug = await productoRepository
             .createQueryBuilder("producto")
             .select(["producto.nombre", "producto.stock", "producto.activo"])
-            .where("(producto.stock < :stock OR producto.stock = 0) AND producto.activo = :activo", { stock: 10, activo: true })
+            .where("producto.stock < :stock AND producto.activo = :activo", { stock: 5, activo: true })
             .getMany();
         
+        console.log('=== DEBUG STOCK BAJO ===');
         console.log('Productos con stock bajo:', productosStockBajoDebug);
-
-        // Debug: obtener todos los productos para verificar stock
-        const todosProductosDebug = await productoRepository
+        console.log('Cantidad de productos con stock bajo:', productosStockBajo);
+        console.log('Tipo de cantidad:', typeof productosStockBajo);
+        
+        // Debug: obtener todos los productos activos para verificar
+        const todosProductosActivos = await productoRepository
             .createQueryBuilder("producto")
             .select(["producto.nombre", "producto.stock", "producto.activo"])
+            .where("producto.activo = :activo", { activo: true })
             .orderBy("producto.stock", "ASC")
-            .limit(10)
             .getMany();
         
-        console.log('Top 10 productos con menor stock:', todosProductosDebug);
+        console.log('Todos los productos activos (ordenados por stock):', todosProductosActivos);
+        console.log('=== FIN DEBUG STOCK BAJO ===');
+
+
 
         // Valor total del inventario (solo productos activos con stock > 0)
         const valorInventario = await productoRepository

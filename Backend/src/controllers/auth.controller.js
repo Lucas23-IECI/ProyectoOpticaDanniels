@@ -60,20 +60,30 @@ export async function login(req, res) {
 export async function register(req, res) {
     try {
         const { body } = req;
+        
+        console.log('=== REGISTER REQUEST ===');
+        console.log('Body recibido:', JSON.stringify(body, null, 2));
 
         const { error } = registerValidation.validate(body);
 
-        if (error)
+        if (error) {
+            console.log('Error de validación:', error.details);
             return handleErrorClient(res, 400, "Error de validación", error.message);
+        }
+
+        console.log('Validación exitosa, llamando a registerService...');
 
         const [newUser, errorNewUser] = await registerService(body);
 
         if (errorNewUser) {
+            console.log('Error en registerService:', errorNewUser);
             return handleErrorClient(res, 400, "Error registrando al usuario", errorNewUser);
         }
 
+        console.log('Usuario creado exitosamente:', newUser);
         handleSuccess(res, 201, "Usuario registrado con éxito", newUser);
     } catch (error) {
+        console.error('Error en register controller:', error);
         handleErrorServer(res, 500, error.message);
     }
 }
