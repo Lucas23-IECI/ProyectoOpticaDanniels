@@ -89,7 +89,6 @@ const HeroSection = () => {
                         >
                             <div className="hero-content">
                                 <div className="hero-text">
-                                    <div className="hero-logo">OPTICA DANNIELS</div>
                                     <h1 className="hero-title">
                                         {slide.title}
                                     </h1>
