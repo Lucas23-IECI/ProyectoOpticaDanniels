@@ -16,7 +16,7 @@ export default {
                 comments: 150,
             },
         ],
-        "no-console": "off",
+        "no-console": "warn", // Warn sobre console.log directo, usar logger en su lugar
         quotes: ["error", "double"],
         "operator-linebreak": [
             "warn",
@@ -38,4 +38,4 @@ export default {
         }]
     },
     ignores: ["node_modules/**"],
-  };
+};

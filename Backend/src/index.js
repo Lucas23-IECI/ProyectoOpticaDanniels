@@ -12,6 +12,7 @@ import indexRoutes from "./routes/index.routes.js";
 import { passportJwtSetup } from "./auth/passport.auth.js";
 import { createInitialUsers } from "./config/initialSetup.js";
 import { migrateUsers } from "./helpers/migrateUsers.js";
+import logger from "./config/logger.js";
 
 async function setupServer() {
     try {
@@ -65,10 +66,10 @@ async function setupServer() {
         });
 
         app.listen(PORT, () => {
-            console.log(`✅ Servidor corriendo en ${HOST}:${PORT}/api`);
+            logger.info(`✅ Servidor corriendo en ${HOST}:${PORT}/api`);
         });
     } catch (error) {
-        console.log("❌ Error en index.js -> setupServer(), el error es: ", error);
+        logger.error("❌ Error en index.js -> setupServer(), el error es: ", error);
     }
 }
 
@@ -76,31 +77,31 @@ async function setupAPI() {
     try {
         await connectDB();
         await setupServer();
-        
+
         // Intentar crear usuarios iniciales si no existen
         try {
             await createInitialUsers();
         } catch (error) {
-            console.log("⚠️  Error al crear usuarios iniciales (puede ser que la tabla no exista aún):", error.message);
-            console.log("ℹ️  Esto es normal si es el primer inicio y la base de datos no está inicializada.");
+            logger.warn("⚠️  Error al crear usuarios iniciales (puede ser que la tabla no exista aún):", error.message);
+            logger.info("ℹ️  Esto es normal si es el primer inicio y la base de datos no está inicializada.");
         }
-        
+
         // Intentar migración solo si no hubo errores graves
         try {
             await migrateUsers();
         } catch (error) {
-            console.log("⚠️  Error en migración de usuarios:", error.message);
-            console.log("ℹ️  La aplicación continuará funcionando.");
+            logger.warn("⚠️  Error en migración de usuarios:", error.message);
+            logger.info("ℹ️  La aplicación continuará funcionando.");
         }
-        
+
     } catch (error) {
-        console.log("❌ Error en index.js -> setupAPI(), el error es: ", error);
+        logger.error("❌ Error en index.js -> setupAPI(), el error es: ", error);
         throw error;
     }
 }
 
 setupAPI()
-    .then(() => console.log("✅ API Iniciada exitosamente"))
+    .then(() => logger.info("✅ API Iniciada exitosamente"))
     .catch((error) =>
-        console.log("❌ Error final en index.js -> setupAPI():", error)
+        logger.error("❌ Error final en index.js -> setupAPI():", error)
     );

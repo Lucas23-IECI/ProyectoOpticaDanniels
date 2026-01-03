@@ -2,6 +2,7 @@
 import { AppDataSource } from "./configDb.js";
 import User from "../entity/user.entity.js";
 import { encryptPassword } from "../helpers/bcrypt.helper.js";
+import logger from "./logger.js";
 
 export async function createInitialUsers() {
     try {
@@ -9,7 +10,7 @@ export async function createInitialUsers() {
         const count = await userRepository.count();
 
         if (count > 0) {
-            console.log("ℹ️ Ya existen usuarios registrados.");
+            logger.info("ℹ️ Ya existen usuarios registrados.");
             return;
         }
 
@@ -47,8 +48,8 @@ export async function createInitialUsers() {
         });
 
         await userRepository.save([adminUser, user1, user2]);
-        console.log("✅ Usuarios iniciales creados correctamente.");
+        logger.info("✅ Usuarios iniciales creados correctamente.");
     } catch (error) {
-        console.error("❌ Error al crear usuarios iniciales:", error);
+        logger.error("❌ Error al crear usuarios iniciales:", error);
     }
 }
