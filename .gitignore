@@ -1,0 +1,46 @@
+# Archivos de prueba y uploads
+uploads/
+Backend/uploads/
+Frontend/uploads/
+
+# Variables de entorno
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+*.env
+
+# Bases de datos locales
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs
+logs/
+*.log
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Dependencias
+node_modules/
+
+# Archivos temporales
+temp/
+tmp/
+*.tmp
+
+# Archivos de backup
+*.bak
+*.backup
+backup/

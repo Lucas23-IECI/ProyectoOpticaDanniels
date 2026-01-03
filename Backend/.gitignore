@@ -130,3 +130,23 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Archivos de prueba y desarrollo
+uploads/
+uploads-test/
+temp/
+tmp/
+
+# Archivos de base de datos
+*.sqlite
+*.sqlite3
+*.db
+
+# Dumps y backups
+*.sql
+*.dump
+backup/
+
+# Archivos de prueba
+test-files/
+test-uploads/
