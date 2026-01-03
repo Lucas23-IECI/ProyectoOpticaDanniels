@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWishlistContext } from '../context/WishlistContext';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 import '../styles/wishlistButton.css';
 
 const WishlistButton = ({ producto, size = 'medium' }) => {

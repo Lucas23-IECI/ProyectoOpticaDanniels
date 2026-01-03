@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 import { getNombreCorto } from '@helpers/nameHelpers';
 import BarraBusqueda from '@components/BarraBusqueda';
 import AuthPopup from '@components/AuthPopup';

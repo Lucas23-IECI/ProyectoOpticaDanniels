@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { FaChevronDown, FaChevronUp, FaTimes } from 'react-icons/fa';
 import '@styles/filtrosAvanzados.css';
 
-const FiltrosAvanzados = ({ 
-    filtros, 
-    onFiltroChange, 
+const FiltrosAvanzados = ({
+    filtros,
+    onFiltroChange,
     onLimpiarFiltros,
     productosData = [] // Para generar filtros dinámicos
 }) => {
@@ -39,25 +39,25 @@ const FiltrosAvanzados = ({
         const nuevosValores = valoresActuales.includes(valor)
             ? valoresActuales.filter(v => v !== valor)
             : [...valoresActuales, valor];
-        
+
         onFiltroChange(campo, nuevosValores);
     };
 
     // Opciones predefinidas para algunos filtros
     const opcionesForma = [
-        'Aviador', 'Wayfarer', 'Redondo', 'Cuadrado', 'Ovalado', 
+        'Aviador', 'Wayfarer', 'Redondo', 'Cuadrado', 'Ovalado',
         'Gato', 'Mariposa', 'Clubmaster', 'Sport', 'Sin marco', 'Medio marco'
     ];
 
     const opcionesGenero = ['Masculino', 'Femenino', 'Unisex', 'Niños'];
 
     const opcionesMaterial = [
-        'Acetato', 'Metal', 'Titanio', 'Acero inoxidable', 
+        'Acetato', 'Metal', 'Titanio', 'Acero inoxidable',
         'Aluminio', 'Plástico', 'TR90', 'Carbono'
     ];
 
     const opcionesColor = [
-        'Negro', 'Marrón', 'Dorado', 'Plateado', 'Azul', 'Verde', 
+        'Negro', 'Marrón', 'Dorado', 'Plateado', 'Azul', 'Verde',
         'Rojo', 'Rosa', 'Transparente', 'Carey', 'Multicolor'
     ];
 
@@ -118,7 +118,7 @@ const FiltrosAvanzados = ({
         <div className="filtros-avanzados">
             <div className="filtros-avanzados-header">
                 <h4>Filtros Avanzados</h4>
-                <button 
+                <button
                     className="limpiar-todos"
                     onClick={onLimpiarFiltros}
                 >

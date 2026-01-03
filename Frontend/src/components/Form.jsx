@@ -5,7 +5,7 @@ import HideIcon from '@assets/HideIcon.svg';
 import ViewIcon from '@assets/ViewIcon.svg';
 
 const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundColor }) => {
-    const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
 
@@ -26,7 +26,7 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
         const value = e.target.value;
         // Solo permitir números
         const cleanValue = value.replace(/[^0-9]/g, '');
-        
+
         if (value !== cleanValue) {
             e.target.value = cleanValue;
             setValue(fieldName, cleanValue);
@@ -86,7 +86,7 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                                     const value = e.target.value;
                                     // Eliminar cualquier carácter que no sea número
                                     let cleanValue = value.replace(/[^0-9]/g, '');
-                                    
+
                                     // Verificar límites si están definidos
                                     if (field.max && cleanValue) {
                                         const numValue = parseInt(cleanValue);
@@ -94,7 +94,7 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                                             cleanValue = field.max.toString();
                                         }
                                     }
-                                    
+
                                     if (value !== cleanValue) {
                                         e.target.value = cleanValue;
                                         setValue(field.name, cleanValue);

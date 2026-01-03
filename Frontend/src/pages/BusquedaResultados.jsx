@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+        import { useState, useEffect, useRef, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { getProductos } from "@services/producto.service";
 import { formatearNombreParaURL } from "@helpers/formatData";

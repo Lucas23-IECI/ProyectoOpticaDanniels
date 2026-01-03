@@ -1,10 +1,10 @@
 import {
-    crearDireccionService,
-    obtenerDireccionesService,
-    obtenerDireccionPorIdService,
     actualizarDireccionService,
+    crearDireccionService,
     eliminarDireccionService,
-    establecerPrincipalService
+    establecerPrincipalService,
+    obtenerDireccionesService,
+    obtenerDireccionPorIdService
 } from "../services/direccion.service.js";
 import { handleErrorClient, handleErrorServer, handleSuccess } from "../handlers/responseHandlers.js";
 

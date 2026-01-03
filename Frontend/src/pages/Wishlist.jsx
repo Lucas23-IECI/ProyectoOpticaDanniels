@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWishlistContext } from '../context/WishlistContext';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 import ProductCard from '../components/ProductCard';
 import '../styles/wishlist.css';
 

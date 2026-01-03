@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaTrash, FaPlus, FaMinus, FaArrowLeft, FaCreditCard } from 'react-icons/fa';
 import { useCart } from '@context/CartContext';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 import '@styles/carrito.css';
 
 const Carrito = () => {

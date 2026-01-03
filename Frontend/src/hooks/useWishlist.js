@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { useAuth } from './useAuth';
+import { useAuth } from '@context/AuthContext';
 import { getAllProductos } from '../services/producto.service';
 
 const WISHLIST_KEY_BASE = 'optica-danniels-wishlist';
@@ -23,7 +23,7 @@ export const useWishlist = () => {
         const currentUserRut = user?.rut || null;
         const wishlistKey = currentUserRut ? `${WISHLIST_KEY_BASE}-${currentUserRut}` : `${WISHLIST_KEY_BASE}-guest`;
         const savedWishlist = localStorage.getItem(wishlistKey);
-        
+
         if (savedWishlist && savedWishlist !== '[]') {
             try {
                 const parsedWishlist = JSON.parse(savedWishlist);
@@ -34,10 +34,10 @@ export const useWishlist = () => {
         } else {
             setWishlist([]);
         }
-        
+
         isInitialized.current = true;
         justLoaded.current = true;
-        
+
         setTimeout(() => {
             justLoaded.current = false;
         }, 100);
@@ -45,18 +45,18 @@ export const useWishlist = () => {
 
     const validateWishlistProducts = useCallback(async () => {
         if (wishlist.length === 0) return;
-        
+
         try {
             const response = await getAllProductos();
             const allProducts = response.productos || [];
             const existingProductIds = new Set(allProducts.map(p => p.id));
-            
+
             const validWishlist = wishlist.filter(item => existingProductIds.has(item.id));
-            
+
             if (validWishlist.length !== wishlist.length) {
                 console.log(`Removiendo ${wishlist.length - validWishlist.length} productos eliminados de favoritos`);
                 setWishlist(validWishlist);
-                
+
                 const wishlistKey = getWishlistKey();
                 localStorage.setItem(wishlistKey, JSON.stringify(validWishlist));
             }
@@ -65,7 +65,7 @@ export const useWishlist = () => {
         }
     }, [wishlist, getWishlistKey]);
 
-    
+
     useEffect(() => {
         if (wishlist.length > 0 && isInitialized.current && !justLoaded.current) {
             validateWishlistProducts();
@@ -76,20 +76,20 @@ export const useWishlist = () => {
         if (wishlist.length > 0) {
             validateWishlistProducts();
         }
-    }, [validateWishlistProducts]);
+    }, [wishlist.length, validateWishlistProducts]);
 
     useEffect(() => {
         if (loading) return;
-        
+
         const currentUserRut = user?.rut || null;
         const previousUserRut = previousUserRef.current;
 
         const userChanged = currentUserRut !== previousUserRut;
         const shouldLoad = !isInitialized.current || userChanged;
-        
+
         if (shouldLoad) {
             previousUserRef.current = currentUserRut;
-            
+
             forceReloadWishlist();
         }
     }, [user?.rut, user, isAuthenticated, userChangeFlag, forceReloadWishlist, loading]);
@@ -132,7 +132,7 @@ export const useWishlist = () => {
         if (loading || !isInitialized.current || justLoaded.current) {
             return;
         }
-        
+
         const wishlistKey = getWishlistKey();
         localStorage.setItem(wishlistKey, JSON.stringify(wishlist));
     }, [wishlist, getWishlistKey, loading]);

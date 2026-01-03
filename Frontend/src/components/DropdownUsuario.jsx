@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 import { getNombreCorto } from '@helpers/nameHelpers';
 import { showSuccessAlert } from '@helpers/sweetAlert';
 import '@styles/dropdownUsuario.css';

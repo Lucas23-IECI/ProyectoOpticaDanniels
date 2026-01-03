@@ -1,8 +1,8 @@
 "use strict";
 import {
     getEstadisticasGeneralesService,
-    getEstadisticasUsuariosService,
     getEstadisticasProductosService,
+    getEstadisticasUsuariosService,
 } from "../services/reporte.service.js";
 import {
     handleErrorClient,

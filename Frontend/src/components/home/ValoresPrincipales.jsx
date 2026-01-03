@@ -7,43 +7,37 @@ const ValoresPrincipales = () => {
             titulo: 'EXPERIENCIA',
             descripcion: 'Te asesoramos para tomar la mejor decisión, 30 años de experiencia.',
             icono: <FaGraduationCap />,
-            imagen: `${import.meta.env.BASE_URL}images/servicios/experiencia-icon.jpg`,
             destacado: true
         },
         {
             id: 'infantil',
             titulo: 'INFANTIL',
             descripcion: 'Es muy importante el cuidado desde temprana edad en los niños y niñas.',
-            icono: <FaChild />,
-            imagen: `${import.meta.env.BASE_URL}images/servicios/infantil-icon.jpg`
+            icono: <FaChild />
         },
         {
             id: 'convenios',
             titulo: 'CONVENIOS',
             descripcion: 'Tenemos distintos convenios para que seas beneficiado.',
-            icono: <FaHandshake />,
-            imagen: `${import.meta.env.BASE_URL}images/servicios/convenios-icon.jpg`
+            icono: <FaHandshake />
         },
         {
             id: 'reparaciones',
             titulo: 'REPARACIONES',
             descripcion: 'Consulta por alternativas disponibles en nuestra tienda.',
-            icono: <FaTools />,
-            imagen: `${import.meta.env.BASE_URL}images/servicios/reparaciones-icon.jpg`
+            icono: <FaTools />
         },
         {
             id: 'calidad',
             titulo: 'CALIDAD',
             descripcion: 'Trabajamos con los mejores laboratorios y tecnología avanzada.',
-            icono: <FaAward />,
-            imagen: `${import.meta.env.BASE_URL}images/servicios/calidad-icon.jpg`
+            icono: <FaAward />
         },
         {
             id: 'vision',
             titulo: 'TU VISIÓN ES NUESTRA VISIÓN',
             descripcion: 'Un servicio que va más allá de una venta, una experiencia de calidad.',
             icono: <FaEye />,
-            imagen: `${import.meta.env.BASE_URL}images/servicios/asesoria-icon.jpg`,
             destacado: true
         }
     ];
@@ -60,8 +54,8 @@ const ValoresPrincipales = () => {
 
                 <div className="valores-grid">
                     {valores.map((valor) => (
-                        <div 
-                            key={valor.id} 
+                        <div
+                            key={valor.id}
                             className={`valor-card ${valor.destacado ? 'destacado' : ''}`}
                         >
                             <div className="valor-icon">
@@ -71,10 +65,6 @@ const ValoresPrincipales = () => {
                                 <h3 className="valor-titulo">{valor.titulo}</h3>
                                 <p className="valor-descripcion">{valor.descripcion}</p>
                             </div>
-                            <div 
-                                className="valor-background"
-                                style={{ backgroundImage: `url(${valor.imagen})` }}
-                            />
                         </div>
                     ))}
                 </div>

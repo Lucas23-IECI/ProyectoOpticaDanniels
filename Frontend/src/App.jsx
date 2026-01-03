@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@context/AuthContext";
-import { CartProvider } from "@context/CartContext";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import { CartProvider } from "@context/CartProvider";
 import { useTokenExpiration } from "@hooks/useTokenExpiration";
 import ProtectedRoute from "@components/ProtectedRoute";
 import Navbar from "@components/Navbar";
@@ -39,72 +39,50 @@ function AppContent() {
           <Route path="/quienes-somos" element={<QuienesSomos />} />
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/terminos" element={<Terminos />} />
-          
-          <Route 
-            path="/login" 
+
+          <Route
+            path="/login"
             element={
               <ProtectedRoute requireAuth={false}>
                 <Login />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/auth" 
-            element={
-              <ProtectedRoute requireAuth={false}>
-                <Login />
-              </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/register" 
+          <Route path="/auth" element={<Navigate to="/login" replace />} />
+          <Route
+            path="/register"
             element={
               <ProtectedRoute requireAuth={false}>
                 <Register />
               </ProtectedRoute>
-            } 
+            }
           />
-          
-          <Route 
-            path="/mis-compras" 
+
+          <Route
+            path="/mis-compras"
             element={
               <ProtectedRoute>
                 <div>Mis Compras - Página en desarrollo</div>
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/perfil" 
+          <Route
+            path="/perfil"
             element={
               <ProtectedRoute>
                 <Perfil />
               </ProtectedRoute>
-            } 
+            }
           />
-          <Route 
-            path="/mis-datos" 
-            element={
-              <ProtectedRoute>
-                <Perfil />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route 
-            path="/admin/*" 
+          <Route path="/mis-datos" element={<Navigate to="/perfil" replace />} />
+
+          <Route
+            path="/admin/*"
             element={
               <ProtectedRoute allowedRoles={['administrador']}>
                 <Admin />
               </ProtectedRoute>
-            } 
-          />
-          <Route 
-            path="/admin" 
-            element={
-              <ProtectedRoute allowedRoles={['administrador']}>
-                <Admin />
-              </ProtectedRoute>
-            } 
+            }
           />
         </Routes>
       </div>
@@ -115,13 +93,11 @@ function AppContent() {
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <BrowserRouter basename="/OpticaDanniels">
-          <AppContent />
-        </BrowserRouter>
-      </CartProvider>
-    </AuthProvider>
+    <CartProvider>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <AppContent />
+      </BrowserRouter>
+    </CartProvider>
   );
 }
 

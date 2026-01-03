@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaSave, FaTimes, FaSpinner, FaInfoCircle, FaCrown } from 'react-icons/fa';
 
-const CrearDireccionForm = ({ onSave, onCancel, showFieldError, errors = {}, existeDireccionPrincipal = false }) => {
+const CrearDireccionForm = ({ onSave, onCancel, errors = {}, existeDireccionPrincipal = false }) => {
     const [loading, setLoading] = useState(false);
     const [localErrors, setLocalErrors] = useState({});
     const [formData, setFormData] = useState({
@@ -21,7 +21,7 @@ const CrearDireccionForm = ({ onSave, onCancel, showFieldError, errors = {}, exi
 
     const handleChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
-        
+
         // Limpiar errores cuando el usuario empieza a escribir
         if (localErrors[field]) {
             setLocalErrors(prev => ({ ...prev, [field]: null }));
@@ -29,7 +29,7 @@ const CrearDireccionForm = ({ onSave, onCancel, showFieldError, errors = {}, exi
         if (errors[field]) {
             // Esto podría no funcionar directamente, pero es para limpiar errores del padre
         }
-        
+
         // Validación en tiempo real para algunos campos
         if (field === 'codigoPostal' && value) {
             if (!/^\d+$/.test(value)) {
@@ -43,7 +43,7 @@ const CrearDireccionForm = ({ onSave, onCancel, showFieldError, errors = {}, exi
     const handleSave = async () => {
         // Limpiar errores previos
         setLocalErrors({});
-        
+
         const validateData = {
             direccion: formData.direccion.trim(),
             ciudad: formData.ciudad.trim(),
@@ -92,12 +92,12 @@ const CrearDireccionForm = ({ onSave, onCancel, showFieldError, errors = {}, exi
                 region: validateData.region,
                 esPrincipal: formData.esPrincipal
             };
-            
+
             // Solo agregar código postal si tiene valor
             if (validateData.codigoPostal && validateData.codigoPostal.trim()) {
                 dataToSave.codigoPostal = validateData.codigoPostal.trim();
             }
-            
+
             await onSave(dataToSave);
         } catch (error) {
             console.error('Error al crear dirección:', error);

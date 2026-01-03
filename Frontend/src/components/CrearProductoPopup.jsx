@@ -70,25 +70,25 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
 
     const handlePriceChange = (e) => {
         const inputValue = e.target.value;
-        
+
         // Permitir solo números y puntos
         if (/[^0-9.]/.test(inputValue) && inputValue !== '') {
             showAlert('El precio solo puede contener números y puntos como separadores');
             return;
         }
-        
+
         // No permitir múltiples puntos consecutivos
         if (/\.{2,}/.test(inputValue)) {
             showAlert('El precio no puede tener múltiples puntos consecutivos');
             return;
         }
-        
+
         // No permitir que comience con punto
         if (/^\./.test(inputValue)) {
             showAlert('El precio no puede comenzar con un punto');
             return;
         }
-        
+
         // Si está vacío, permitir
         if (inputValue === '') {
             setFormData(prev => ({
@@ -97,29 +97,29 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             }));
             return;
         }
-        
+
         // Extraer solo números para validaciones
         const rawValue = inputValue.replace(/\D/g, '');
-        
+
         // Validar longitud máxima
         if (rawValue.length > 8) {
             showAlert('El precio no puede exceder $10.000.000');
             return;
         }
-        
+
         // Validar que sea mayor a 0
         const actualPrice = parseInt(rawValue);
         if (rawValue && actualPrice <= 0) {
             showAlert('El precio debe ser mayor a 0');
             return;
         }
-        
+
         // Validar límite máximo
         if (rawValue && actualPrice > 10000000) {
             showAlert('El precio no puede exceder $10.000.000');
             return;
         }
-        
+
         // Formatear automáticamente solo si hay números
         if (rawValue) {
             const formattedValue = formatPrice(rawValue);
@@ -164,20 +164,20 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
         let newValue = type === 'checkbox' ? checked : value;
-        
+
         if (name === 'nombre') {
             // Si está vacío, permitir
             if (value === '') {
                 setFormData(prev => ({ ...prev, nombre: '' }));
                 return;
             }
-            
+
             // 1. No más de 3 números juntos
             if (/\d{4,}/.test(value)) {
                 showAlert('El nombre no puede tener más de 3 números juntos');
                 return;
             }
-            
+
             // 2. No más de 2 guiones juntos ni más de 2 guiones en total
             if (/-{3,}/.test(value)) {
                 showAlert('El nombre no puede tener más de 2 guiones juntos');
@@ -187,7 +187,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('El nombre no puede tener más de 2 guiones en total');
                 return;
             }
-            
+
             // 2.1. No más de 2 puntos juntos ni más de 2 puntos en total
             if (/\.{3,}/.test(value)) {
                 showAlert('El nombre no puede tener más de 2 puntos juntos');
@@ -197,20 +197,20 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('El nombre no puede tener más de 2 puntos en total');
                 return;
             }
-            
+
             // 3. Validación estricta de caracteres especiales
             // Solo permitir letras, números, espacios, guiones y puntos
-            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.]+$/.test(value)) {
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s-.]+$/.test(value)) {
                 showAlert('El nombre solo puede contener letras, números, espacios, guiones (-) y puntos (.)');
                 return;
             }
-            
+
             // 4. No más de 3 caracteres repetidos seguidos
             if (/(.)\1{2,}/.test(value)) {
                 showAlert('El nombre no puede tener más de 3 caracteres repetidos seguidos');
                 return;
             }
-            
+
             // Validaciones adicionales
             if (value.length > 100) {
                 showAlert('El nombre no puede exceder 100 caracteres');
@@ -237,20 +237,20 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 return;
             }
         }
-        
+
         if (name === 'descripcion') {
             // Si está vacío, permitir
             if (value === '') {
                 setFormData(prev => ({ ...prev, descripcion: '' }));
                 return;
             }
-            
+
             // 1. No más de 4 números juntos (para permitir años)
             if (/\d{5,}/.test(value)) {
                 showAlert('La descripción no puede tener más de 4 números juntos');
                 return;
             }
-            
+
             // 2. No más de 2 guiones juntos ni más de 2 guiones en total
             if (/-{3,}/.test(value)) {
                 showAlert('La descripción no puede tener más de 2 guiones juntos');
@@ -260,7 +260,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('La descripción no puede tener más de 2 guiones en total');
                 return;
             }
-            
+
             // 2.1. No más de 2 puntos juntos ni más de 2 puntos en total
             if (/\.{3,}/.test(value)) {
                 showAlert('La descripción no puede tener más de 2 puntos juntos');
@@ -270,20 +270,20 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('La descripción no puede tener más de 2 puntos en total');
                 return;
             }
-            
+
             // 3. Permitir caracteres especiales en descripción (más flexible)
             // Solo permitir letras, números, espacios, guiones, puntos y caracteres especiales comunes
-            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.\,\;\:\!\?\"\'\(\)\[\]\{\}\/\+\=\*\&\^\%\$\#\@]+$/.test(value)) {
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s-.,;:!?"'()[\]{}/ +=*&^%$#@]+$/.test(value)) {
                 showAlert('La descripción contiene caracteres no permitidos');
                 return;
             }
-            
+
             // 4. No más de 3 caracteres repetidos seguidos
             if (/(.)\1{2,}/.test(value)) {
                 showAlert('La descripción no puede tener más de 3 caracteres repetidos seguidos');
                 return;
             }
-            
+
             // Validaciones adicionales
             if (value.length > 1000) {
                 showAlert('La descripción no puede exceder 1000 caracteres');
@@ -302,14 +302,14 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 return;
             }
         }
-        
+
         if (name === 'stock') {
             // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
             if (!/^\d*$/.test(value)) {
                 showAlert('El stock solo puede contener números');
                 return; // Esto previene que se actualice el estado
             }
-            
+
             if (value !== '') {
                 const numValue = parseInt(value);
                 if (isNaN(numValue) || numValue < 0) {
@@ -322,14 +322,14 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 }
             }
         }
-        
+
         if (name === 'descuento') {
             // Solo permitir números - si hay cualquier carácter no numérico, no actualizar
             if (!/^\d*$/.test(value)) {
                 showAlert('El descuento solo puede contener números');
                 return; // Esto previene que se actualice el estado
             }
-            
+
             if (value !== '') {
                 const numValue = parseInt(value);
                 if (isNaN(numValue) || numValue < 0) {
@@ -341,24 +341,24 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                     return;
                 }
             }
-            
+
             // Si el valor está vacío, mantenerlo como string vacío
             newValue = value === '' ? '' : parseInt(value);
         }
-        
+
         if (name === 'marca') {
             // Si está vacío, permitir
             if (value === '') {
                 setFormData(prev => ({ ...prev, marca: '' }));
                 return;
             }
-            
+
             // 1. No más de 3 números juntos
             if (/\d{4,}/.test(value)) {
                 showAlert('La marca no puede tener más de 3 números juntos');
                 return;
             }
-            
+
             // 2. No más de 2 guiones juntos ni más de 2 guiones en total
             if (/-{3,}/.test(value)) {
                 showAlert('La marca no puede tener más de 2 guiones juntos');
@@ -368,7 +368,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('La marca no puede tener más de 2 guiones en total');
                 return;
             }
-            
+
             // 2.1. No más de 2 puntos juntos ni más de 2 puntos en total
             if (/\.{3,}/.test(value)) {
                 showAlert('La marca no puede tener más de 2 puntos juntos');
@@ -378,20 +378,20 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 showAlert('La marca no puede tener más de 2 puntos en total');
                 return;
             }
-            
+
             // 3. Validación estricta de caracteres especiales
             // Solo permitir letras, números, espacios, guiones y puntos
-            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-\.]+$/.test(value)) {
+            if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s-.]+$/.test(value)) {
                 showAlert('La marca solo puede contener letras, números, espacios, guiones (-) y puntos (.)');
                 return;
             }
-            
+
             // 4. No más de 3 caracteres repetidos seguidos
             if (/(.)\1{2,}/.test(value)) {
                 showAlert('La marca no puede tener más de 3 caracteres repetidos seguidos');
                 return;
             }
-            
+
             // Validaciones adicionales
             if (value.length > 50) {
                 showAlert('La marca no puede exceder 50 caracteres');
@@ -418,7 +418,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 return;
             }
         }
-        
+
         if (name === 'codigoSKU') {
             // Si está vacío, permitir
             if (value === '') {
@@ -490,7 +490,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 }
             }
         }
-        
+
         setFormData(prev => ({
             ...prev,
             [name]: newValue
@@ -515,7 +515,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 setPreviewImagen(null);
                 return;
             }
-            
+
             if (file.size > 5 * 1024 * 1024) {
                 showAlert('La imagen no puede exceder 5MB');
                 e.target.value = '';
@@ -523,9 +523,9 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 setPreviewImagen(null);
                 return;
             }
-            
+
             const img = new Image();
-            img.onload = function() {
+            img.onload = function () {
                 if (this.width < 200 || this.height < 200) {
                     showAlert('La imagen debe tener al menos 200x200 píxeles');
                     e.target.value = '';
@@ -533,7 +533,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                     setPreviewImagen(null);
                     return;
                 }
-                
+
                 if (this.width > 4000 || this.height > 4000) {
                     showAlert('La imagen no puede exceder 4000x4000 píxeles');
                     e.target.value = '';
@@ -541,59 +541,59 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                     setPreviewImagen(null);
                     return;
                 }
-                
+
                 setImagen(file);
-                
+
                 if (errors.imagen) {
                     setErrors(prev => ({ ...prev, imagen: null }));
                 }
-                
+
                 const reader = new FileReader();
                 reader.onload = (e) => setPreviewImagen(e.target.result);
                 reader.readAsDataURL(file);
             };
-            
-            img.onerror = function() {
+
+            img.onerror = function () {
                 showAlert('Archivo de imagen corrupto o no válido');
                 e.target.value = '';
                 setImagen(null);
                 setPreviewImagen(null);
             };
-            
+
             img.src = URL.createObjectURL(file);
         }
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         if (formData.descripcion.trim().length < 10) {
             showAlert('La descripción debe tener al menos 10 caracteres');
             return;
         }
-        
+
         if (formData.codigoSKU.trim().length < 3) {
             showAlert('El código SKU debe tener al menos 3 caracteres');
             return;
         }
-        
+
         if (formData.nombre.trim().length < 3) {
             showAlert('El nombre debe tener al menos 3 caracteres');
             return;
         }
-        
+
         if (formData.marca.trim().length < 2) {
             showAlert('La marca debe tener al menos 2 caracteres');
             return;
         }
-        
+
         if (!imagen) {
             showAlert('Debes seleccionar una imagen para el producto');
             return;
         }
-        
+
         const submitFormData = new FormData();
-        
+
         Object.keys(formData).forEach(key => {
             if (key === 'precio') {
                 const rawPrice = formData[key].replace(/\D/g, '');
@@ -606,7 +606,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                 submitFormData.append(key, formData[key]);
             }
         });
-        
+
         if (imagen) {
             submitFormData.append('imagen', imagen);
         }
@@ -629,11 +629,11 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                         <span>{alert}</span>
                     </div>
                 )}
-                
+
                 <div className="crear-producto-header">
                     <h2>🆕 Crear Nuevo Producto</h2>
-                    <button 
-                        className="close-button" 
+                    <button
+                        className="close-button"
                         onClick={handleClose}
                         type="button"
                     >
@@ -645,7 +645,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                     <div className="form-grid">
                         <div className="form-section">
                             <h3>📝 Información Básica</h3>
-                            
+
                             <div className="form-group">
                                 <label htmlFor="nombre">Nombre del Producto *</label>
                                 <input
@@ -710,7 +710,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
 
                         <div className="form-section">
                             <h3>🏷️ Precio y Categoría</h3>
-                            
+
                             <div className="form-row">
                                 <div className="form-group">
                                     <label htmlFor="precio">Precio (CLP) *</label>
@@ -835,9 +835,9 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
 
                         <div className="form-section">
                             <h3>📷 Imagen del Producto</h3>
-                            
+
                             <div className="image-upload-section">
-                                <div 
+                                <div
                                     className={`image-upload-area ${errors.imagen ? 'error' : ''}`}
                                     onClick={() => fileInputRef.current?.click()}
                                 >
@@ -858,7 +858,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                                         </div>
                                     )}
                                 </div>
-                                
+
                                 <input
                                     ref={fileInputRef}
                                     type="file"
@@ -866,14 +866,14 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                                     onChange={handleImageChange}
                                     style={{ display: 'none' }}
                                 />
-                                
+
                                 {errors.imagen && <span className="error-message">{errors.imagen}</span>}
                             </div>
                         </div>
 
                         <div className="form-section">
                             <h3>⚙️ Configuración</h3>
-                            
+
                             <div className="checkbox-group">
                                 <label className="checkbox-label">
                                     <input

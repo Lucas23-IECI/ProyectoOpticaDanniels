@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaTrash, FaEye } from 'react-icons/fa';
 import { useCart } from '@context/CartContext';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 import '@styles/cartIcon.css';
 
 const CartIcon = () => {

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { register, login } from "@services/auth.service";
 import { decodeToken } from "@helpers/jwt.helper";
-import { useAuth } from "@hooks/useAuth";
+import { useAuth } from "@context/AuthContext";
 import { FaEye, FaEyeSlash, FaUser, FaEnvelope, FaIdCard, FaLock, FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import "@styles/register.css";
 import "@styles/alerts.css";

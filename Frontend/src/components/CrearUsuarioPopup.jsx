@@ -8,7 +8,7 @@ import '@styles/crearUsuario.css';
 
 const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
     const { handleCreateUser, loading } = useCreateUser();
-    
+
     const [formData, setFormData] = useState({
         primerNombre: '',
         segundoNombre: '',
@@ -49,41 +49,41 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         let newValue = value;
-        
+
         // Validaciones específicas durante la escritura
         if (name === 'rut') {
             // Solo permitir números y K
-            if (!/^[0-9kK\.\-]*$/.test(value)) {
+            if (!/^[0-9kK.-]*$/.test(value)) {
                 showAlert('El RUT solo puede contener números y la letra K');
                 return;
             }
             newValue = formatRut(value);
         } else if (name === 'telefono') {
             // Solo permitir números y el símbolo +
-            if (!/^[\+\d\s]*$/.test(value)) {
+            if (!/^[+\d\s]*$/.test(value)) {
                 showAlert('El teléfono solo puede contener números y el símbolo +');
                 return;
             }
-            newValue = value.replace(/[^\+\d]/g, '');
+            newValue = value.replace(/[^+\d]/g, '');
         } else if (['primerNombre', 'apellidoPaterno'].includes(name)) {
             // Validaciones para nombres sin espacios
             if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]*$/.test(value)) {
                 showAlert('Los nombres solo pueden contener letras (sin espacios)');
                 return;
             }
-            
+
             // No permitir espacios
             if (/\s/.test(value)) {
                 showAlert('El nombre no puede contener espacios');
                 return;
             }
-            
+
             // No permitir completamente en mayúsculas
             if (value === value.toUpperCase() && value.length > 1) {
                 showAlert('El nombre no puede estar completamente en mayúsculas');
                 return;
             }
-            
+
             // Validar mayúsculas correctas (solo si tiene más de 1 carácter)
             if (value.length > 1) {
                 // La primera letra debe ser mayúscula
@@ -97,13 +97,13 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
                     return;
                 }
             }
-            
+
             // No más de 2 letras iguales consecutivas
             if (/(.)\1{2,}/.test(value)) {
                 showAlert('El nombre no puede tener más de 2 letras iguales consecutivas');
                 return;
             }
-            
+
             // Limitar longitud
             if (value.length > 50) {
                 showAlert('El nombre no puede exceder 50 caracteres');
@@ -115,25 +115,25 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
                 showAlert('El segundo nombre solo puede contener letras y espacios');
                 return;
             }
-            
+
             // No permitir más de 1 espacio consecutivo
             if (/\s{2,}/.test(value)) {
                 showAlert('No se permiten más de 1 espacio consecutivo');
                 return;
             }
-            
+
             // No permitir empezar con espacio
             if (/^\s/.test(value) && value.length === 1) {
                 showAlert('El segundo nombre no puede empezar con un espacio');
                 return;
             }
-            
+
             // No permitir completamente en mayúsculas
             if (value === value.toUpperCase() && value.length > 1) {
                 showAlert('El segundo nombre no puede estar completamente en mayúsculas');
                 return;
             }
-            
+
             // Validar mayúsculas correctas (solo si tiene más de 1 carácter)
             if (value.length > 1) {
                 const words = value.split(' ');
@@ -153,13 +153,13 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
                     }
                 }
             }
-            
+
             // No más de 2 letras iguales consecutivas
             if (/(.)\1{2,}/.test(value)) {
                 showAlert('El segundo nombre no puede tener más de 2 letras iguales consecutivas');
                 return;
             }
-            
+
             // Limitar longitud
             if (value.length > 50) {
                 showAlert('El segundo nombre no puede exceder 50 caracteres');
@@ -171,25 +171,25 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
                 showAlert('El apellido materno solo puede contener letras y espacios');
                 return;
             }
-            
+
             // No permitir más de 1 espacio consecutivo
             if (/\s{2,}/.test(value)) {
                 showAlert('No se permiten más de 1 espacio consecutivo');
                 return;
             }
-            
+
             // No permitir empezar con espacio
             if (/^\s/.test(value) && value.length === 1) {
                 showAlert('El apellido materno no puede empezar con un espacio');
                 return;
             }
-            
+
             // No permitir completamente en mayúsculas
             if (value === value.toUpperCase() && value.length > 1) {
                 showAlert('El apellido materno no puede estar completamente en mayúsculas');
                 return;
             }
-            
+
             // Validar mayúsculas correctas (solo si tiene más de 1 carácter)
             if (value.length > 1) {
                 const words = value.split(' ');
@@ -209,13 +209,13 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
                     }
                 }
             }
-            
+
             // No más de 2 letras iguales consecutivas
             if (/(.)\1{2,}/.test(value)) {
                 showAlert('El apellido materno no puede tener más de 2 letras iguales consecutivas');
                 return;
             }
-            
+
             // Limitar longitud
             if (value.length > 50) {
                 showAlert('El apellido materno no puede exceder 50 caracteres');
@@ -225,9 +225,9 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
             // Básicamente no validar durante escritura, solo al enviar
             newValue = value.toLowerCase();
         }
-        
+
         setFormData(prev => ({ ...prev, [name]: newValue }));
-        
+
         // Limpiar error al escribir
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
@@ -347,7 +347,7 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             showAlert('Por favor, corrige los errores en el formulario');
             return;
@@ -368,7 +368,7 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
         };
 
         const result = await handleCreateUser(userData);
-        
+
         if (result.success) {
             onUsuarioCreated();
             handleClose();
@@ -394,11 +394,11 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
                         <span>{alert}</span>
                     </div>
                 )}
-                
+
                 <div className="crear-usuario-header">
                     <h2>👤 Crear Nuevo Usuario</h2>
-                    <button 
-                        className="close-button" 
+                    <button
+                        className="close-button"
                         onClick={handleClose}
                         type="button"
                         disabled={loading}
@@ -411,71 +411,71 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
                     <div className="usuario-form-grid">
                         <div className="form-section">
                             <h3>📝 Información Personal</h3>
-                            
-                        <div className="form-row">
-                            <div className="form-group">
+
+                            <div className="form-row">
+                                <div className="form-group">
                                     <label htmlFor="primerNombre">Primer Nombre *</label>
-                                <input
-                                    type="text"
-                                    id="primerNombre"
-                                    name="primerNombre"
-                                    value={formData.primerNombre}
-                                    onChange={handleInputChange}
-                                    className={errors.primerNombre ? 'error' : ''}
-                                    disabled={loading}
+                                    <input
+                                        type="text"
+                                        id="primerNombre"
+                                        name="primerNombre"
+                                        value={formData.primerNombre}
+                                        onChange={handleInputChange}
+                                        className={errors.primerNombre ? 'error' : ''}
+                                        disabled={loading}
                                         placeholder="Ej: Juan"
                                         maxLength={50}
-                                />
-                                {errors.primerNombre && <span className="error-message">{errors.primerNombre}</span>}
-                            </div>
+                                    />
+                                    {errors.primerNombre && <span className="error-message">{errors.primerNombre}</span>}
+                                </div>
 
-                            <div className="form-group">
+                                <div className="form-group">
                                     <label htmlFor="segundoNombre">Segundo Nombre</label>
-                                <input
-                                    type="text"
-                                    id="segundoNombre"
-                                    name="segundoNombre"
-                                    value={formData.segundoNombre}
-                                    onChange={handleInputChange}
+                                    <input
+                                        type="text"
+                                        id="segundoNombre"
+                                        name="segundoNombre"
+                                        value={formData.segundoNombre}
+                                        onChange={handleInputChange}
                                         className={errors.segundoNombre ? 'error' : ''}
-                                    disabled={loading}
+                                        disabled={loading}
                                         placeholder="Ej: Carlos (opcional)"
                                         maxLength={50}
-                                />
+                                    />
                                     {errors.segundoNombre && <span className="error-message">{errors.segundoNombre}</span>}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="form-row">
-                            <div className="form-group">
+                            <div className="form-row">
+                                <div className="form-group">
                                     <label htmlFor="apellidoPaterno">Apellido Paterno *</label>
-                                <input
-                                    type="text"
-                                    id="apellidoPaterno"
-                                    name="apellidoPaterno"
-                                    value={formData.apellidoPaterno}
-                                    onChange={handleInputChange}
-                                    className={errors.apellidoPaterno ? 'error' : ''}
-                                    disabled={loading}
+                                    <input
+                                        type="text"
+                                        id="apellidoPaterno"
+                                        name="apellidoPaterno"
+                                        value={formData.apellidoPaterno}
+                                        onChange={handleInputChange}
+                                        className={errors.apellidoPaterno ? 'error' : ''}
+                                        disabled={loading}
                                         placeholder="Ej: Pérez"
                                         maxLength={50}
-                                />
-                                {errors.apellidoPaterno && <span className="error-message">{errors.apellidoPaterno}</span>}
-                            </div>
+                                    />
+                                    {errors.apellidoPaterno && <span className="error-message">{errors.apellidoPaterno}</span>}
+                                </div>
 
-                            <div className="form-group">
+                                <div className="form-group">
                                     <label htmlFor="apellidoMaterno">Apellido Materno</label>
-                                <input
-                                    type="text"
-                                    id="apellidoMaterno"
-                                    name="apellidoMaterno"
-                                    value={formData.apellidoMaterno}
-                                    onChange={handleInputChange}
+                                    <input
+                                        type="text"
+                                        id="apellidoMaterno"
+                                        name="apellidoMaterno"
+                                        value={formData.apellidoMaterno}
+                                        onChange={handleInputChange}
                                         className={errors.apellidoMaterno ? 'error' : ''}
-                                    disabled={loading}
+                                        disabled={loading}
                                         placeholder="Ej: González (opcional)"
                                         maxLength={50}
-                                />
+                                    />
                                     {errors.apellidoMaterno && <span className="error-message">{errors.apellidoMaterno}</span>}
                                 </div>
                             </div>
@@ -484,50 +484,50 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
                         <div className="form-section">
                             <h3>🆔 Identificación y Contacto</h3>
 
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="rut">
-                                    <FaIdCard className="label-icon" />
-                                    RUT *
-                                </label>
-                                <input
-                                    type="text"
-                                    id="rut"
-                                    name="rut"
-                                    value={formData.rut}
-                                    onChange={handleInputChange}
-                                    className={errors.rut ? 'error' : ''}
-                                    disabled={loading}
-                                    placeholder="12.345.678-9"
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="rut">
+                                        <FaIdCard className="label-icon" />
+                                        RUT *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="rut"
+                                        name="rut"
+                                        value={formData.rut}
+                                        onChange={handleInputChange}
+                                        className={errors.rut ? 'error' : ''}
+                                        disabled={loading}
+                                        placeholder="12.345.678-9"
                                         maxLength={12}
-                                />
+                                    />
                                     {formData.rut && (
                                         <small className="rut-formatted">
                                             RUT: {formData.rut}
                                         </small>
                                     )}
-                                {errors.rut && <span className="error-message">{errors.rut}</span>}
-                            </div>
+                                    {errors.rut && <span className="error-message">{errors.rut}</span>}
+                                </div>
 
-                            <div className="form-group">
-                                <label htmlFor="email">
-                                    <FaEnvelope className="label-icon" />
-                                    Email *
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                    className={errors.email ? 'error' : ''}
-                                    disabled={loading}
-                                    placeholder="usuario@ejemplo.com"
+                                <div className="form-group">
+                                    <label htmlFor="email">
+                                        <FaEnvelope className="label-icon" />
+                                        Email *
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        className={errors.email ? 'error' : ''}
+                                        disabled={loading}
+                                        placeholder="usuario@ejemplo.com"
                                         maxLength={100}
-                                />
-                                {errors.email && <span className="error-message">{errors.email}</span>}
+                                    />
+                                    {errors.email && <span className="error-message">{errors.email}</span>}
+                                </div>
                             </div>
-                        </div>
 
                             <div className="form-row">
                                 <div className="form-group">
@@ -578,114 +578,114 @@ const CrearUsuarioPopup = ({ show, setShow, onUsuarioCreated }) => {
                         <div className="form-section">
                             <h3>🔐 Seguridad</h3>
 
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="password">
-                                    <FaLock className="label-icon" />
-                                    Contraseña *
-                                </label>
-                                <div className="password-input-container">
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        id="password"
-                                        name="password"
-                                        value={formData.password}
-                                        onChange={handleInputChange}
-                                        className={errors.password ? 'error' : ''}
-                                        disabled={loading}
-                                        placeholder="Mínimo 6 caracteres"
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="password">
+                                        <FaLock className="label-icon" />
+                                        Contraseña *
+                                    </label>
+                                    <div className="password-input-container">
+                                        <input
+                                            type={showPassword ? 'text' : 'password'}
+                                            id="password"
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleInputChange}
+                                            className={errors.password ? 'error' : ''}
+                                            disabled={loading}
+                                            placeholder="Mínimo 6 caracteres"
                                             maxLength={50}
-                                    />
-                                    <button
-                                        type="button"
-                                        className="password-toggle"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                    >
-                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                    </button>
+                                        />
+                                        <button
+                                            type="button"
+                                            className="password-toggle"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                        >
+                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                        </button>
+                                    </div>
+                                    {errors.password && <span className="error-message">{errors.password}</span>}
                                 </div>
-                                {errors.password && <span className="error-message">{errors.password}</span>}
-                            </div>
 
-                            <div className="form-group">
-                                <label htmlFor="confirmPassword">
-                                    <FaLock className="label-icon" />
-                                    Confirmar Contraseña *
-                                </label>
-                                <div className="password-input-container">
-                                    <input
-                                        type={showConfirmPassword ? 'text' : 'password'}
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        value={formData.confirmPassword}
-                                        onChange={handleInputChange}
-                                        className={errors.confirmPassword ? 'error' : ''}
-                                        disabled={loading}
-                                        placeholder="Confirme la contraseña"
+                                <div className="form-group">
+                                    <label htmlFor="confirmPassword">
+                                        <FaLock className="label-icon" />
+                                        Confirmar Contraseña *
+                                    </label>
+                                    <div className="password-input-container">
+                                        <input
+                                            type={showConfirmPassword ? 'text' : 'password'}
+                                            id="confirmPassword"
+                                            name="confirmPassword"
+                                            value={formData.confirmPassword}
+                                            onChange={handleInputChange}
+                                            className={errors.confirmPassword ? 'error' : ''}
+                                            disabled={loading}
+                                            placeholder="Confirme la contraseña"
                                             maxLength={50}
-                                    />
-                                    <button
-                                        type="button"
-                                        className="password-toggle"
-                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    >
-                                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                                    </button>
+                                        />
+                                        <button
+                                            type="button"
+                                            className="password-toggle"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        >
+                                            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                                        </button>
+                                    </div>
+                                    {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
                                 </div>
-                                {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
-                            </div>
                             </div>
                         </div>
 
                         <div className="form-section">
                             <h3>⚙️ Configuración</h3>
 
-                        <div className="form-row">
-                            <div className="form-group">
+                            <div className="form-row">
+                                <div className="form-group">
                                     <label htmlFor="genero">Género</label>
-                                <select
-                                    id="genero"
-                                    name="genero"
-                                    value={formData.genero}
-                                    onChange={handleInputChange}
-                                    disabled={loading}
-                                >
-                                    <option value="">Seleccionar género</option>
-                                    <option value="masculino">Masculino</option>
-                                    <option value="femenino">Femenino</option>
-                                    <option value="otro">Otro</option>
-                                    <option value="no especificar">Prefiero no especificar</option>
-                                </select>
-                            </div>
+                                    <select
+                                        id="genero"
+                                        name="genero"
+                                        value={formData.genero}
+                                        onChange={handleInputChange}
+                                        disabled={loading}
+                                    >
+                                        <option value="">Seleccionar género</option>
+                                        <option value="masculino">Masculino</option>
+                                        <option value="femenino">Femenino</option>
+                                        <option value="otro">Otro</option>
+                                        <option value="no especificar">Prefiero no especificar</option>
+                                    </select>
+                                </div>
 
-                            <div className="form-group">
+                                <div className="form-group">
                                     <label htmlFor="rol">Rol *</label>
-                                <select
-                                    id="rol"
-                                    name="rol"
-                                    value={formData.rol}
-                                    onChange={handleInputChange}
-                                    disabled={loading}
-                                >
-                                    <option value="usuario">Usuario</option>
-                                    <option value="administrador">Administrador</option>
-                                </select>
+                                    <select
+                                        id="rol"
+                                        name="rol"
+                                        value={formData.rol}
+                                        onChange={handleInputChange}
+                                        disabled={loading}
+                                    >
+                                        <option value="usuario">Usuario</option>
+                                        <option value="administrador">Administrador</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div className="form-actions">
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onClick={handleClose}
                             className="btn-cancel"
                             disabled={loading}
                         >
                             Cancelar
                         </button>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="btn-create"
                             disabled={loading || !isFormValid()}
                         >

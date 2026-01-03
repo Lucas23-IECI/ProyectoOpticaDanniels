@@ -2,8 +2,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getProductos } from "@services/producto.service";
 import { formatearNombreParaURL } from "@helpers/formatData";
-import { 
-    FaArrowLeft, FaShoppingCart, FaHeart, FaShare, FaFire, 
+import {
+    FaArrowLeft, FaShoppingCart, FaHeart, FaShare, FaFire,
     FaTag, FaShieldAlt, FaTruck, FaUndo, FaStar, FaCheck,
     FaPlus, FaMinus, FaEye, FaSpinner
 } from "react-icons/fa";
@@ -11,8 +11,7 @@ import ProductCard from "@components/ProductCard";
 import CartButton from "@components/CartButton";
 import LazyImage from "@components/LazyImage";
 import { useWishlistContext } from "@context/WishlistContext";
-import { useCart } from "@context/CartContext";
-import { useAuth } from "@hooks/useAuth";
+import { useAuth } from "@context/AuthContext";
 import "@styles/detalleProducto.css";
 import "@styles/cartButton.css";
 
@@ -20,13 +19,11 @@ function DetalleProducto() {
     const { nombreProducto } = useParams();
     const navigate = useNavigate();
     const { toggleWishlist, isInWishlist } = useWishlistContext();
-    const { addToCart, isInCart, getItemQuantity } = useCart();
     const { isAuthenticated } = useAuth();
     const [producto, setProducto] = useState(null);
     const [productosRecomendados, setProductosRecomendados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [cantidad, setCantidad] = useState(1);
-    const [imagenActual, setImagenActual] = useState(0);
 
     useEffect(() => {
         const fetchProducto = async () => {
@@ -40,11 +37,11 @@ function DetalleProducto() {
 
                 if (productoEncontrado) {
                     setProducto(productoEncontrado);
-                    
+
                     // Obtener productos recomendados (misma categoría, excluyendo el actual)
                     const recomendados = productos
-                        .filter(p => 
-                            p.categoria === productoEncontrado.categoria && 
+                        .filter(p =>
+                            p.categoria === productoEncontrado.categoria &&
                             p.id !== productoEncontrado.id &&
                             p.activo
                         )
@@ -193,7 +190,7 @@ function DetalleProducto() {
                             </span>
                         </div>
                         <h1 className="producto-title">{producto.nombre}</h1>
-                        
+
                         {/* Rating simulado */}
                         <div className="producto-rating">
                             <div className="stars">
@@ -239,7 +236,7 @@ function DetalleProducto() {
                             <div className="cantidad-selector">
                                 <label>Cantidad:</label>
                                 <div className="cantidad-controls">
-                                    <button 
+                                    <button
                                         className="cantidad-btn"
                                         onClick={() => handleCantidadChange('disminuir')}
                                         disabled={cantidad <= 1}
@@ -247,7 +244,7 @@ function DetalleProducto() {
                                         <FaMinus />
                                     </button>
                                     <span className="cantidad-display">{cantidad}</span>
-                                    <button 
+                                    <button
                                         className="cantidad-btn"
                                         onClick={() => handleCantidadChange('aumentar')}
                                         disabled={cantidad >= producto.stock}
@@ -258,14 +255,14 @@ function DetalleProducto() {
                             </div>
 
                             <div className="action-buttons">
-                                <CartButton 
+                                <CartButton
                                     producto={producto}
                                     size="large"
                                     showQuantity={false}
                                     className="btn-add-cart"
                                 />
                                 {isAuthenticated && (
-                                    <button 
+                                    <button
                                         className={`btn-wishlist ${producto && isInWishlist(producto.id) ? 'active' : ''}`}
                                         onClick={handleAddToWishlist}
                                     >
@@ -303,9 +300,9 @@ function DetalleProducto() {
                     </div>
                     <div className="recomendados-grid">
                         {productosRecomendados.map((prod) => (
-                            <ProductCard 
-                                key={prod.id} 
-                                producto={prod} 
+                            <ProductCard
+                                key={prod.id}
+                                producto={prod}
                                 viewMode="grid"
                             />
                         ))}

@@ -10,13 +10,13 @@ export async function getEstadisticasGeneralesService() {
 
         // Estadísticas de usuarios
         const totalUsuarios = await userRepository.count();
-        const usuariosAdmin = await userRepository.count({ where: { rol: 'administrador' } });
-        const usuariosRegulares = await userRepository.count({ where: { rol: 'usuario' } });
+        const usuariosAdmin = await userRepository.count({ where: { rol: "administrador" } });
+        const usuariosRegulares = await userRepository.count({ where: { rol: "usuario" } });
 
         // Usuarios registrados en los últimos 30 días
         const fecha30Dias = new Date();
         fecha30Dias.setDate(fecha30Dias.getDate() - 30);
-        
+
         const usuariosUltimos30Dias = await userRepository
             .createQueryBuilder("user")
             .where("user.createdAt >= :fecha", { fecha: fecha30Dias })
@@ -36,9 +36,9 @@ export async function getEstadisticasGeneralesService() {
         const productosActivos = await productoRepository.count({ where: { activo: true } });
         const productosInactivos = await productoRepository.count({ where: { activo: false } });
         const productosEnOferta = await productoRepository.count({ where: { oferta: true, activo: true } });
-        
-        console.log('Productos en oferta:', productosEnOferta);
-        console.log('Total productos activos:', productosActivos);
+
+        console.log("Productos en oferta:", productosEnOferta);
+        console.log("Total productos activos:", productosActivos);
 
         // Productos por categoría
         const productosPorCategoria = await productoRepository
@@ -60,12 +60,12 @@ export async function getEstadisticasGeneralesService() {
             .select(["producto.nombre", "producto.stock", "producto.activo"])
             .where("producto.stock < :stock AND producto.activo = :activo", { stock: 5, activo: true })
             .getMany();
-        
-        console.log('=== DEBUG STOCK BAJO ===');
-        console.log('Productos con stock bajo:', productosStockBajoDebug);
-        console.log('Cantidad de productos con stock bajo:', productosStockBajo);
-        console.log('Tipo de cantidad:', typeof productosStockBajo);
-        
+
+        console.log("=== DEBUG STOCK BAJO ===");
+        console.log("Productos con stock bajo:", productosStockBajoDebug);
+        console.log("Cantidad de productos con stock bajo:", productosStockBajo);
+        console.log("Tipo de cantidad:", typeof productosStockBajo);
+
         // Debug: obtener todos los productos activos para verificar
         const todosProductosActivos = await productoRepository
             .createQueryBuilder("producto")
@@ -73,9 +73,9 @@ export async function getEstadisticasGeneralesService() {
             .where("producto.activo = :activo", { activo: true })
             .orderBy("producto.stock", "ASC")
             .getMany();
-        
-        console.log('Todos los productos activos (ordenados por stock):', todosProductosActivos);
-        console.log('=== FIN DEBUG STOCK BAJO ===');
+
+        console.log("Todos los productos activos (ordenados por stock):", todosProductosActivos);
+        console.log("=== FIN DEBUG STOCK BAJO ===");
 
 
 
@@ -86,8 +86,8 @@ export async function getEstadisticasGeneralesService() {
             .where("producto.activo = :activo AND producto.stock > 0", { activo: true })
             .getRawOne();
 
-        console.log('Valor del inventario raw:', valorInventario);
-        console.log('Valor del inventario parsed:', parseFloat(valorInventario.total) || 0);
+        console.log("Valor del inventario raw:", valorInventario);
+        console.log("Valor del inventario parsed:", parseFloat(valorInventario.total) || 0);
 
         // Registros por mes en los últimos 6 meses
         const fecha6Meses = new Date();
@@ -177,7 +177,7 @@ export async function getEstadisticasUsuariosService() {
             .select([
                 "user.id",
                 "user.primerNombre",
-                "user.segundoNombre", 
+                "user.segundoNombre",
                 "user.apellidoPaterno",
                 "user.apellidoMaterno",
                 "user.email",
@@ -206,7 +206,7 @@ export async function getEstadisticasUsuariosService() {
 
         usuariosConEdad.forEach(usuario => {
             const edad = new Date().getFullYear() - new Date(usuario.fechaNacimiento).getFullYear();
-            
+
             if (edad >= 18 && edad <= 25) distribucionPorEdad["18-25"]++;
             else if (edad >= 26 && edad <= 35) distribucionPorEdad["26-35"]++;
             else if (edad >= 36 && edad <= 45) distribucionPorEdad["36-45"]++;
@@ -295,10 +295,10 @@ export async function getEstadisticasProductosService() {
         };
 
         const todosProductos = await productoRepository.find({ select: ["precio"] });
-        
+
         todosProductos.forEach(producto => {
             const precio = producto.precio;
-            
+
             if (precio <= 50000) distribucionPrecios["0-50000"]++;
             else if (precio <= 100000) distribucionPrecios["50001-100000"]++;
             else if (precio <= 200000) distribucionPrecios["100001-200000"]++;
@@ -338,11 +338,11 @@ export async function getEstadisticasProductosService() {
                 cantidad
             })),
             porEstado: estadoProductos.map(item => ({
-                estado: item.activo ? 'Activo' : 'Inactivo',
+                estado: item.activo ? "Activo" : "Inactivo",
                 cantidad: parseInt(item.cantidad)
             })),
             porOferta: productosOferta.map(item => ({
-                estado: item.oferta ? 'En oferta' : 'Sin oferta',
+                estado: item.oferta ? "En oferta" : "Sin oferta",
                 cantidad: parseInt(item.cantidad)
             }))
         }, null];

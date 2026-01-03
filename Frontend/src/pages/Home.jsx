@@ -1,7 +1,7 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { getProductos } from '@services/producto.service';
-import { WishlistProvider } from '@context/WishlistContext';
+import { WishlistProvider } from '@context/WishlistProvider';
 import SocialFloat from '@components/SocialFloat';
 import HeroSection from '@components/home/HeroSection';
 import ValoresPrincipales from '@components/home/ValoresPrincipales';
@@ -54,31 +54,31 @@ function Home() {
         <WishlistProvider>
             <div className="home-container">
                 <HeroSection />
-                
+
                 <ValoresPrincipales />
-                
+
                 <Suspense fallback={<LoadingComponent />}>
                     <ProductosDestacados productos={productosDestacados} />
                 </Suspense>
-                
+
                 <Suspense fallback={<LoadingComponent />}>
                     <ServiciosEspecializados />
                 </Suspense>
-                
 
-                
+
+
                 <Suspense fallback={<LoadingComponent />}>
                     <TestimoniosClientes />
                 </Suspense>
-                
+
                 <Suspense fallback={<LoadingComponent />}>
                     <UbicacionContacto />
                 </Suspense>
-                
+
                 <Suspense fallback={<LoadingComponent />}>
                     <CallToActionFinal />
                 </Suspense>
-                
+
                 <SocialFloat />
             </div>
         </WishlistProvider>

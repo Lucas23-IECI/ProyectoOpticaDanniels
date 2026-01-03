@@ -13,18 +13,18 @@ export const getProductos = async (filtros = {}) => {
         }, {});
 
         const cacheKey = `productos_${JSON.stringify(filtrosLimpios)}`;
-        
+
         const cached = cacheService.get(cacheKey);
         if (cached) {
             return cached;
         }
 
         const response = await api.get(PRODUCTOS_ENDPOINT, { params: filtrosLimpios });
-        
+
         const productos = response.data.productos || [];
 
         cacheService.set(cacheKey, productos, 3 * 60 * 1000);
-        
+
         return productos;
     } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -45,7 +45,7 @@ export const getAllProductos = async (queryParams = {}) => {
         }, {});
 
         const cacheKey = `all_productos_${JSON.stringify(filtrosLimpios)}`;
-        
+
         const cached = cacheService.get(cacheKey);
         if (cached) {
             return cached;
@@ -107,7 +107,7 @@ export const createProducto = async (formData) => {
 export const updateProducto = async (id, data) => {
     try {
         let response;
-        
+
         if (data instanceof FormData) {
             response = await api.put(`${PRODUCTOS_ENDPOINT}/${id}`, data, {
                 headers: {
@@ -117,7 +117,7 @@ export const updateProducto = async (id, data) => {
         } else {
             response = await api.put(`${PRODUCTOS_ENDPOINT}/${id}`, data);
         }
-        
+
         return response.data.producto;
     } catch (error) {
         console.error("Error en updateProducto:", error);
@@ -142,12 +142,12 @@ export const updateProductoImagen = async (id, formData) => {
 export const deleteProducto = async (id) => {
     try {
         const response = await api.delete(`${PRODUCTOS_ENDPOINT}/${id}`);
-        
-        const cacheKeys = Object.keys(localStorage).filter(key => 
+
+        const cacheKeys = Object.keys(localStorage).filter(key =>
             key.includes('productos') || key.includes('all_productos')
         );
         cacheKeys.forEach(key => cacheService.delete(key));
-        
+
         return response.data;
     } catch (error) {
         console.error("Error en deleteProducto:", error);
@@ -171,14 +171,11 @@ export const buscarProductosRapido = async (query, options = {}) => {
 
 export const obtenerSugerenciasBusqueda = async (termino) => {
     try {
-        const response = await fetch(`${API_URL}/productos/sugerencias?termino=${encodeURIComponent(termino)}`);
-        
-        if (!response.ok) {
-            throw new Error('Error al obtener sugerencias');
-        }
-        
-        const data = await response.json();
-        return data.sugerencias || [];
+        const response = await api.get(`${PRODUCTOS_ENDPOINT}/sugerencias`, {
+            params: { termino }
+        });
+
+        return response.data.sugerencias || [];
     } catch (error) {
         console.error('Error obteniendo sugerencias:', error);
         return [];

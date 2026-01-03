@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWishlistContext } from '../context/WishlistContext';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 import { getNombreCompleto } from '../helpers/nameHelpers';
 import { clearAllWishlists } from '../utils/wishlistDebug';
 
@@ -20,12 +20,12 @@ const WishlistDebugger = () => {
     };
 
     return (
-        <div style={{ 
-            position: 'fixed', 
-            top: '10px', 
-            right: '10px', 
-            background: '#f0f0f0', 
-            padding: '10px', 
+        <div style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            background: '#f0f0f0',
+            padding: '10px',
             border: '1px solid #ccc',
             borderRadius: '5px',
             zIndex: 9999,

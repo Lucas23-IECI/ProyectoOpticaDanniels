@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaEye, FaTag, FaFire, FaStar, FaEdit, FaTrash } from 'react-icons/fa';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 import { formatearNombreParaURL } from '@helpers/formatData';
 import '@styles/productos/product-card.css';
 import '@styles/cartButton.css';

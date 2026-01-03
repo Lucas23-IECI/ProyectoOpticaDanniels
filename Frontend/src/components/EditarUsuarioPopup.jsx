@@ -9,7 +9,7 @@ import '@styles/crearUsuario.css';
 
 const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
     const { handleEditUser, loading } = useEditUser();
-    
+
     const [formData, setFormData] = useState({
         primerNombre: '',
         segundoNombre: '',
@@ -79,11 +79,11 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         let newValue = value;
-        
+
         // Validaciones específicas durante la escritura
         if (name === 'rut') {
             // Solo permitir números y K
-            if (!/^[0-9kK\.\-]*$/.test(value)) {
+            if (!/^[0-9kK.-]*$/.test(value)) {
                 showAlert('El RUT solo puede contener números y la letra K');
                 return;
             }
@@ -91,30 +91,30 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
             setRutModified(true);
         } else if (name === 'telefono') {
             // Solo permitir números y el símbolo +
-            if (!/^[\+\d\s]*$/.test(value)) {
+            if (!/^[+\d\s]*$/.test(value)) {
                 showAlert('El teléfono solo puede contener números y el símbolo +');
                 return;
             }
-            newValue = value.replace(/[^\+\d]/g, '');
+            newValue = value.replace(/[^+\d]/g, '');
         } else if (['primerNombre', 'apellidoPaterno'].includes(name)) {
             // Validaciones para nombres sin espacios
             if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]*$/.test(value)) {
                 showAlert('Los nombres solo pueden contener letras (sin espacios)');
                 return;
             }
-            
+
             // No permitir espacios
             if (/\s/.test(value)) {
                 showAlert('El nombre no puede contener espacios');
                 return;
             }
-            
+
             // No permitir completamente en mayúsculas
             if (value === value.toUpperCase() && value.length > 1) {
                 showAlert('El nombre no puede estar completamente en mayúsculas');
                 return;
             }
-            
+
             // Validar mayúsculas correctas (solo si tiene más de 1 carácter)
             if (value.length > 1) {
                 // La primera letra debe ser mayúscula
@@ -128,13 +128,13 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                     return;
                 }
             }
-            
+
             // No más de 2 letras iguales consecutivas
             if (/(.)\1{2,}/.test(value)) {
                 showAlert('El nombre no puede tener más de 2 letras iguales consecutivas');
                 return;
             }
-            
+
             // Limitar longitud
             if (value.length > 50) {
                 showAlert('El nombre no puede exceder 50 caracteres');
@@ -146,25 +146,25 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                 showAlert('El segundo nombre solo puede contener letras y espacios');
                 return;
             }
-            
+
             // No permitir más de 1 espacio consecutivo
             if (/\s{2,}/.test(value)) {
                 showAlert('No se permiten más de 1 espacio consecutivo');
                 return;
             }
-            
+
             // No permitir empezar con espacio
             if (/^\s/.test(value) && value.length === 1) {
                 showAlert('El segundo nombre no puede empezar con un espacio');
                 return;
             }
-            
+
             // No permitir completamente en mayúsculas
             if (value === value.toUpperCase() && value.length > 1) {
                 showAlert('El segundo nombre no puede estar completamente en mayúsculas');
                 return;
             }
-            
+
             // Validar mayúsculas correctas (solo si tiene más de 1 carácter)
             if (value.length > 1) {
                 const words = value.split(' ');
@@ -184,13 +184,13 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                     }
                 }
             }
-            
+
             // No más de 2 letras iguales consecutivas
             if (/(.)\1{2,}/.test(value)) {
                 showAlert('El segundo nombre no puede tener más de 2 letras iguales consecutivas');
                 return;
             }
-            
+
             // Limitar longitud
             if (value.length > 50) {
                 showAlert('El segundo nombre no puede exceder 50 caracteres');
@@ -202,25 +202,25 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                 showAlert('El apellido materno solo puede contener letras y espacios');
                 return;
             }
-            
+
             // No permitir más de 1 espacio consecutivo
             if (/\s{2,}/.test(value)) {
                 showAlert('No se permiten más de 1 espacio consecutivo');
                 return;
             }
-            
+
             // No permitir empezar con espacio
             if (/^\s/.test(value) && value.length === 1) {
                 showAlert('El apellido materno no puede empezar con un espacio');
                 return;
             }
-            
+
             // No permitir completamente en mayúsculas
             if (value === value.toUpperCase() && value.length > 1) {
                 showAlert('El apellido materno no puede estar completamente en mayúsculas');
                 return;
             }
-            
+
             // Validar mayúsculas correctas (solo si tiene más de 1 carácter)
             if (value.length > 1) {
                 const words = value.split(' ');
@@ -240,13 +240,13 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                     }
                 }
             }
-            
+
             // No más de 2 letras iguales consecutivas
             if (/(.)\1{2,}/.test(value)) {
                 showAlert('El apellido materno no puede tener más de 2 letras iguales consecutivas');
                 return;
             }
-            
+
             // Limitar longitud
             if (value.length > 50) {
                 showAlert('El apellido materno no puede exceder 50 caracteres');
@@ -256,9 +256,9 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
             // Básicamente no validar durante escritura, solo al enviar
             newValue = value.toLowerCase();
         }
-        
+
         setFormData(prev => ({ ...prev, [name]: newValue }));
-        
+
         // Limpiar error al escribir
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
@@ -393,7 +393,7 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             showAlert('Por favor, corrige los errores en el formulario');
             return;
@@ -420,7 +420,7 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
 
         const query = { id: usuario.id };
         const result = await handleEditUser(userData, query);
-        
+
         if (result.success) {
             onUsuarioUpdated();
             handleClose();
@@ -446,11 +446,11 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                         <span>{alert}</span>
                     </div>
                 )}
-                
+
                 <div className="crear-usuario-header">
                     <h2>✏️ Editar Usuario: {getNombreCompleto(usuario)}</h2>
-                    <button 
-                        className="close-button" 
+                    <button
+                        className="close-button"
                         onClick={handleClose}
                         type="button"
                         disabled={loading}
@@ -463,71 +463,71 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                     <div className="usuario-form-grid">
                         <div className="form-section">
                             <h3>📝 Información Personal</h3>
-                            
-                        <div className="form-row">
-                            <div className="form-group">
+
+                            <div className="form-row">
+                                <div className="form-group">
                                     <label htmlFor="primerNombre">Primer Nombre *</label>
-                                <input
-                                    type="text"
-                                    id="primerNombre"
-                                    name="primerNombre"
-                                    value={formData.primerNombre}
-                                    onChange={handleInputChange}
-                                    className={errors.primerNombre ? 'error' : ''}
-                                    disabled={loading}
+                                    <input
+                                        type="text"
+                                        id="primerNombre"
+                                        name="primerNombre"
+                                        value={formData.primerNombre}
+                                        onChange={handleInputChange}
+                                        className={errors.primerNombre ? 'error' : ''}
+                                        disabled={loading}
                                         placeholder="Ej: Juan"
                                         maxLength={50}
-                                />
-                                {errors.primerNombre && <span className="error-message">{errors.primerNombre}</span>}
-                            </div>
+                                    />
+                                    {errors.primerNombre && <span className="error-message">{errors.primerNombre}</span>}
+                                </div>
 
-                            <div className="form-group">
+                                <div className="form-group">
                                     <label htmlFor="segundoNombre">Segundo Nombre</label>
-                                <input
-                                    type="text"
-                                    id="segundoNombre"
-                                    name="segundoNombre"
-                                    value={formData.segundoNombre}
-                                    onChange={handleInputChange}
+                                    <input
+                                        type="text"
+                                        id="segundoNombre"
+                                        name="segundoNombre"
+                                        value={formData.segundoNombre}
+                                        onChange={handleInputChange}
                                         className={errors.segundoNombre ? 'error' : ''}
-                                    disabled={loading}
+                                        disabled={loading}
                                         placeholder="Ej: Carlos (opcional)"
                                         maxLength={50}
-                                />
+                                    />
                                     {errors.segundoNombre && <span className="error-message">{errors.segundoNombre}</span>}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="form-row">
-                            <div className="form-group">
+                            <div className="form-row">
+                                <div className="form-group">
                                     <label htmlFor="apellidoPaterno">Apellido Paterno *</label>
-                                <input
-                                    type="text"
-                                    id="apellidoPaterno"
-                                    name="apellidoPaterno"
-                                    value={formData.apellidoPaterno}
-                                    onChange={handleInputChange}
-                                    className={errors.apellidoPaterno ? 'error' : ''}
-                                    disabled={loading}
+                                    <input
+                                        type="text"
+                                        id="apellidoPaterno"
+                                        name="apellidoPaterno"
+                                        value={formData.apellidoPaterno}
+                                        onChange={handleInputChange}
+                                        className={errors.apellidoPaterno ? 'error' : ''}
+                                        disabled={loading}
                                         placeholder="Ej: Pérez"
                                         maxLength={50}
-                                />
-                                {errors.apellidoPaterno && <span className="error-message">{errors.apellidoPaterno}</span>}
-                            </div>
+                                    />
+                                    {errors.apellidoPaterno && <span className="error-message">{errors.apellidoPaterno}</span>}
+                                </div>
 
-                            <div className="form-group">
+                                <div className="form-group">
                                     <label htmlFor="apellidoMaterno">Apellido Materno</label>
-                                <input
-                                    type="text"
-                                    id="apellidoMaterno"
-                                    name="apellidoMaterno"
-                                    value={formData.apellidoMaterno}
-                                    onChange={handleInputChange}
+                                    <input
+                                        type="text"
+                                        id="apellidoMaterno"
+                                        name="apellidoMaterno"
+                                        value={formData.apellidoMaterno}
+                                        onChange={handleInputChange}
                                         className={errors.apellidoMaterno ? 'error' : ''}
-                                    disabled={loading}
+                                        disabled={loading}
                                         placeholder="Ej: González (opcional)"
                                         maxLength={50}
-                                />
+                                    />
                                     {errors.apellidoMaterno && <span className="error-message">{errors.apellidoMaterno}</span>}
                                 </div>
                             </div>
@@ -536,83 +536,83 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                         <div className="form-section">
                             <h3>🆔 Identificación y Contacto</h3>
 
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="rut">
-                                    <FaIdCard className="label-icon" />
-                                    RUT *
-                                </label>
-                                <input
-                                    type="text"
-                                    id="rut"
-                                    name="rut"
-                                    value={formData.rut}
-                                    onChange={handleInputChange}
-                                    className={errors.rut ? 'error' : ''}
-                                    disabled={loading}
-                                    placeholder="12.345.678-9"
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="rut">
+                                        <FaIdCard className="label-icon" />
+                                        RUT *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="rut"
+                                        name="rut"
+                                        value={formData.rut}
+                                        onChange={handleInputChange}
+                                        className={errors.rut ? 'error' : ''}
+                                        disabled={loading}
+                                        placeholder="12.345.678-9"
                                         maxLength={12}
-                                />
+                                    />
                                     {rutModified && formData.rut && (
                                         <small className="rut-formatted">
                                             RUT: {formData.rut}
                                         </small>
                                     )}
-                                {errors.rut && <span className="error-message">{errors.rut}</span>}
-                            </div>
+                                    {errors.rut && <span className="error-message">{errors.rut}</span>}
+                                </div>
 
-                            <div className="form-group">
-                                <label htmlFor="email">
-                                    <FaEnvelope className="label-icon" />
-                                    Email *
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleInputChange}
-                                    className={errors.email ? 'error' : ''}
-                                    disabled={loading}
-                                    placeholder="usuario@ejemplo.com"
+                                <div className="form-group">
+                                    <label htmlFor="email">
+                                        <FaEnvelope className="label-icon" />
+                                        Email *
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        className={errors.email ? 'error' : ''}
+                                        disabled={loading}
+                                        placeholder="usuario@ejemplo.com"
                                         maxLength={100}
-                                />
-                                {errors.email && <span className="error-message">{errors.email}</span>}
+                                    />
+                                    {errors.email && <span className="error-message">{errors.email}</span>}
+                                </div>
                             </div>
-                        </div>
 
-                        <div className="form-row">
-                            <div className="form-group">
-                                <label htmlFor="telefono">
-                                    <FaPhone className="label-icon" />
-                                    Teléfono
-                                </label>
-                                <input
-                                    type="tel"
-                                    id="telefono"
-                                    name="telefono"
-                                    value={formData.telefono}
-                                    onChange={handleInputChange}
-                                    className={errors.telefono ? 'error' : ''}
-                                    disabled={loading}
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="telefono">
+                                        <FaPhone className="label-icon" />
+                                        Teléfono
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        id="telefono"
+                                        name="telefono"
+                                        value={formData.telefono}
+                                        onChange={handleInputChange}
+                                        className={errors.telefono ? 'error' : ''}
+                                        disabled={loading}
                                         placeholder="+56912345678"
                                         maxLength={15}
-                                />
+                                    />
                                     {formData.telefono && (
                                         <small className="telefono-formatted">
                                             Teléfono: {formatTelefono(formData.telefono)}
                                         </small>
                                     )}
-                                {errors.telefono && <span className="error-message">{errors.telefono}</span>}
-                            </div>
+                                    {errors.telefono && <span className="error-message">{errors.telefono}</span>}
+                                </div>
 
-                            <div className="form-group">
-                                <label htmlFor="fechaNacimiento">
-                                    <FaCalendar className="label-icon" />
-                                    Fecha de Nacimiento
-                                </label>
+                                <div className="form-group">
+                                    <label htmlFor="fechaNacimiento">
+                                        <FaCalendar className="label-icon" />
+                                        Fecha de Nacimiento
+                                    </label>
                                     <DatePicker
-                                    value={formData.fechaNacimiento}
+                                        value={formData.fechaNacimiento}
                                         onChange={(value) => {
                                             setFormData(prev => ({ ...prev, fechaNacimiento: value }));
                                             if (errors.fechaNacimiento) {
@@ -620,9 +620,9 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                             }
                                         }}
                                         placeholder="Seleccionar fecha"
-                                    disabled={loading}
-                                />
-                                {errors.fechaNacimiento && <span className="error-message">{errors.fechaNacimiento}</span>}
+                                        disabled={loading}
+                                    />
+                                    {errors.fechaNacimiento && <span className="error-message">{errors.fechaNacimiento}</span>}
                                 </div>
                             </div>
                         </div>
@@ -630,43 +630,43 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                         <div className="form-section">
                             <h3>⚙️ Configuración</h3>
 
-                        <div className="form-row">
-                            <div className="form-group">
+                            <div className="form-row">
+                                <div className="form-group">
                                     <label htmlFor="genero">Género</label>
-                                <select
-                                    id="genero"
-                                    name="genero"
-                                    value={formData.genero}
-                                    onChange={handleInputChange}
-                                    disabled={loading}
-                                >
-                                    <option value="">Seleccionar género</option>
-                                    <option value="masculino">Masculino</option>
-                                    <option value="femenino">Femenino</option>
-                                    <option value="otro">Otro</option>
-                                    <option value="no especificar">Prefiero no especificar</option>
-                                </select>
-                            </div>
+                                    <select
+                                        id="genero"
+                                        name="genero"
+                                        value={formData.genero}
+                                        onChange={handleInputChange}
+                                        disabled={loading}
+                                    >
+                                        <option value="">Seleccionar género</option>
+                                        <option value="masculino">Masculino</option>
+                                        <option value="femenino">Femenino</option>
+                                        <option value="otro">Otro</option>
+                                        <option value="no especificar">Prefiero no especificar</option>
+                                    </select>
+                                </div>
 
-                            <div className="form-group">
+                                <div className="form-group">
                                     <label htmlFor="rol">Rol *</label>
-                                <select
-                                    id="rol"
-                                    name="rol"
-                                    value={formData.rol}
-                                    onChange={handleInputChange}
-                                    disabled={loading}
-                                >
-                                    <option value="usuario">Usuario</option>
-                                    <option value="administrador">Administrador</option>
-                                </select>
+                                    <select
+                                        id="rol"
+                                        name="rol"
+                                        value={formData.rol}
+                                        onChange={handleInputChange}
+                                        disabled={loading}
+                                    >
+                                        <option value="usuario">Usuario</option>
+                                        <option value="administrador">Administrador</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
 
                         <div className="form-section">
                             <h3>🔐 Cambio de Contraseña</h3>
-                            
+
                             <div className="form-section-header">
                                 <label className="checkbox-container">
                                     <input
@@ -709,7 +709,7 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                                 </button>
                                             </div>
                                             {errors.password && <span className="error-message">{errors.password}</span>}
-                                    </div>
+                                        </div>
 
                                         <div className="form-group">
                                             <label htmlFor="newPassword">
@@ -738,7 +738,7 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                                             </div>
                                             {errors.newPassword && <span className="error-message">{errors.newPassword}</span>}
                                         </div>
-                                        </div>
+                                    </div>
 
                                     <div className="form-row">
                                         <div className="form-group">
@@ -775,16 +775,16 @@ const EditarUsuarioPopup = ({ show, setShow, usuario, onUsuarioUpdated }) => {
                     </div>
 
                     <div className="form-actions">
-                        <button 
-                            type="button" 
+                        <button
+                            type="button"
                             onClick={handleClose}
                             className="btn-cancel"
                             disabled={loading}
                         >
                             Cancelar
                         </button>
-                        <button 
-                            type="submit" 
+                        <button
+                            type="submit"
                             className="btn-create"
                             disabled={loading || !isFormValid()}
                         >

@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { 
+import { useState, useEffect, useMemo } from 'react';
+import {
     FaPlus, FaSearch, FaFilter, FaEye, FaEdit, FaTrash, FaTh, FaList, FaTable,
     FaArrowLeft, FaArrowRight, FaSort, FaSortUp, FaSortDown, FaSpinner,
     FaUsers, FaCalendar, FaEnvelope, FaPhone, FaTimes, FaSync, FaIdCard,
@@ -33,11 +33,11 @@ const GENEROS = ['masculino', 'femenino', 'otro', 'no especificar'];
 
 const AdminUsuarios = () => {
     const { usuarios, loading, error, refetchUsuarios } = useUsers();
-    
+
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(ITEMS_PER_PAGE_OPTIONS[0]);
     const [totalItems, setTotalItems] = useState(0);
-    
+
     const [searchTerm, setSearchTerm] = useState('');
     const [filters, setFilters] = useState({
         rol: '',
@@ -45,13 +45,13 @@ const AdminUsuarios = () => {
         fechaRegistroDesde: '',
         fechaRegistroHasta: ''
     });
-    
+
     const [sortBy, setSortBy] = useState('primerNombre');
     const [sortOrder, setSortOrder] = useState('asc');
-    
+
     const [viewMode, setViewMode] = useState(VIEW_MODES.GRID);
     const [showFilters, setShowFilters] = useState(false);
-    
+
     const [showCrearModal, setShowCrearModal] = useState(false);
     const [showEditarModal, setShowEditarModal] = useState(false);
     const [showEliminarModal, setShowEliminarModal] = useState(false);
@@ -60,7 +60,7 @@ const AdminUsuarios = () => {
     // Procesar usuarios con filtros y búsqueda
     const usuariosProcessados = useMemo(() => {
         let resultado = [...usuarios];
-        
+
         // Aplicar búsqueda
         if (searchTerm) {
             const searchWords = searchTerm.toLowerCase().trim().split(/\\s+/);
@@ -75,54 +75,54 @@ const AdminUsuarios = () => {
                     usuario.telefono,
                     usuario.rol
                 ].join(' ').toLowerCase();
-                
-                return searchWords.every(word => 
+
+                return searchWords.every(word =>
                     searchableText.includes(word)
                 );
             });
         }
-        
+
         // Aplicar filtros
         if (filters.rol) {
             resultado = resultado.filter(usuario => usuario.rol === filters.rol);
         }
-        
+
         if (filters.genero) {
             resultado = resultado.filter(usuario => usuario.genero === filters.genero);
         }
-        
+
         if (filters.fechaRegistroDesde) {
             const fechaDesde = new Date(filters.fechaRegistroDesde);
-            resultado = resultado.filter(usuario => 
+            resultado = resultado.filter(usuario =>
                 new Date(usuario.createdAt) >= fechaDesde
             );
         }
-        
+
         if (filters.fechaRegistroHasta) {
             const fechaHasta = new Date(filters.fechaRegistroHasta);
             fechaHasta.setHours(23, 59, 59, 999); // Incluir todo el día
-            resultado = resultado.filter(usuario => 
+            resultado = resultado.filter(usuario =>
                 new Date(usuario.createdAt) <= fechaHasta
             );
         }
-        
+
         // Aplicar ordenamiento
         resultado.sort((a, b) => {
             let aValue = a[sortBy];
             let bValue = b[sortBy];
-            
+
             if (typeof aValue === 'string') {
                 aValue = aValue.toLowerCase();
                 bValue = bValue.toLowerCase();
             }
-            
+
             if (sortOrder === 'asc') {
                 return aValue > bValue ? 1 : -1;
             } else {
                 return aValue < bValue ? 1 : -1;
             }
         });
-        
+
         return resultado;
     }, [usuarios, searchTerm, filters, sortBy, sortOrder]);
 
@@ -212,8 +212,8 @@ const AdminUsuarios = () => {
 
     const getSortIcon = (field) => {
         if (sortBy !== field) return <FaSort className="sort-icon" />;
-        return sortOrder === 'asc' ? 
-            <FaSortUp className="sort-icon active" /> : 
+        return sortOrder === 'asc' ?
+            <FaSortUp className="sort-icon active" /> :
             <FaSortDown className="sort-icon active" />;
     };
 
@@ -235,8 +235,8 @@ const AdminUsuarios = () => {
     };
 
     const getRoleIcon = (rol) => {
-        return rol === 'administrador' ? 
-            <FaCrown className="role-icon" /> : 
+        return rol === 'administrador' ?
+            <FaCrown className="role-icon" /> :
             <FaUserTie className="role-icon" />;
     };
 
@@ -249,9 +249,9 @@ const AdminUsuarios = () => {
                         {loading ? 'Cargando...' : `${totalItems} usuarios`}
                     </span>
                 </div>
-                
+
                 <div className="header-actions">
-                    <button 
+                    <button
                         className="btn btn-refresh"
                         onClick={refetchUsuarios}
                         disabled={loading}
@@ -259,8 +259,8 @@ const AdminUsuarios = () => {
                         <FaSync className={loading ? 'spinning' : ''} />
                         Actualizar
                     </button>
-                    
-                    <button 
+
+                    <button
                         className="btn btn-primary"
                         onClick={() => setShowCrearModal(true)}
                     >
@@ -281,7 +281,7 @@ const AdminUsuarios = () => {
                             className="search-input"
                         />
                         {searchTerm && (
-                            <button 
+                            <button
                                 className="clear-search"
                                 onClick={() => setSearchTerm('')}
                             >
@@ -289,8 +289,8 @@ const AdminUsuarios = () => {
                             </button>
                         )}
                     </div>
-                    
-                    <button 
+
+                    <button
                         className={`btn btn-filter usuarios-filter-btn ${showFilters ? 'active' : ''}`}
                         onClick={() => setShowFilters(!showFilters)}
                     >
@@ -300,21 +300,21 @@ const AdminUsuarios = () => {
 
                 <div className="view-controls">
                     <div className="view-mode-buttons">
-                        <button 
+                        <button
                             className={`btn btn-view ${viewMode === VIEW_MODES.GRID ? 'active' : ''}`}
                             onClick={() => setViewMode(VIEW_MODES.GRID)}
                             title="Vista cuadriculada"
                         >
                             <FaTh />
                         </button>
-                        <button 
+                        <button
                             className={`btn btn-view ${viewMode === VIEW_MODES.LIST ? 'active' : ''}`}
                             onClick={() => setViewMode(VIEW_MODES.LIST)}
                             title="Vista lista"
                         >
                             <FaList />
                         </button>
-                        <button 
+                        <button
                             className={`btn btn-view ${viewMode === VIEW_MODES.TABLE ? 'active' : ''}`}
                             onClick={() => setViewMode(VIEW_MODES.TABLE)}
                             title="Vista tabla"
@@ -322,11 +322,11 @@ const AdminUsuarios = () => {
                             <FaTable />
                         </button>
                     </div>
-                    
+
                     <div className="items-per-page">
                         <label>Mostrar:</label>
-                        <select 
-                            value={itemsPerPage} 
+                        <select
+                            value={itemsPerPage}
                             onChange={handleItemsPerPageChange}
                             className="items-select"
                         >
@@ -345,8 +345,8 @@ const AdminUsuarios = () => {
                     <div className="filters-grid">
                         <div className="filter-group">
                             <label>Rol:</label>
-                            <select 
-                                value={filters.rol} 
+                            <select
+                                value={filters.rol}
                                 onChange={(e) => handleFilterChange('rol', e.target.value)}
                             >
                                 <option value="">Todos los roles</option>
@@ -355,11 +355,11 @@ const AdminUsuarios = () => {
                                 ))}
                             </select>
                         </div>
-                        
+
                         <div className="filter-group">
                             <label>Género:</label>
-                            <select 
-                                value={filters.genero} 
+                            <select
+                                value={filters.genero}
                                 onChange={(e) => handleFilterChange('genero', e.target.value)}
                             >
                                 <option value="">Todos los géneros</option>
@@ -368,26 +368,26 @@ const AdminUsuarios = () => {
                                 ))}
                             </select>
                         </div>
-                        
+
                         <div className="filter-group">
                             <label>Registrado desde:</label>
-                            <input 
-                                type="date" 
+                            <input
+                                type="date"
                                 value={filters.fechaRegistroDesde}
                                 onChange={(e) => handleFilterChange('fechaRegistroDesde', e.target.value)}
                             />
                         </div>
-                        
+
                         <div className="filter-group">
                             <label>Registrado hasta:</label>
-                            <input 
-                                type="date" 
+                            <input
+                                type="date"
                                 value={filters.fechaRegistroHasta}
                                 onChange={(e) => handleFilterChange('fechaRegistroHasta', e.target.value)}
                             />
                         </div>
                     </div>
-                    
+
                     <div className="filters-actions">
                         <button className="btn btn-secondary" onClick={limpiarFiltros}>
                             Limpiar filtros
@@ -410,7 +410,7 @@ const AdminUsuarios = () => {
                         </button>
                     ))}
                 </div>
-                
+
                 <div className="results-info">
                     Mostrando {startIndex + 1}-{endIndex} de {totalItems} usuarios
                 </div>
@@ -423,7 +423,7 @@ const AdminUsuarios = () => {
                         <p>Cargando usuarios...</p>
                     </div>
                 )}
-                
+
                 {error && (
                     <div className="error-container">
                         <p>{error}</p>
@@ -432,7 +432,7 @@ const AdminUsuarios = () => {
                         </button>
                     </div>
                 )}
-                
+
                 {!loading && !error && usuariosPaginados.length === 0 && (
                     <div className="empty-container">
                         <p>No se encontraron usuarios</p>
@@ -441,7 +441,7 @@ const AdminUsuarios = () => {
                         </button>
                     </div>
                 )}
-                
+
                 {!loading && !error && usuariosPaginados.length > 0 && (
                     <>
                         {viewMode === VIEW_MODES.GRID && (
@@ -459,7 +459,7 @@ const AdminUsuarios = () => {
                                 ))}
                             </div>
                         )}
-                        
+
                         {viewMode === VIEW_MODES.LIST && (
                             <div className="usuarios-list">
                                 {usuariosPaginados.map(usuario => (
@@ -475,7 +475,7 @@ const AdminUsuarios = () => {
                                 ))}
                             </div>
                         )}
-                        
+
                         {viewMode === VIEW_MODES.TABLE && (
                             <div className="usuarios-table-container">
                                 <UsuarioTable
@@ -511,7 +511,7 @@ const AdminUsuarios = () => {
                     onUsuarioCreated={handleUsuarioCreado}
                 />
             )}
-            
+
             {showEditarModal && (
                 <EditarUsuarioPopup
                     show={showEditarModal}
@@ -520,7 +520,7 @@ const AdminUsuarios = () => {
                     onUsuarioUpdated={handleUsuarioActualizado}
                 />
             )}
-            
+
             {showEliminarModal && (
                 <ConfirmarEliminarUsuarioPopup
                     show={showEliminarModal}
@@ -538,8 +538,8 @@ const UsuarioCard = ({ usuario, onEditar, onEliminar, formatearFecha, getGenderI
     return (
         <div className="usuario-card">
             <div className="usuario-avatar">
-                {usuario.rol === 'administrador' ? 
-                    <FaCrown className="avatar-icon" /> : 
+                {usuario.rol === 'administrador' ?
+                    <FaCrown className="avatar-icon" /> :
                     <FaUserTie className="avatar-icon" />
                 }
                 <div className="usuario-badges">
@@ -549,7 +549,7 @@ const UsuarioCard = ({ usuario, onEditar, onEliminar, formatearFecha, getGenderI
                     </span>
                 </div>
             </div>
-            
+
             <div className="usuario-info">
                 <h3 className="usuario-name">{getNombreCompleto(usuario)}</h3>
                 <div className="usuario-details">
@@ -579,9 +579,9 @@ const UsuarioCard = ({ usuario, onEditar, onEliminar, formatearFecha, getGenderI
                     </p>
                 </div>
             </div>
-            
+
             <div className="usuario-actions">
-                <button 
+                <button
                     className="btn btn-sm btn-secondary"
                     onClick={() => onEditar(usuario)}
                     title="Editar"
@@ -589,7 +589,7 @@ const UsuarioCard = ({ usuario, onEditar, onEliminar, formatearFecha, getGenderI
                     <FaEdit />
                 </button>
                 {usuario.rol !== 'administrador' && (
-                    <button 
+                    <button
                         className="btn btn-sm btn-danger"
                         onClick={() => onEliminar(usuario)}
                         title="Eliminar"
@@ -607,12 +607,12 @@ const UsuarioListItem = ({ usuario, onEditar, onEliminar, formatearFecha, getGen
     return (
         <div className="usuario-list-item">
             <div className="usuario-avatar">
-                {usuario.rol === 'administrador' ? 
-                    <FaCrown className="avatar-icon" /> : 
+                {usuario.rol === 'administrador' ?
+                    <FaCrown className="avatar-icon" /> :
                     <FaUserTie className="avatar-icon" />
                 }
             </div>
-            
+
             <div className="usuario-info">
                 <div className="usuario-main-info">
                     <h3 className="usuario-name">{getNombreCompleto(usuario)}</h3>
@@ -622,7 +622,7 @@ const UsuarioListItem = ({ usuario, onEditar, onEliminar, formatearFecha, getGen
                         {usuario.telefono && <span className="usuario-phone">{usuario.telefono}</span>}
                     </div>
                 </div>
-                
+
                 <div className="usuario-secondary-info">
                     <span className={`badge badge-${usuario.rol}`}>
                         {getRoleIcon(usuario.rol)}
@@ -640,9 +640,9 @@ const UsuarioListItem = ({ usuario, onEditar, onEliminar, formatearFecha, getGen
                     </span>
                 </div>
             </div>
-            
+
             <div className="usuario-actions">
-                <button 
+                <button
                     className="btn btn-sm btn-secondary"
                     onClick={() => onEditar(usuario)}
                     title="Editar"
@@ -650,7 +650,7 @@ const UsuarioListItem = ({ usuario, onEditar, onEliminar, formatearFecha, getGen
                     <FaEdit />
                 </button>
                 {usuario.rol !== 'administrador' && (
-                    <button 
+                    <button
                         className="btn btn-sm btn-danger"
                         onClick={() => onEliminar(usuario)}
                         title="Eliminar"
@@ -725,7 +725,7 @@ const UsuarioTableRow = ({ usuario, onEditar, onEliminar, formatearFecha, getGen
             <td>{formatearFecha(usuario.createdAt)}</td>
             <td>
                 <div className="table-actions">
-                    <button 
+                    <button
                         className="btn btn-sm btn-secondary"
                         onClick={() => onEditar(usuario)}
                         title="Editar"
@@ -733,7 +733,7 @@ const UsuarioTableRow = ({ usuario, onEditar, onEliminar, formatearFecha, getGen
                         <FaEdit />
                     </button>
                     {usuario.rol !== 'administrador' && (
-                        <button 
+                        <button
                             className="btn btn-sm btn-danger"
                             onClick={() => onEliminar(usuario)}
                             title="Eliminar"
@@ -752,7 +752,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPe
     const getPageNumbers = () => {
         const pages = [];
         const maxPagesToShow = 7;
-        
+
         if (totalPages <= maxPagesToShow) {
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
@@ -780,7 +780,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPe
                 pages.push(totalPages);
             }
         }
-        
+
         return pages;
     };
 
@@ -789,16 +789,16 @@ const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPe
             <div className="pagination-info">
                 Mostrando {((currentPage - 1) * itemsPerPage) + 1} a {Math.min(currentPage * itemsPerPage, totalItems)} de {totalItems} usuarios
             </div>
-            
+
             <div className="pagination-controls">
-                <button 
+                <button
                     className="btn btn-pagination"
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                 >
                     <FaArrowLeft /> Anterior
                 </button>
-                
+
                 <div className="page-numbers">
                     {getPageNumbers().map((page, index) => (
                         <button
@@ -811,8 +811,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange, totalItems, itemsPe
                         </button>
                     ))}
                 </div>
-                
-                <button 
+
+                <button
                     className="btn btn-pagination"
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}

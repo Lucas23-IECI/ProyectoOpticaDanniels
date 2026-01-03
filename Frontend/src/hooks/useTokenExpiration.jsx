@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 // import { showErrorAlert } from '@helpers/sweetAlert'; // No necesario - sesión indefinida
 import { decodeToken, clearTokenCache } from '@helpers/jwt.helper';
 

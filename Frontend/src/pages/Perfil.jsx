@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from "@hooks/useAuth";
+import { useAuth } from "@context/AuthContext";
 import useDirecciones from "@hooks/direcciones/useDirecciones.js";
 import DireccionCard from "@components/DireccionCard";
 import CrearDireccionForm from "@components/CrearDireccionForm";

@@ -101,23 +101,23 @@ export const buscarProductosService = async (filtros) => {
         if (filtros.nombre) {
             const searchTerm = filtros.nombre.toLowerCase().trim();
             queryBuilder.andWhere(
-                `(LOWER(producto.nombre) LIKE :searchTerm OR `
-                + `LOWER(producto.marca) LIKE :searchTerm OR `
-                + `LOWER(producto.categoria) LIKE :searchTerm OR `
-                + `LOWER(producto.codigoSKU) LIKE :searchTerm)`,
+                "(LOWER(producto.nombre) LIKE :searchTerm OR "
+                + "LOWER(producto.marca) LIKE :searchTerm OR "
+                + "LOWER(producto.categoria) LIKE :searchTerm OR "
+                + "LOWER(producto.codigoSKU) LIKE :searchTerm)",
                 { searchTerm: `%${searchTerm}%` }
             );
         }
 
         if (filtros.codigoSKU) {
-            queryBuilder.andWhere("LOWER(producto.codigoSKU) LIKE LOWER(:codigoSKU)", { 
-                codigoSKU: `%${filtros.codigoSKU}%` 
+            queryBuilder.andWhere("LOWER(producto.codigoSKU) LIKE LOWER(:codigoSKU)", {
+                codigoSKU: `%${filtros.codigoSKU}%`
             });
         }
 
         if (filtros.marca) {
-            queryBuilder.andWhere("LOWER(producto.marca) LIKE LOWER(:marca)", { 
-                marca: `%${filtros.marca}%` 
+            queryBuilder.andWhere("LOWER(producto.marca) LIKE LOWER(:marca)", {
+                marca: `%${filtros.marca}%`
             });
         }
 
@@ -129,8 +129,8 @@ export const buscarProductosService = async (filtros) => {
         }
 
         if (filtros.subcategoria) {
-            queryBuilder.andWhere("LOWER(producto.subcategoria) = LOWER(:subcategoria)", { 
-                subcategoria: filtros.subcategoria 
+            queryBuilder.andWhere("LOWER(producto.subcategoria) = LOWER(:subcategoria)", {
+                subcategoria: filtros.subcategoria
             });
         }
 
@@ -147,9 +147,9 @@ export const buscarProductosService = async (filtros) => {
             const max = Number(filtros.precio_max);
             if (min < 0 || max < 0 || min > max)
                 throw { status: 400, message: "Rango de precio inválido" };
-            queryBuilder.andWhere("producto.precio BETWEEN :precioMin AND :precioMax", { 
-                precioMin: min, 
-                precioMax: max 
+            queryBuilder.andWhere("producto.precio BETWEEN :precioMin AND :precioMax", {
+                precioMin: min,
+                precioMax: max
             });
         } else if (filtros.precio_min) {
             const min = Number(filtros.precio_min);
@@ -166,9 +166,9 @@ export const buscarProductosService = async (filtros) => {
             const max = Number(filtros.stock_max);
             if (min < 0 || max < 0 || min > max)
                 throw { status: 400, message: "Rango de stock inválido" };
-            queryBuilder.andWhere("producto.stock BETWEEN :stockMin AND :stockMax", { 
-                stockMin: min, 
-                stockMax: max 
+            queryBuilder.andWhere("producto.stock BETWEEN :stockMin AND :stockMax", {
+                stockMin: min,
+                stockMax: max
             });
         } else if (filtros.stock_min) {
             const min = Number(filtros.stock_min);
@@ -185,9 +185,9 @@ export const buscarProductosService = async (filtros) => {
             const max = Number(filtros.descuento_max);
             if (min < 0 || max < 0 || min > max)
                 throw { status: 400, message: "Rango de descuento inválido" };
-            queryBuilder.andWhere("producto.descuento BETWEEN :descuentoMin AND :descuentoMax", { 
-                descuentoMin: min, 
-                descuentoMax: max 
+            queryBuilder.andWhere("producto.descuento BETWEEN :descuentoMin AND :descuentoMax", {
+                descuentoMin: min,
+                descuentoMax: max
             });
         } else if (filtros.descuento_min) {
             const min = Number(filtros.descuento_min);
@@ -204,7 +204,7 @@ export const buscarProductosService = async (filtros) => {
         console.log("Filtros recibidos:", filtros);
 
         const pagina = filtros.page ? parseInt(filtros.page) : 1;
-        const limite = filtros.limit ? parseInt(filtros.limit) : 100; 
+        const limite = filtros.limit ? parseInt(filtros.limit) : 100;
 
         if (pagina < 1 || limite < 1)
             throw { status: 400, message: "Parámetros de paginación inválidos" };
@@ -305,7 +305,7 @@ export const actualizarProductoService = async (id, datos) => {
         // Si se está actualizando la imagen, eliminar la anterior
         if (datos.imagen_url && productoExistente.imagen_url && datos.imagen_url !== productoExistente.imagen_url) {
             const rutaImagenAnterior = path.join("uploads", "productos", productoExistente.imagen_url);
-            
+
             try {
                 if (fs.existsSync(rutaImagenAnterior)) {
                     fs.unlinkSync(rutaImagenAnterior);
@@ -354,7 +354,7 @@ export const eliminarProductoService = async (id) => {
         // Eliminar la imagen física del filesystem si existe
         if (producto.imagen_url) {
             const rutaImagen = path.join("uploads", "productos", producto.imagen_url);
-            
+
             try {
                 if (fs.existsSync(rutaImagen)) {
                     fs.unlinkSync(rutaImagen);
@@ -385,7 +385,7 @@ export const eliminarProductoService = async (id) => {
 export const generarSugerenciasBusqueda = async (terminoBusqueda) => {
     try {
         const productoRepository = AppDataSource.getRepository(Producto);
-        
+
         // Obtener todos los productos activos para generar sugerencias
         const productos = await productoRepository.find({
             where: { activo: true },
@@ -394,14 +394,14 @@ export const generarSugerenciasBusqueda = async (terminoBusqueda) => {
 
         const termino = terminoBusqueda.toLowerCase().trim();
         const sugerencias = new Set();
-        
+
         // Función para calcular similitud entre dos strings
         const calcularSimilitud = (str1, str2) => {
             const longer = str1.length > str2.length ? str1 : str2;
             const shorter = str1.length > str2.length ? str2 : str1;
-            
+
             if (longer.length === 0) return 1.0;
-            
+
             const editDistance = levenshteinDistance(longer, shorter);
             return (longer.length - editDistance) / longer.length;
         };
@@ -442,12 +442,12 @@ export const generarSugerenciasBusqueda = async (terminoBusqueda) => {
 
             campos.forEach(campo => {
                 const campoLower = campo.toLowerCase();
-                
+
                 // Verificar si el término está contenido en el campo
                 if (campoLower.includes(termino) && termino.length >= 2) {
                     sugerencias.add(campo);
                 }
-                
+
                 // Verificar similitud si el término tiene al menos 3 caracteres
                 if (termino.length >= 3) {
                     const similitud = calcularSimilitud(termino, campoLower);
@@ -455,7 +455,7 @@ export const generarSugerenciasBusqueda = async (terminoBusqueda) => {
                         sugerencias.add(campo);
                     }
                 }
-                
+
                 // Buscar palabras que empiecen con el término
                 const palabras = campoLower.split(/\s+/);
                 palabras.forEach(palabra => {
@@ -468,18 +468,18 @@ export const generarSugerenciasBusqueda = async (terminoBusqueda) => {
 
         // Convertir a array y ordenar por relevancia
         const sugerenciasArray = Array.from(sugerencias);
-        
+
         // Ordenar por relevancia (primero las que contienen el término exacto)
         sugerenciasArray.sort((a, b) => {
             const aLower = a.toLowerCase();
             const bLower = b.toLowerCase();
-            
+
             const aExacta = aLower.includes(termino);
             const bExacta = bLower.includes(termino);
-            
+
             if (aExacta && !bExacta) return -1;
             if (!aExacta && bExacta) return 1;
-            
+
             // Si ambas son exactas o ambas no, ordenar por longitud
             return a.length - b.length;
         });

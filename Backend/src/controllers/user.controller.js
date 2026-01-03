@@ -56,9 +56,9 @@ export async function updateUser(req, res) {
         const { rut, id, email } = req.query;
         const { body } = req;
 
-        console.log('=== UPDATE USER REQUEST ===');
-        console.log('Query params:', { rut, id, email });
-        console.log('Body recibido:', JSON.stringify(body, null, 2));
+        console.log("=== UPDATE USER REQUEST ===");
+        console.log("Query params:", { rut, id, email });
+        console.log("Body recibido:", JSON.stringify(body, null, 2));
 
         const { error: queryError } = userQueryValidation.validate({
             rut,
@@ -67,7 +67,7 @@ export async function updateUser(req, res) {
         });
 
         if (queryError) {
-            console.log('Error de validación en query:', queryError.details);
+            console.log("Error de validación en query:", queryError.details);
             return handleErrorClient(
                 res,
                 400,
@@ -76,12 +76,12 @@ export async function updateUser(req, res) {
             );
         }
 
-        console.log('Query validation exitosa');
+        console.log("Query validation exitosa");
 
         const { error: bodyError } = userBodyValidation.validate(body);
 
         if (bodyError) {
-            console.log('Error de validación en body:', bodyError.details);
+            console.log("Error de validación en body:", bodyError.details);
             return handleErrorClient(
                 res,
                 400,
@@ -90,19 +90,19 @@ export async function updateUser(req, res) {
             );
         }
 
-        console.log('Body validation exitosa, llamando a updateUserService...');
+        console.log("Body validation exitosa, llamando a updateUserService...");
 
         const [user, userError] = await updateUserService({ rut, id, email }, body);
 
         if (userError) {
-            console.log('Error en updateUserService:', userError);
+            console.log("Error en updateUserService:", userError);
             return handleErrorClient(res, 400, "Error modificando al usuario", userError);
         }
 
-        console.log('Usuario actualizado exitosamente:', user);
+        console.log("Usuario actualizado exitosamente:", user);
         handleSuccess(res, 200, "Usuario modificado correctamente", user);
     } catch (error) {
-        console.error('Error en updateUser controller:', error);
+        console.error("Error en updateUser controller:", error);
         handleErrorServer(res, 500, error.message);
     }
 }

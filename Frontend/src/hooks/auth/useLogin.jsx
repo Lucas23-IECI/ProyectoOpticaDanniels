@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { login } from "@services/auth.service";
-import { useAuth } from "@hooks/useAuth";
+import { useAuth } from "@context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { showErrorAlert, showSuccessAlert } from "@helpers/sweetAlert";
 import { decodeToken } from "@helpers/jwt.helper";
@@ -18,13 +18,13 @@ const useLogin = () => {
                 localStorage.setItem('token', response.data.token);
                 const userDecoded = await decodeToken(response.data.token);
                 localStorage.setItem('user', JSON.stringify(userDecoded));
-                
+
                 setUser(userDecoded);
-                
+
                 showSuccessAlert("¡Bienvenido!", "Sesión iniciada correctamente.");
-                
+
                 setTimeout(() => {
-                    navigate('/OpticaDanniels/productos');
+                    navigate('/productos');
                 }, 1000);
             } else {
                 showErrorAlert("Error", response.details.message);

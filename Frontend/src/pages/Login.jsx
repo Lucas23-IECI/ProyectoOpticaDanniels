@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { login } from "@services/auth.service";
 import { decodeToken } from "@helpers/jwt.helper";
-import { useAuth } from "@hooks/useAuth";
+import { useAuth } from "@context/AuthContext";
 import { FaEnvelope, FaLock, FaEye, FaEyeSlash, FaSignInAlt, FaExclamationCircle } from "react-icons/fa";
 import "@styles/login.css";
 import "@styles/alerts.css";
@@ -64,7 +64,7 @@ const Login = () => {
             }
             return { field: "email", message: "Email inválido - verifica el formato" };
         }
-        
+
         if (errorMessage.includes("password") || errorMessage.includes("contraseña")) {
             if (errorMessage.includes("incorrect") || errorMessage.includes("incorrecta") || errorMessage.includes("wrong")) {
                 return { field: "password", message: "❌ Contraseña incorrecta - verifica que sea la correcta" };
@@ -77,11 +77,11 @@ const Login = () => {
             }
             return { field: "password", message: "Contraseña inválida" };
         }
-        
+
         if (errorMessage.includes("credentials") || errorMessage.includes("credenciales")) {
             return { field: "general", message: "❌ Email o contraseña incorrectos - verifica tus datos" };
         }
-        
+
         if (errorMessage.includes("user") || errorMessage.includes("usuario")) {
             if (errorMessage.includes("not found") || errorMessage.includes("no encontrado")) {
                 return { field: "email", message: "❌ No existe una cuenta con este email" };
@@ -93,11 +93,11 @@ const Login = () => {
                 return { field: "general", message: "⚠️ Tu cuenta está suspendida temporalmente" };
             }
         }
-        
+
         if (errorMessage.includes("attempt") || errorMessage.includes("intento")) {
             return { field: "general", message: "⚠️ Demasiados intentos fallidos - espera unos minutos" };
         }
-        
+
         return { field: "general", message: "Error en el inicio de sesión - revisa tus datos" };
     };
 
@@ -127,7 +127,7 @@ const Login = () => {
                     }
                 }
                 break;
-                
+
             case 'password':
                 if (value.length > 0) {
                     if (value.length < 8) {
@@ -151,12 +151,12 @@ const Login = () => {
             ...prev,
             [name]: value,
         }));
-        
+
         // Clear error when user starts typing
         if (fieldErrors[name]) {
             clearFieldError(name);
         }
-        
+
         // Validación en tiempo real con debounce
         setTimeout(() => {
             const realtimeError = validateFieldRealTime(name, value);
@@ -204,17 +204,18 @@ const Login = () => {
 
         setLoading(true);
         try {
+            console.log("🔍 DEBUG - Datos enviados al login:", formData);
             const response = await login(formData);
-            
+
             if (response.status === "Success") {
                 localStorage.setItem('token', response.data.token);
                 const userDecoded = await decodeToken(response.data.token);
                 if (userDecoded) {
                     localStorage.setItem('user', JSON.stringify(userDecoded));
                 }
-                
+
                 refreshUser();
-                
+
                 setTimeout(() => {
                     window.location.reload();
                 }, 500);
@@ -225,10 +226,10 @@ const Login = () => {
         } catch (error) {
             console.error("Error en login:", error);
             console.log("Error response data:", error.response?.data);
-            
+
             if (error.response) {
                 const { status, data } = error.response;
-                
+
                 if (status === 400) {
                     if (data.details && typeof data.details === 'string') {
                         const errorDetails = parseBackendError(data.details);
@@ -262,7 +263,7 @@ const Login = () => {
     return (
         <div className="login-container">
             <h1 className="login-title">Iniciar sesión</h1>
-            
+
             <form className="login-form" onSubmit={handleSubmit}>
                 {fieldErrors.general && (
                     <div className="general-error-message">
@@ -270,7 +271,7 @@ const Login = () => {
                         {fieldErrors.general}
                     </div>
                 )}
-                
+
                 <div className="form-group">
                     <label htmlFor="email">
                         <FaEnvelope className="field-icon" />
@@ -290,7 +291,7 @@ const Login = () => {
                     />
                     {fieldErrors.email && <span className="error-message"><FaExclamationCircle /> {fieldErrors.email}</span>}
                 </div>
-                
+
                 <div className="form-group">
                     <label htmlFor="password">
                         <FaLock className="field-icon" />
@@ -335,8 +336,8 @@ const Login = () => {
                     <a href="#" className="forgot-password">¿Olvidaste tu contraseña?</a>
                 </div>
 
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
                     className="login-button"
                     disabled={loading}
                 >

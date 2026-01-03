@@ -15,7 +15,7 @@ export async function profile(req, res) {
         const userId = req.user.id;
         const { AppDataSource } = await import("../config/configDb.js");
         const User = (await import("../entity/user.entity.js")).default;
-        
+
         const userRepository = AppDataSource.getRepository(User);
         const user = await userRepository.findOne({
             where: { id: userId },
@@ -60,30 +60,30 @@ export async function login(req, res) {
 export async function register(req, res) {
     try {
         const { body } = req;
-        
-        console.log('=== REGISTER REQUEST ===');
-        console.log('Body recibido:', JSON.stringify(body, null, 2));
+
+        console.log("=== REGISTER REQUEST ===");
+        console.log("Body recibido:", JSON.stringify(body, null, 2));
 
         const { error } = registerValidation.validate(body);
 
         if (error) {
-            console.log('Error de validación:', error.details);
+            console.log("Error de validación:", error.details);
             return handleErrorClient(res, 400, "Error de validación", error.message);
         }
 
-        console.log('Validación exitosa, llamando a registerService...');
+        console.log("Validación exitosa, llamando a registerService...");
 
         const [newUser, errorNewUser] = await registerService(body);
 
         if (errorNewUser) {
-            console.log('Error en registerService:', errorNewUser);
+            console.log("Error en registerService:", errorNewUser);
             return handleErrorClient(res, 400, "Error registrando al usuario", errorNewUser);
         }
 
-        console.log('Usuario creado exitosamente:', newUser);
+        console.log("Usuario creado exitosamente:", newUser);
         handleSuccess(res, 201, "Usuario registrado con éxito", newUser);
     } catch (error) {
-        console.error('Error en register controller:', error);
+        console.error("Error en register controller:", error);
         handleErrorServer(res, 500, error.message);
     }
 }

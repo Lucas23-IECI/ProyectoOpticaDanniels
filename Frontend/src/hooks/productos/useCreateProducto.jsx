@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { createProducto } from '@services/producto.service';
 import { showErrorAlert, showSuccessAlert } from '@helpers/sweetAlert';
-import { 
-    validatePrice, 
-    validateStock, 
-    validateDiscount, 
-    validateSKU, 
+import {
+    validatePrice,
+    validateStock,
+    validateDiscount,
     validateCategory,
     validateBrand,
     validateDescription,
@@ -19,7 +18,7 @@ const useCreateProducto = (onSuccess) => {
 
     const validateForm = (formData) => {
         const newErrors = {};
-        
+
         const nombreError = validateProductName(formData.get('nombre'));
         if (nombreError) newErrors.nombre = nombreError;
 
@@ -71,21 +70,21 @@ const useCreateProducto = (onSuccess) => {
             }
 
             const nuevoProducto = await createProducto(formData);
-            
+
             showSuccessAlert(
-                '¡Producto creado exitosamente!', 
+                '¡Producto creado exitosamente!',
                 `${nuevoProducto.nombre} ha sido agregado al catálogo.`
             );
-            
+
             if (onSuccess) {
                 onSuccess(nuevoProducto);
             }
         } catch (error) {
             console.error("Error al crear producto:", error);
-            
+
             if (error.response?.status === 400) {
                 const responseData = error.response.data;
-                
+
                 if (responseData.errores) {
                     const serverErrors = {};
                     responseData.errores.forEach(err => {
@@ -95,37 +94,37 @@ const useCreateProducto = (onSuccess) => {
                 } else if (responseData.details) {
                     setErrors(responseData.details);
                 }
-                
+
                 showErrorAlert(
-                    'Error de validación', 
+                    'Error de validación',
                     responseData.mensaje || 'Por favor verifica los datos ingresados.'
                 );
             } else if (error.response?.status === 409) {
                 setErrors({ codigoSKU: 'Este código SKU ya está en uso' });
                 showErrorAlert(
-                    'Código SKU duplicado', 
+                    'Código SKU duplicado',
                     'Ya existe un producto con este código SKU. Por favor usa uno diferente.'
                 );
             } else if (error.response?.status === 413) {
                 setErrors({ imagen: 'La imagen es demasiado grande' });
                 showErrorAlert(
-                    'Archivo muy grande', 
+                    'Archivo muy grande',
                     'La imagen es demasiado grande. El tamaño máximo permitido es 5MB.'
                 );
             } else if (error.response?.status === 401) {
                 showErrorAlert(
-                    'Sesión expirada', 
+                    'Sesión expirada',
                     'Tu sesión ha expirado. Por favor inicia sesión nuevamente.'
                 );
             } else if (error.response?.status === 403) {
                 showErrorAlert(
-                    'Acceso denegado', 
+                    'Acceso denegado',
                     'No tienes permisos para crear productos.'
                 );
             } else {
                 showErrorAlert(
-                    'Error al crear producto', 
-                    error.response?.data?.mensaje || 
+                    'Error al crear producto',
+                    error.response?.data?.mensaje ||
                     'No se pudo crear el producto. Verifica tu conexión e intenta nuevamente.'
                 );
             }
@@ -136,12 +135,12 @@ const useCreateProducto = (onSuccess) => {
 
     const clearErrors = () => setErrors({});
 
-    return { 
-        handleCreate, 
-        loading, 
-        errors, 
+    return {
+        handleCreate,
+        loading,
+        errors,
         clearErrors,
-        setErrors 
+        setErrors
     };
 };
 

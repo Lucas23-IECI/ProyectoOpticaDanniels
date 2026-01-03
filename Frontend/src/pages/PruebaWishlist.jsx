@@ -1,6 +1,6 @@
 import React from 'react';
 import { useWishlist } from '@hooks/useWishlist';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 
 const PruebaWishlist = () => {
     const { wishlist, addToWishlist, removeFromWishlist, clearWishlist } = useWishlist();

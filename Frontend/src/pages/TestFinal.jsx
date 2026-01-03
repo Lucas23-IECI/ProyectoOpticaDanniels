@@ -1,7 +1,7 @@
 import React from 'react';
 import { useWishlist } from '@hooks/useWishlist';
 import { useCart } from '@context/CartContext';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 
 const TestFinal = () => {
     const { wishlist, addToWishlist, removeFromWishlist, isInWishlist, clearWishlist } = useWishlist();

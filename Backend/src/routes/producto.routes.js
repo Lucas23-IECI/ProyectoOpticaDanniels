@@ -4,8 +4,8 @@ import {
     buscarProductosController,
     crearProductoController,
     eliminarProductoController,
-    subirImagenProductoController,
     obtenerSugerenciasBusquedaController,
+    subirImagenProductoController
 } from "../controllers/producto.controller.js";
 import { validateSchema } from "../middlewares/validateSchema.js";
 import { validateProductoMultipart } from "../middlewares/validateProductoMultipart.js";
@@ -19,21 +19,21 @@ import uploadProducto from "../middlewares/uploadProducto.middleware.js";
 const router = Router();
 
 router
-    .post("/", 
-        authenticateJwt, 
-        isAdmin, 
-        uploadProducto.single("imagen"), 
-        validateProductoMultipart, 
+    .post("/",
+        authenticateJwt,
+        isAdmin,
+        uploadProducto.single("imagen"),
+        validateProductoMultipart,
         crearProductoController
     )
     .get("/", buscarProductosController)
     .get("/sugerencias", obtenerSugerenciasBusquedaController)
-    .put("/:id", 
-        authenticateJwt, 
-        isAdmin, 
+    .put("/:id",
+        authenticateJwt,
+        isAdmin,
         uploadProducto.single("imagen"),
         validateProductUpdateMultipart,
-        validateSchema(productUpdateSchema), 
+        validateSchema(productUpdateSchema),
         actualizarProductoController
     )
     .delete("/:id", authenticateJwt, isAdmin, eliminarProductoController);

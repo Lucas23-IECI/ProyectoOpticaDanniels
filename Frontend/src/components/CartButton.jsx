@@ -1,61 +1,50 @@
 import { useState } from 'react';
 import { FaShoppingCart, FaCheck, FaPlus, FaMinus } from 'react-icons/fa';
 import { useCart } from '@context/CartContext';
-import { useAuth } from '@hooks/useAuth';
+import { useAuth } from '@context/AuthContext';
 
-const CartButton = ({ 
-    producto, 
-    size = 'medium', 
+const CartButton = ({
+    producto,
+    size = 'medium',
     showQuantity = false,
     className = '',
-    disabled = false 
+    disabled = false
 }) => {
-    const { 
-        addToCart, 
-        removeFromCart, 
-        updateQuantity, 
-        isInCart, 
+    const {
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        isInCart,
         getItemQuantity,
         cartVersion // Para forzar re-renders
     } = useCart();
-    
+
     const { isAuthenticated } = useAuth();
     const [showAddedFeedback, setShowAddedFeedback] = useState(false);
-    
+
     const inCart = isInCart(producto.id);
     const currentQuantity = getItemQuantity(producto.id);
     const isOutOfStock = producto.stock === 0;
-    
+
     const handleAddToCart = (e) => {
         e.stopPropagation();
         e.preventDefault();
-        
+
         if (isOutOfStock || disabled) return;
-        
+
         addToCart(producto, 1);
-        
+
         // Mostrar feedback visual
         setShowAddedFeedback(true);
         setTimeout(() => setShowAddedFeedback(false), 1500);
     };
-    
+
     const handleRemoveFromCart = (e) => {
         e.stopPropagation();
         e.preventDefault();
         removeFromCart(producto.id);
     };
-    
-    const handleQuantityChange = (e, newQuantity) => {
-        e.stopPropagation();
-        e.preventDefault();
-        
-        if (newQuantity <= 0) {
-            removeFromCart(producto.id);
-        } else if (newQuantity <= producto.stock) {
-            updateQuantity(producto.id, newQuantity);
-        }
-    };
-    
+
     const incrementQuantity = (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -64,7 +53,7 @@ const CartButton = ({
             updateQuantity(producto.id, newQuantity);
         }
     };
-    
+
     const decrementQuantity = (e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -75,16 +64,16 @@ const CartButton = ({
             updateQuantity(producto.id, newQuantity);
         }
     };
-    
+
     // Si no está autenticado, no mostramos el botón
     if (!isAuthenticated) {
         return null;
     }
-    
+
     // Si el producto está agotado
     if (isOutOfStock) {
         return (
-            <button 
+            <button
                 className={`cart-btn cart-btn-${size} out-of-stock ${className}`}
                 disabled={true}
                 title="Producto agotado"
@@ -94,27 +83,27 @@ const CartButton = ({
             </button>
         );
     }
-    
+
     // Si está en el carrito y queremos mostrar cantidad
     if (inCart && showQuantity) {
         return (
-            <div 
+            <div
                 className={`cart-quantity-controls cart-controls-${size} ${className}`}
                 key={`controls-${producto.id}-v${cartVersion}-${currentQuantity}`} // Key dinámica
             >
-                <button 
+                <button
                     className="quantity-btn decrease"
                     onClick={decrementQuantity}
                     title="Disminuir cantidad"
                 >
                     <FaMinus />
                 </button>
-                
+
                 <span className="quantity-display">
                     {currentQuantity}
                 </span>
-                
-                <button 
+
+                <button
                     className="quantity-btn increase"
                     onClick={incrementQuantity}
                     disabled={currentQuantity >= producto.stock}
@@ -122,8 +111,8 @@ const CartButton = ({
                 >
                     <FaPlus />
                 </button>
-                
-                <button 
+
+                <button
                     className="remove-from-cart-btn"
                     onClick={handleRemoveFromCart}
                     title="Eliminar del carrito"
@@ -133,11 +122,11 @@ const CartButton = ({
             </div>
         );
     }
-    
+
     // Si está en el carrito pero no mostramos cantidad
     if (inCart) {
         return (
-            <button 
+            <button
                 className={`cart-btn cart-btn-${size} in-cart ${className}`}
                 onClick={handleRemoveFromCart}
                 title={`En carrito (${currentQuantity}) - Click para eliminar`}
@@ -148,10 +137,10 @@ const CartButton = ({
             </button>
         );
     }
-    
+
     // Botón normal para agregar al carrito
     return (
-        <button 
+        <button
             className={`cart-btn cart-btn-${size} ${showAddedFeedback ? 'added' : ''} ${className}`}
             onClick={handleAddToCart}
             disabled={disabled}

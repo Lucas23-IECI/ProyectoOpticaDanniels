@@ -1,12 +1,11 @@
-import { useState } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { getCategoriasList, getSubcategoriasList } from '../constants/categorias.js';
 import '@styles/dropdownCategorias.css';
 
-const DropdownCategorias = ({ 
-    selectedCategoria, 
-    selectedSubcategoria, 
-    onCategoriaChange, 
+const DropdownCategorias = ({
+    selectedCategoria,
+    selectedSubcategoria,
+    onCategoriaChange,
     onSubcategoriaChange,
     showSubcategories = true,
     placeholder = "Seleccionar categoría",
@@ -21,7 +20,7 @@ const DropdownCategorias = ({
 
     const categorias = getCategoriasList();
     const subcategorias = selectedCategoria ? getSubcategoriasList(selectedCategoria) : [];
-    
+
     const categoriaInfo = categorias.find(cat => cat.value === selectedCategoria);
     const subcategoriaInfo = subcategorias.find(sub => sub.value === selectedSubcategoria);
 
@@ -70,7 +69,7 @@ const DropdownCategorias = ({
                         <div className="dropdown-header">
                             <h4>Categorías</h4>
                             {selectedCategoria && (
-                                <button 
+                                <button
                                     type="button"
                                     className="limpiar-btn"
                                     onClick={limpiarSeleccion}
@@ -79,7 +78,7 @@ const DropdownCategorias = ({
                                 </button>
                             )}
                         </div>
-                        
+
                         <div className="categorias-grid">
                             {categorias.map((cat) => (
                                 <button
@@ -119,19 +118,19 @@ const DropdownCategorias = ({
                             <div className="dropdown-header">
                                 <h4>Subcategorías</h4>
                                 {selectedSubcategoria && (
-                                                                    <button 
-                                    type="button"
-                                    className="limpiar-btn"
-                                    onClick={() => {
-                                        onSubcategoriaChange('');
-                                        setDropdownActivo(null);
-                                    }}
-                                >
-                                    Limpiar
-                                </button>
+                                    <button
+                                        type="button"
+                                        className="limpiar-btn"
+                                        onClick={() => {
+                                            onSubcategoriaChange('');
+                                            setDropdownActivo(null);
+                                        }}
+                                    >
+                                        Limpiar
+                                    </button>
                                 )}
                             </div>
-                            
+
                             <div className="subcategorias-list">
                                 {subcategorias.map((sub) => (
                                     <button

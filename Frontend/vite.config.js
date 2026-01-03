@@ -6,8 +6,8 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default defineConfig({
-  base: "/",
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/OpticaDanniels/' : '/',
   plugins: [react()],
   preview: {
     port: 443,
@@ -26,4 +26,4 @@ export default defineConfig({
       '@middlewares': path.resolve(__dirname, './src/middlewares')
     }
   }
-});
+}));

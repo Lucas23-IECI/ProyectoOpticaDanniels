@@ -53,7 +53,7 @@ export const crearOrdenService = async (datos, usuarioId = null) => {
                 cantidad,
                 precio: precioUnitario,
             });
-            
+
             ordenProductos.push(ordenProducto);
         }
 
@@ -121,8 +121,8 @@ export const obtenerOrdenesService = async (filtros) => {
         const direccionesPermitidas = ["ASC", "DESC"];
 
         if (
-            camposPermitidos.includes(campo) &&
-            direccionesPermitidas.includes(direccion)
+            camposPermitidos.includes(campo)
+            && direccionesPermitidas.includes(direccion)
         ) {
             order = { [campo]: direccion };
         } else {
@@ -132,7 +132,7 @@ export const obtenerOrdenesService = async (filtros) => {
             };
         }
     }
-    
+
     const ordenes = await ordenRepository.find({
         where,
         relations: {
