@@ -1,0 +1,108 @@
+@import '../variables.css';
+
+/* ========================================
+   FORM COMPONENTS
+======================================== */
+
+/* Form Group */
+.form-group {
+    margin-bottom: var(--spacing-md);
+    position: relative;
+}
+
+/* Labels */
+.form-label {
+    display: block;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* Input Base */
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    background-color: var(--bg-card);
+    transition: all var(--transition-fast);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(33, 71, 162, 0.1);
+    background-color: var(--white);
+}
+
+.form-input:disabled,
+.form-select:disabled,
+.form-textarea:disabled {
+    background-color: var(--bg-secondary);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Textarea */
+.form-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Input States */
+.form-input.error,
+.form-select.error,
+.form-textarea.error {
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 3px rgba(255, 68, 68, 0.1);
+}
+
+.form-input.success,
+.form-select.success,
+.form-textarea.success {
+    border-color: var(--success-color);
+    box-shadow: 0 0 0 3px rgba(3, 234, 12, 0.1);
+}
+
+/* Error & Success Messages */
+.form-error {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--error-color);
+    font-size: 0.813rem;
+    margin-top: 0.25rem;
+}
+
+.form-success {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--success-color);
+    font-size: 0.813rem;
+    margin-top: 0.25rem;
+}
+
+/* Checkbox & Radio */
+.form-checkbox,
+.form-radio {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+}
+
+.form-checkbox input[type="checkbox"],
+.form-radio input[type="radio"] {
+    width: auto;
+    cursor: pointer;
+}

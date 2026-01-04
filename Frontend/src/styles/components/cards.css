@@ -1,5 +1,10 @@
-/* Card Components */
+@import '../variables.css';
 
+/* ========================================
+   CARD COMPONENTS
+======================================== */
+
+/* Base Card */
 .card {
     background-color: var(--bg-card);
     border-radius: var(--border-radius-lg);
@@ -15,6 +20,7 @@
     transform: translateY(-2px);
 }
 
+/* Card Header */
 .card-header {
     margin-bottom: var(--spacing-md);
     padding-bottom: var(--spacing-sm);
@@ -31,10 +37,18 @@
     margin: 0;
 }
 
+.card-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0.25rem 0 0 0;
+}
+
+/* Card Body */
 .card-body {
     position: relative;
 }
 
+/* Card Footer */
 .card-footer {
     margin-top: var(--spacing-md);
     padding-top: var(--spacing-sm);
@@ -42,4 +56,22 @@
     display: flex;
     justify-content: flex-end;
     gap: var(--spacing-sm);
+}
+
+/* Card Variations */
+.card-compact {
+    padding: var(--spacing-md);
+}
+
+.card-elevated {
+    box-shadow: var(--shadow-lg);
+}
+
+.card-elevated:hover {
+    box-shadow: var(--shadow-xl);
+}
+
+.card-flat {
+    box-shadow: none;
+    border: 2px solid var(--border-color);
 }
