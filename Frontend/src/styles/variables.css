@@ -66,7 +66,8 @@
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
 
-  --gradient-primary: linear-gradient(135deg, var(--cobalt-blue), var(--pigment-green));
-  --gradient-success: linear-gradient(135deg, var(--pigment-green), var(--screamin-green));
-  --gradient-header: linear-gradient(90deg, var(--cobalt-blue), #1a3b8a);
+  /* Removed Gradients for Flat/Clean Design */
+  /* --gradient-primary: linear-gradient(135deg, var(--cobalt-blue), var(--pigment-green)); */
+  /* --gradient-success: linear-gradient(135deg, var(--pigment-green), var(--screamin-green)); */
+  /* --gradient-header: linear-gradient(90deg, var(--cobalt-blue), #1a3b8a); */
 }

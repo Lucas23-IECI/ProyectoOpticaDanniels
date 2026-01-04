@@ -1,4 +1,3 @@
-
 .productos-destacados {
     padding: 100px 0;
     background: white;
@@ -150,7 +149,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    background: var(--primary-color);
     display: flex;
     align-items: center;
     justify-content: center;

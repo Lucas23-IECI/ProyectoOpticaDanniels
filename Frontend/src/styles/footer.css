@@ -1,7 +1,7 @@
 @import './variables.css';
 
 .footer-container {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1e 100%);
+    background: #1a1a2e;
     color: var(--white);
     margin-top: auto;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
@@ -77,17 +77,17 @@
 }
 
 .social-link.facebook:hover {
-    background: linear-gradient(135deg, #1877f2, #42a5f5);
+    background: #1877f2;
     border-color: #1877f2;
 }
 
 .social-link.instagram:hover {
-    background: linear-gradient(135deg, #e1306c, #fd1d1d, #fcb045);
+    background: #e1306c;
     border-color: #e1306c;
 }
 
 .social-link.whatsapp:hover {
-    background: linear-gradient(135deg, #25d366, #128c7e);
+    background: #25d366;
     border-color: #25d366;
 }
 
@@ -108,7 +108,7 @@
     left: 0;
     width: 40px;
     height: 3px;
-    background: linear-gradient(90deg, var(--cobalt-blue), var(--pigment-green));
+    background: var(--primary-color);
     border-radius: 2px;
 }
 
@@ -212,26 +212,26 @@
         gap: 40px;
         padding: 40px 20px 30px;
     }
-    
+
     .footer-about {
         max-width: 100%;
         text-align: center;
     }
-    
+
     .footer-logo {
         justify-content: center;
     }
-    
+
     .footer-social {
         justify-content: center;
     }
-    
+
     .footer-bottom-content {
         flex-direction: column;
         gap: 15px;
         text-align: center;
     }
-    
+
     .footer-legal {
         gap: 20px;
     }
@@ -242,22 +242,22 @@
         padding: 30px 15px 20px;
         gap: 30px;
     }
-    
+
     .footer-logo h3 {
         font-size: 1.5rem;
     }
-    
+
     .footer-section h4 {
         font-size: 1.2rem;
         margin-bottom: 20px;
     }
-    
+
     .social-link {
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
     }
-    
+
     .footer-legal {
         flex-direction: column;
         gap: 10px;
@@ -270,6 +270,7 @@
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

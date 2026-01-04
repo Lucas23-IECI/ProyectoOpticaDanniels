@@ -20,13 +20,17 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--gradient-primary);
-    animation: shimmer 2s linear infinite;
+    background: var(--primary-color);
 }
 
 @keyframes shimmer {
-    0% { background-position: -100% 0; }
-    100% { background-position: 100% 0; }
+    0% {
+        background-position: -100% 0;
+    }
+
+    100% {
+        background-position: 100% 0;
+    }
 }
 
 .admin-container h1 {
@@ -58,7 +62,7 @@
 }
 
 .toggle-btn {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -79,7 +83,7 @@
 }
 
 .toggle-btn.active {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    background: var(--pigment-green);
 }
 
 .toggle-btn.active:hover {
@@ -133,7 +137,7 @@
 }
 
 .admin-info {
-    background: linear-gradient(135deg, var(--surface-color) 0%, rgba(255, 255, 255, 0.95) 100%);
+    background: var(--bg-card);
     border-radius: 12px;
     padding: 2rem;
     border: 1px solid var(--border-color);
@@ -202,7 +206,7 @@
 }
 
 .btn-crear-producto {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--cobalt-blue);
     color: white;
     border: none;
     padding: 12px 20px;
@@ -279,7 +283,7 @@
 }
 
 .btn-crear-producto {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    background: var(--pigment-green);
     color: white;
     border: none;
     padding: 12px 24px;
@@ -344,7 +348,7 @@
 }
 
 .btn-limpiar-filtros {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    background: #ff6b6b;
     color: white;
     border: none;
     padding: 12px 20px;
@@ -361,7 +365,7 @@
 }
 
 .btn-limpiar-filtros:hover {
-    background: linear-gradient(135deg, #ee5a24, #d63031);
+    background: #ee5a24;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(238, 90, 36, 0.3);
 }

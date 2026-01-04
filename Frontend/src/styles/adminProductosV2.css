@@ -13,7 +13,7 @@
     align-items: center;
     margin-bottom: 2rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    background: var(--bg-card);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(33, 71, 162, 0.1);
     border: 1px solid rgba(33, 71, 162, 0.1);
@@ -43,7 +43,7 @@
 }
 
 .btn-refresh {
-    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    background: var(--white);
     color: #475569;
     border: 1px solid #94a3b8;
     padding: 10px 16px;
@@ -74,8 +74,13 @@
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .search-filters-bar {
@@ -248,6 +253,7 @@
         opacity: 0;
         transform: translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -316,7 +322,7 @@
     flex-wrap: wrap;
 }
 
-.sort-section > span {
+.sort-section>span {
     font-weight: 600;
     color: #4a5568;
     font-size: 14px;
@@ -450,7 +456,7 @@
 .product-image-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #f8faff 0%, #e5e9f5 100%);
+    background: var(--bg-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -477,15 +483,15 @@
 }
 
 .badge-offer {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    background: #ff6b6b;
 }
 
 .badge-active {
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    background: var(--pigment-green);
 }
 
 .badge-inactive {
-    background: linear-gradient(135deg, #718096 0%, #4a5568 100%);
+    background: var(--gray-dark);
 }
 
 .product-overlay {
@@ -616,7 +622,7 @@
 .product-list-item .product-image-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #f8faff 0%, #e9f5f9 100%);
+    background: var(--bg-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -729,7 +735,7 @@
 .table-image-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #f8faff 0%, #e9f5f9 100%);
+    background: var(--bg-secondary);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -924,6 +930,7 @@
     transform: translateY(-1px);
     box-shadow: 0 4px 16px rgba(229, 62, 62, 0.3);
 }
+
 .modal-overlay {
     position: fixed;
     top: 0;
