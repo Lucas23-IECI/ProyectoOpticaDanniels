@@ -1,0 +1,311 @@
+{
+  "timestamp": "2026-02-18T03:00:37.266Z",
+  "validProducts": {
+    "ok": 25,
+    "fail": 0,
+    "details": [
+      {
+        "num": 1,
+        "nombre": "Lentes Ópticos Clásicos Ray-Ban RB5228",
+        "sku": "RB-5228-BLK",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 2,
+        "nombre": "Gafas Oakley Crosslink (deportivas)",
+        "sku": "OAK-CROSS-01",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 3,
+        "nombre": "Lentes Progresivos Varilux Comfort Max",
+        "sku": "ESS-VRLX-CM",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": false
+      },
+      {
+        "num": 4,
+        "nombre": "Montura Bifocal Carolina Herrera CH-123",
+        "sku": "CH-BIF-123",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 5,
+        "nombre": "Lentes Lectura Económicos 2.5",
+        "sku": "OH-LECT-25",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 6,
+        "nombre": "Ray-Ban Aviator Classic Gold",
+        "sku": "RB-AVI-GLD",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": false
+      },
+      {
+        "num": 7,
+        "nombre": "Oakley Radar EV Path Prizm",
+        "sku": "OAK-RADAR-EV",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 8,
+        "nombre": "Gucci GG0036S Oversized",
+        "sku": "GUC-0036S",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 9,
+        "nombre": "Maui Jim Peahi Polarizado",
+        "sku": "MJ-PEAHI-01",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": false
+      },
+      {
+        "num": 10,
+        "nombre": "Prada SPR 01OS Cinema",
+        "sku": "PRA-01OS-CIN",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 11,
+        "nombre": "Estuche Rígido Premium Cuero",
+        "sku": "OH-EST-CUERO",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 12,
+        "nombre": "Paño Microfibra XL (30x30cm)",
+        "sku": "OH-PANO-XL",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": false
+      },
+      {
+        "num": 13,
+        "nombre": "Spray Limpiador Antiempañante",
+        "sku": "OC-SPRAY-AE",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 14,
+        "nombre": "Cordón Deportivo Neopreno",
+        "sku": "SV-CORD-NEO",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 15,
+        "nombre": "Kit Reparación Lentes Ópticos",
+        "sku": "FO-KIT-REP",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": false
+      },
+      {
+        "num": 16,
+        "nombre": "AB",
+        "sku": "TST-SHORT-01",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 17,
+        "nombre": "Lentes Ópticos con Descripción Súper Larga Para Verificar el Límite de Caracteres del Campo Nombre Que Permite Hasta 255 Chars Máximo en la Base de Datos y en la Validación Joi",
+        "sku": "TST-LONG-NAME",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 18,
+        "nombre": "Gafas Niño Flexible (5-10 años)",
+        "sku": "KV-NINO-510",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": false
+      },
+      {
+        "num": 19,
+        "nombre": "Versace Medusa Edición Especial",
+        "sku": "VRS-MDS-ESP",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 20,
+        "nombre": "Paño Económico Pack x3",
+        "sku": "OH-PANO-3PK",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 21,
+        "nombre": "Cristal Monofocal Básico",
+        "sku": "BL-MONO-01",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": false
+      },
+      {
+        "num": 22,
+        "nombre": "Colección Diamante Swarovski Exclusive",
+        "sku": "SWK-DIAMANTE",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 23,
+        "nombre": "Lentes Contact Solution 360ml",
+        "sku": "CC-SOL-360",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      },
+      {
+        "num": 24,
+        "nombre": "Clip-On Magnético Polarizado",
+        "sku": "MC-CLIP-POL",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": false
+      },
+      {
+        "num": 25,
+        "nombre": "Gafas Tom Ford FT5178 Rectangular",
+        "sku": "TF-5178-RCT",
+        "status": 201,
+        "ok": true,
+        "message": "Creado",
+        "withImage": true
+      }
+    ]
+  },
+  "invalidProducts": {
+    "expectedFail": 10,
+    "unexpectedOk": 0,
+    "details": [
+      {
+        "num": 1,
+        "label": "Sin nombre",
+        "expectedError": "nombre",
+        "status": 400,
+        "rejected": true
+      },
+      {
+        "num": 2,
+        "label": "Sin precio",
+        "expectedError": "precio",
+        "status": 400,
+        "rejected": true
+      },
+      {
+        "num": 3,
+        "label": "Descripción < 10 chars",
+        "expectedError": "descripcion",
+        "status": 400,
+        "rejected": true
+      },
+      {
+        "num": 4,
+        "label": "Precio negativo",
+        "expectedError": "precio",
+        "status": 400,
+        "rejected": true
+      },
+      {
+        "num": 5,
+        "label": "Stock negativo",
+        "expectedError": "stock",
+        "status": 400,
+        "rejected": true
+      },
+      {
+        "num": 6,
+        "label": "Categoría inválida",
+        "expectedError": "categoria",
+        "status": 400,
+        "rejected": true
+      },
+      {
+        "num": 7,
+        "label": "SKU duplicado (de #1)",
+        "expectedError": "codigoSKU",
+        "status": 400,
+        "rejected": true,
+        "message": "Ya existe un producto con ese código SKU."
+      },
+      {
+        "num": 8,
+        "label": "Sin marca",
+        "expectedError": "marca",
+        "status": 400,
+        "rejected": true
+      },
+      {
+        "num": 9,
+        "label": "Sin stock",
+        "expectedError": "stock",
+        "status": 400,
+        "rejected": true
+      },
+      {
+        "num": 10,
+        "label": "Sin SKU",
+        "expectedError": "codigoSKU",
+        "status": 400,
+        "rejected": true
+      }
+    ]
+  }
+}
