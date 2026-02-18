@@ -1,6 +1,7 @@
 "use strict";
 import { DataSource } from "typeorm";
 import { DATABASE, DB_USERNAME, HOST, PASSWORD } from "./configEnv.js";
+import logger from "./logger.js";
 
 // Nota: DB_HOST viene del .env. Si no estuviera, caemos a HOST.
 const DB_HOST = process.env.DB_HOST || HOST;
@@ -25,14 +26,14 @@ export async function connectDB() {
     for (let i = 1; i <= MAX_RETRIES; i++) {
         try {
             await AppDataSource.initialize();
-            console.log("=> Conexión exitosa a la base de datos!");
+            logger.info("=> Conexión exitosa a la base de datos!");
             return;
         } catch (error) {
             if (i === MAX_RETRIES) {
-                console.error("Error al conectar con la base de datos:", error);
+                logger.error("Error al conectar con la base de datos:", error);
                 process.exit(1);
             }
-            console.log(`Postgres aún no está listo (intento ${i}/${MAX_RETRIES}). Reintentando en ${WAIT_MS} ms...`);
+            logger.warn(`Postgres aún no está listo (intento ${i}/${MAX_RETRIES}). Reintentando en ${WAIT_MS} ms...`);
             await new Promise((r) => setTimeout(r, WAIT_MS));
         }
     }

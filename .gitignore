@@ -44,3 +44,11 @@ tmp/
 *.bak
 *.backup
 backup/
+
+# Skills - todo el sistema de skills local
+.skills-repos/
+.claude/
+install-skills.bat
+
+# Documentación de contexto (generada por Claude)
+Contexto/

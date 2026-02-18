@@ -1,12 +1,12 @@
 "use strict";
 import express, { json, urlencoded } from "express";
 import cors from "cors";
+import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import session from "express-session";
 import passport from "passport";
 
-import { cookieKey, HOST, PORT } from "./config/configEnv.js";
+import { HOST, PORT } from "./config/configEnv.js";
 import { connectDB } from "./config/configDb.js";
 import indexRoutes from "./routes/index.routes.js";
 import { passportJwtSetup } from "./auth/passport.auth.js";
@@ -20,10 +20,25 @@ async function setupServer() {
 
         app.disable("x-powered-by");
 
+        app.use(helmet({
+            crossOriginResourcePolicy: { policy: "cross-origin" },
+        }));
+
         app.use("/uploads", express.static("uploads"));
 
+        const allowedOrigins = [
+            "http://localhost:5173",
+            "http://localhost:4173",
+            "http://146.83.198.35",
+        ];
+
         app.use(cors({
-            origin: true,
+            origin: (origin, callback) => {
+                // Permitir requests sin origin (Postman, curl, server-to-server)
+                if (!origin) return callback(null, true);
+                if (allowedOrigins.includes(origin)) return callback(null, true);
+                return callback(new Error(`Origin ${origin} no permitido por CORS`));
+            },
             credentials: true,
         }));
 
@@ -43,19 +58,7 @@ async function setupServer() {
         app.use(cookieParser());
         app.use(morgan("dev"));
 
-        app.use(session({
-            secret: cookieKey,
-            resave: false,
-            saveUninitialized: false,
-            cookie: {
-                secure: false,
-                httpOnly: true,
-                sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-            },
-        }));
-
         app.use(passport.initialize());
-        app.use(passport.session());
 
         passportJwtSetup();
 
