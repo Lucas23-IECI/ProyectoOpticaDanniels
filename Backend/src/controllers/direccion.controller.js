@@ -22,7 +22,6 @@ export const crearDireccionController = async (req, res) => {
 
         handleSuccess(res, 201, "Dirección creada correctamente", direccion);
     } catch (error) {
-        console.error("Error en crearDireccionController:", error);
         handleErrorServer(res, 500, error.message);
     }
 };
@@ -40,7 +39,6 @@ export const obtenerDireccionesController = async (req, res) => {
 
         handleSuccess(res, 200, "Direcciones obtenidas correctamente", direcciones);
     } catch (error) {
-        console.error("Error en obtenerDireccionesController:", error);
         handleErrorServer(res, 500, error.message);
     }
 };
@@ -59,7 +57,6 @@ export const obtenerDireccionController = async (req, res) => {
 
         handleSuccess(res, 200, "Dirección obtenida correctamente", direccion);
     } catch (error) {
-        console.error("Error en obtenerDireccionController:", error);
         handleErrorServer(res, 500, error.message);
     }
 };
@@ -79,7 +76,6 @@ export const actualizarDireccionController = async (req, res) => {
 
         handleSuccess(res, 200, "Dirección actualizada correctamente", direccionActualizada);
     } catch (error) {
-        console.error("Error en actualizarDireccionController:", error);
         handleErrorServer(res, 500, error.message);
     }
 };
@@ -98,7 +94,6 @@ export const eliminarDireccionController = async (req, res) => {
 
         handleSuccess(res, 200, "Dirección eliminada correctamente");
     } catch (error) {
-        console.error("Error en eliminarDireccionController:", error);
         handleErrorServer(res, 500, error.message);
     }
 };
@@ -117,7 +112,6 @@ export const establecerPrincipalController = async (req, res) => {
 
         handleSuccess(res, 200, "Dirección establecida como principal", direccionPrincipal);
     } catch (error) {
-        console.error("Error en establecerPrincipalController:", error);
         handleErrorServer(res, 500, error.message);
     }
 }; 

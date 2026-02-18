@@ -6,46 +6,19 @@ import {
     generarSugerenciasBusqueda
 } from "../services/producto.service.js";
 import { actualizarImagenProductoService } from "../services/producto.service.js";
-import { HOST, PORT } from "../config/configEnv.js";
-import path from "path";
-import fs from "fs";
+import {
+    handleErrorClient,
+    handleErrorServer,
+    handleSuccess,
+} from "../handlers/responseHandlers.js";
 
-const convertirImagenABase64 = (filename) => {
+/**
+ * Genera la URL pública de una imagen de producto.
+ * Las imágenes se sirven como archivos estáticos via express.static("/uploads").
+ */
+const getImageUrl = (filename) => {
     if (!filename) return null;
-    
-    try {
-        const imagePath = path.join("uploads", "productos", filename);
-        
-        if (!fs.existsSync(imagePath)) {
-            return null;
-        }
-        
-        const imageBuffer = fs.readFileSync(imagePath);
-        const ext = path.extname(filename).toLowerCase();
-        
-        let mimeType = "image/jpeg";
-        switch (ext) {
-            case ".png":
-                mimeType = "image/png";
-                break;
-            case ".jpg":
-            case ".jpeg":
-                mimeType = "image/jpeg";
-                break;
-            case ".webp":
-                mimeType = "image/webp";
-                break;
-            case ".gif":
-                mimeType = "image/gif";
-                break;
-        }
-        
-        const base64Image = imageBuffer.toString("base64");
-        return `data:${mimeType};base64,${base64Image}`;
-    } catch (error) {
-        console.error("Error convirtiendo imagen a Base64:", error);
-        return null;
-    }
+    return `/uploads/productos/${filename}`;
 };
 
 export const subirImagenProductoController = async (req, res) => {
@@ -55,18 +28,15 @@ export const subirImagenProductoController = async (req, res) => {
 
         const producto = await actualizarImagenProductoService(Number(id), imagenUrl);
 
-        const imagenBase64 = convertirImagenABase64(producto.imagen_url);
-
-        res.json({
-            mensaje: "Imagen del producto actualizada correctamente",
-            producto: {
-                ...producto,
-                imagen_url: imagenBase64,
-            }
+        handleSuccess(res, 200, "Imagen del producto actualizada correctamente", {
+            ...producto,
+            imagen_url: getImageUrl(producto.imagen_url),
         });
     } catch (error) {
-        console.error(error);
-        res.status(error.status || 500).json({ mensaje: error.message });
+        if (error.status) {
+            return handleErrorClient(res, error.status, error.message);
+        }
+        handleErrorServer(res, 500, error.message);
     }
 };
 
@@ -79,20 +49,16 @@ export const crearProductoController = async (req, res) => {
         }
 
         const productoCreado = await crearProductoService(datosProducto);
-        
-        const imagenBase64 = convertirImagenABase64(productoCreado.imagen_url);
 
-        res.status(201).json({
-            mensaje: "Producto creado exitosamente.",
-            producto: {
-                ...productoCreado,
-                imagen_url: imagenBase64,
-            },
+        handleSuccess(res, 201, "Producto creado exitosamente.", {
+            ...productoCreado,
+            imagen_url: getImageUrl(productoCreado.imagen_url),
         });
     } catch (error) {
-        res.status(error.status || 500).json({
-            mensaje: error.message || "Error al crear el producto.",
-        });
+        if (error.status) {
+            return handleErrorClient(res, error.status, error.message);
+        }
+        handleErrorServer(res, 500, error.message);
     }
 };
 
@@ -100,20 +66,22 @@ export const buscarProductosController = async (req, res) => {
     try {
         const { productos, paginacion } = await buscarProductosService(req.query);
 
-        const productosConImagenBase64 = productos.map((producto) => ({
+        const productosConUrl = productos.map((producto) => ({
             ...producto,
-            imagen_url: convertirImagenABase64(producto.imagen_url),
+            imagen_url: getImageUrl(producto.imagen_url),
         }));
 
-        res.status(200).json({
-            mensaje: productos.length > 0 ? "Productos encontrados correctamente." : "No se encontraron productos.",
-            productos: productosConImagenBase64,
-            paginacion,
-        });
+        handleSuccess(
+            res,
+            200,
+            productos.length > 0 ? "Productos encontrados correctamente." : "No se encontraron productos.",
+            { productos: productosConUrl, paginacion },
+        );
     } catch (error) {
-        res.status(error.status || 500).json({
-            mensaje: error.message || "Error al buscar productos.",
-        });
+        if (error.status) {
+            return handleErrorClient(res, error.status, error.message);
+        }
+        handleErrorServer(res, 500, error.message);
     }
 };
 
@@ -121,9 +89,6 @@ export const buscarProductosController = async (req, res) => {
 export const actualizarProductoController = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log("Actualizando producto con ID:", id);
-        console.log("Datos recibidos:", req.body);
-        
         const datosProducto = { ...req.body };
         
         if (req.file) {
@@ -132,20 +97,15 @@ export const actualizarProductoController = async (req, res) => {
         
         const producto = await actualizarProductoService(Number(id), datosProducto);
 
-        const imagenBase64 = convertirImagenABase64(producto.imagen_url);
-
-        res.status(200).json({
-            mensaje: "Producto actualizado correctamente.",
-            producto: {
-                ...producto,
-                imagen_url: imagenBase64,
-            },
+        handleSuccess(res, 200, "Producto actualizado correctamente.", {
+            ...producto,
+            imagen_url: getImageUrl(producto.imagen_url),
         });
     } catch (error) {
-        console.error("Error en actualizarProductoController:", error);
-        res.status(error.status || 500).json({
-            mensaje: error.message || "Error al actualizar el producto.",
-        });
+        if (error.status) {
+            return handleErrorClient(res, error.status, error.message);
+        }
+        handleErrorServer(res, 500, error.message);
     }
 };
 
@@ -154,14 +114,12 @@ export const eliminarProductoController = async (req, res) => {
         const { id } = req.params;
         const producto = await eliminarProductoService(Number(id));
 
-        res.status(200).json({
-            mensaje: "Producto eliminado correctamente.",
-            producto,
-        });
+        handleSuccess(res, 200, "Producto eliminado correctamente.", producto);
     } catch (error) {
-        res.status(error.status || 500).json({
-            mensaje: error.message || "Error al eliminar el producto.",
-        });
+        if (error.status) {
+            return handleErrorClient(res, error.status, error.message);
+        }
+        handleErrorServer(res, 500, error.message);
     }
 };
 
@@ -170,22 +128,16 @@ export const obtenerSugerenciasBusquedaController = async (req, res) => {
         const { termino } = req.query;
         
         if (!termino || termino.trim().length < 2) {
-            return res.status(200).json({
-                mensaje: "Término de búsqueda muy corto.",
-                sugerencias: []
-            });
+            return handleSuccess(res, 200, "Término de búsqueda muy corto.", { sugerencias: [] });
         }
 
         const sugerencias = await generarSugerenciasBusqueda(termino);
 
-        res.status(200).json({
-            mensaje: "Sugerencias generadas correctamente.",
-            sugerencias
-        });
+        handleSuccess(res, 200, "Sugerencias generadas correctamente.", { sugerencias });
     } catch (error) {
-        console.error("Error en obtenerSugerenciasBusquedaController:", error);
-        res.status(error.status || 500).json({
-            mensaje: error.message || "Error al obtener sugerencias de búsqueda.",
-        });
+        if (error.status) {
+            return handleErrorClient(res, error.status, error.message);
+        }
+        handleErrorServer(res, 500, error.message);
     }
 };

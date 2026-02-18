@@ -1,5 +1,7 @@
 "use strict";
-import { loginService, registerService } from "../services/auth.service.js";
+import { loginService, registerService, updateUserService as updateProfileService } from "../services/auth.service.js";
+import { AppDataSource } from "../config/configDb.js";
+import User from "../entity/user.entity.js";
 import {
     authValidation,
     registerValidation,
@@ -13,9 +15,6 @@ import {
 export async function profile(req, res) {
     try {
         const userId = req.user.id;
-        const { AppDataSource } = await import("../config/configDb.js");
-        const User = (await import("../entity/user.entity.js")).default;
-
         const userRepository = AppDataSource.getRepository(User);
         const user = await userRepository.findOne({
             where: { id: userId },
@@ -61,29 +60,20 @@ export async function register(req, res) {
     try {
         const { body } = req;
 
-        console.log("=== REGISTER REQUEST ===");
-        console.log("Body recibido:", JSON.stringify(body, null, 2));
-
         const { error } = registerValidation.validate(body);
 
         if (error) {
-            console.log("Error de validación:", error.details);
             return handleErrorClient(res, 400, "Error de validación", error.message);
         }
-
-        console.log("Validación exitosa, llamando a registerService...");
 
         const [newUser, errorNewUser] = await registerService(body);
 
         if (errorNewUser) {
-            console.log("Error en registerService:", errorNewUser);
             return handleErrorClient(res, 400, "Error registrando al usuario", errorNewUser);
         }
 
-        console.log("Usuario creado exitosamente:", newUser);
         handleSuccess(res, 201, "Usuario registrado con éxito", newUser);
     } catch (error) {
-        console.error("Error en register controller:", error);
         handleErrorServer(res, 500, error.message);
     }
 }
@@ -93,14 +83,11 @@ export async function updateProfile(req, res) {
         const userId = req.user.id;
         const updateData = req.body;
 
-        // Validar que el usuario existe
         if (!userId) {
             return handleErrorClient(res, 401, "Usuario no autenticado");
         }
 
-        // Usar el servicio para actualizar el usuario
-        const { updateUserService } = await import("../services/auth.service.js");
-        const [updatedUser, error] = await updateUserService(userId, updateData);
+        const [updatedUser, error] = await updateProfileService(userId, updateData);
 
         if (error) {
             if (error.dataInfo === "password") {
@@ -114,7 +101,6 @@ export async function updateProfile(req, res) {
 
         handleSuccess(res, 200, "Perfil actualizado correctamente", updatedUser);
     } catch (error) {
-        console.error("Error en updateProfile:", error);
         handleErrorServer(res, 500, error.message);
     }
 }

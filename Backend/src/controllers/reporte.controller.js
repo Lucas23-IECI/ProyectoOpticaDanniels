@@ -1,6 +1,7 @@
 "use strict";
 import {
     getEstadisticasGeneralesService,
+    getEstadisticasOrdenesService,
     getEstadisticasProductosService,
     getEstadisticasUsuariosService,
 } from "../services/reporte.service.js";
@@ -41,6 +42,18 @@ export async function getEstadisticasProductos(req, res) {
         if (error) return handleErrorClient(res, 404, error);
 
         handleSuccess(res, 200, "Estadísticas de productos obtenidas correctamente", estadisticas);
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+}
+
+export async function getEstadisticasOrdenes(req, res) {
+    try {
+        const [estadisticas, error] = await getEstadisticasOrdenesService();
+
+        if (error) return handleErrorClient(res, 404, error);
+
+        handleSuccess(res, 200, "Estadísticas de órdenes obtenidas correctamente", estadisticas);
     } catch (error) {
         handleErrorServer(res, 500, error.message);
     }
