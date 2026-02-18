@@ -20,6 +20,7 @@ import Privacidad from "@pages/Privacidad";
 import Terminos from "@pages/Terminos";
 import Admin from "@pages/Admin";
 import RecuperarPassword from "@pages/RecuperarPassword";
+import Checkout from "@pages/Checkout";
 
 
 function AppContent() {
@@ -36,6 +37,14 @@ function AppContent() {
           <Route path="/buscar" element={<BusquedaResultados />} />
           <Route path="/favoritos" element={<Wishlist />} />
           <Route path="/carrito" element={<Carrito />} />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/quienes-somos" element={<QuienesSomos />} />
           <Route path="/privacidad" element={<Privacidad />} />

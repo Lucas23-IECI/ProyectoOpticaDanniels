@@ -1,6 +1,15 @@
 import axios from './root.service.js';
 
 /**
+ * Crear una nueva orden.
+ * @param {Object} data - { cliente: { nombre, correo, telefono, direccion, observaciones? }, productos: [{ id, cantidad }] }
+ */
+export async function crearOrden(data) {
+    const response = await axios.post('/ordenes/', data);
+    return response.data.data;
+}
+
+/**
  * Obtener todas las órdenes con filtros opcionales.
  * @param {Object} filtros - { correo, estado, orden, desde, hasta }
  */

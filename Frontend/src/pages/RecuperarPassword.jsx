@@ -125,9 +125,9 @@ const RecuperarPassword = () => {
                         <FaCheckCircle className="success-icon" />
                         <h2>Enlace enviado</h2>
                         <p>{message}</p>
-                        <p className="info-text">Revisa la consola del backend para obtener el token de recuperación (modo desarrollo).</p>
+                        <p className="info-text">Revisa tu bandeja de entrada y la carpeta de spam.</p>
                         <button type="button" className="btn-secondary" onClick={() => { setStep('reset'); setSuccess(false); }}>
-                            Tengo mi token
+                            Ya tengo mi token
                         </button>
                     </div>
                 )}

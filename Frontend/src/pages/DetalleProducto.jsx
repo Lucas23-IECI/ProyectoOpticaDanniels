@@ -1,11 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getProductos } from "@services/producto.service";
+import { getReviewsByProducto, getReviewStats, createReview } from "@services/review.service";
 import { formatearNombreParaURL } from "@helpers/formatData";
 import {
     FaArrowLeft, FaShoppingCart, FaHeart, FaShare, FaFire,
     FaTag, FaShieldAlt, FaTruck, FaUndo, FaStar, FaCheck,
-    FaPlus, FaMinus, FaEye, FaSpinner
+    FaPlus, FaMinus, FaEye, FaSpinner, FaRegStar, FaUser
 } from "react-icons/fa";
 import ProductCard from "@components/ProductCard";
 import CartButton from "@components/CartButton";
@@ -19,11 +20,22 @@ function DetalleProducto() {
     const { nombreProducto } = useParams();
     const navigate = useNavigate();
     const { toggleWishlist, isInWishlist } = useWishlistContext();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, user } = useAuth();
     const [producto, setProducto] = useState(null);
     const [productosRecomendados, setProductosRecomendados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [cantidad, setCantidad] = useState(1);
+
+    // Reviews state
+    const [reviews, setReviews] = useState([]);
+    const [reviewStats, setReviewStats] = useState({ promedio: 0, total: 0 });
+    const [newRating, setNewRating] = useState(0);
+    const [hoverRating, setHoverRating] = useState(0);
+    const [newComentario, setNewComentario] = useState('');
+    const [submittingReview, setSubmittingReview] = useState(false);
+    const [reviewMessage, setReviewMessage] = useState('');
+    const [reviewError, setReviewError] = useState('');
+    const [userHasReviewed, setUserHasReviewed] = useState(false);
 
     useEffect(() => {
         const fetchProducto = async () => {
@@ -47,6 +59,14 @@ function DetalleProducto() {
                         )
                         .slice(0, 4);
                     setProductosRecomendados(recomendados);
+
+                    // Cargar reviews del producto
+                    const [fetchedReviews, fetchedStats] = await Promise.all([
+                        getReviewsByProducto(productoEncontrado.id),
+                        getReviewStats(productoEncontrado.id),
+                    ]);
+                    setReviews(fetchedReviews);
+                    setReviewStats(fetchedStats);
                 }
             } catch (error) {
                 console.error("Error al obtener el producto:", error);
@@ -57,6 +77,56 @@ function DetalleProducto() {
 
         fetchProducto();
     }, [nombreProducto]);
+
+    // Verificar si el usuario ya reseñó este producto
+    useEffect(() => {
+        if (user && reviews.length > 0) {
+            const yaReseno = reviews.some(r => r.usuario?.id === user.id);
+            setUserHasReviewed(yaReseno);
+        }
+    }, [user, reviews]);
+
+    const handleSubmitReview = async (e) => {
+        e.preventDefault();
+        if (!newRating) {
+            setReviewError('Selecciona una calificación.');
+            return;
+        }
+        setReviewError('');
+        setReviewMessage('');
+        setSubmittingReview(true);
+        try {
+            await createReview({
+                productoId: producto.id,
+                rating: newRating,
+                comentario: newComentario.trim() || null,
+            });
+            setReviewMessage('¡Reseña enviada! Está pendiente de aprobación.');
+            setNewRating(0);
+            setNewComentario('');
+            setUserHasReviewed(true);
+        } catch (err) {
+            setReviewError(err.response?.data?.message || 'Error al enviar la reseña.');
+        } finally {
+            setSubmittingReview(false);
+        }
+    };
+
+    const renderStars = (rating, size = 'sm') => {
+        const stars = [];
+        const fullStars = Math.floor(rating);
+        const hasHalf = rating - fullStars >= 0.5;
+        for (let i = 1; i <= 5; i++) {
+            if (i <= fullStars) {
+                stars.push(<FaStar key={i} className={`star filled ${size}`} />);
+            } else if (i === fullStars + 1 && hasHalf) {
+                stars.push(<FaStar key={i} className={`star half ${size}`} />);
+            } else {
+                stars.push(<FaStar key={i} className={`star empty ${size}`} />);
+            }
+        }
+        return stars;
+    };
 
     const formatPrice = (price) => {
         return `$${price.toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
@@ -191,16 +261,15 @@ function DetalleProducto() {
                         </div>
                         <h1 className="producto-title">{producto.nombre}</h1>
 
-                        {/* TODO: Reemplazar con datos reales del endpoint /reviews cuando se implemente el CRUD */}
                         <div className="producto-rating">
                             <div className="stars">
-                                <FaStar className="star" />
-                                <FaStar className="star" />
-                                <FaStar className="star" />
-                                <FaStar className="star" />
-                                <FaStar className="star" />
+                                {renderStars(reviewStats.promedio)}
                             </div>
-                            <span className="rating-text">Sin reseñas aún</span>
+                            <span className="rating-text">
+                                {reviewStats.total > 0
+                                    ? `${reviewStats.promedio} (${reviewStats.total} reseña${reviewStats.total !== 1 ? 's' : ''})`
+                                    : 'Sin reseñas aún'}
+                            </span>
                         </div>
                     </div>
 
@@ -289,6 +358,97 @@ function DetalleProducto() {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Sección de reseñas */}
+            <div className="reviews-section">
+                <div className="reviews-header">
+                    <h2>Reseñas de clientes</h2>
+                    {reviewStats.total > 0 && (
+                        <div className="reviews-summary">
+                            <span className="reviews-average">{reviewStats.promedio}</span>
+                            <div className="reviews-average-stars">{renderStars(reviewStats.promedio, 'md')}</div>
+                            <span className="reviews-count">Basado en {reviewStats.total} reseña{reviewStats.total !== 1 ? 's' : ''}</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Formulario para crear reseña */}
+                {isAuthenticated && !userHasReviewed && !reviewMessage && (
+                    <form className="review-form" onSubmit={handleSubmitReview}>
+                        <h3>Deja tu reseña</h3>
+                        <div className="review-rating-selector">
+                            <span>Tu calificación:</span>
+                            <div className="star-selector">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <button
+                                        key={star}
+                                        type="button"
+                                        className={`star-btn ${star <= (hoverRating || newRating) ? 'active' : ''}`}
+                                        onClick={() => setNewRating(star)}
+                                        onMouseEnter={() => setHoverRating(star)}
+                                        onMouseLeave={() => setHoverRating(0)}
+                                    >
+                                        <FaStar />
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <textarea
+                            className="review-textarea"
+                            placeholder="Cuéntanos tu experiencia con este producto (opcional)"
+                            value={newComentario}
+                            onChange={(e) => setNewComentario(e.target.value)}
+                            maxLength={1000}
+                            rows={4}
+                        />
+                        {reviewError && <p className="review-error">{reviewError}</p>}
+                        <button type="submit" className="btn-submit-review" disabled={submittingReview || !newRating}>
+                            {submittingReview ? 'Enviando...' : 'Enviar reseña'}
+                        </button>
+                    </form>
+                )}
+
+                {reviewMessage && (
+                    <div className="review-success-msg">
+                        <FaCheck /> {reviewMessage}
+                    </div>
+                )}
+
+                {userHasReviewed && !reviewMessage && (
+                    <p className="review-already">Ya enviaste una reseña para este producto.</p>
+                )}
+
+                {!isAuthenticated && (
+                    <p className="review-login-prompt">
+                        <button className="link-btn" onClick={() => navigate('/login')}>Inicia sesión</button> para dejar una reseña.
+                    </p>
+                )}
+
+                {/* Lista de reseñas */}
+                {reviews.length > 0 ? (
+                    <div className="reviews-list">
+                        {reviews.map((review) => (
+                            <div key={review.id} className="review-card">
+                                <div className="review-card-header">
+                                    <div className="review-user">
+                                        <FaUser className="review-user-icon" />
+                                        <span>{review.usuario?.primerNombre} {review.usuario?.apellidoPaterno}</span>
+                                    </div>
+                                    <div className="review-stars">{renderStars(review.rating)}</div>
+                                </div>
+                                {review.comentario && (
+                                    <p className="review-comment">{review.comentario}</p>
+                                )}
+                                <span className="review-date">
+                                    {new Date(review.createdAt).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="no-reviews">Este producto aún no tiene reseñas aprobadas.</p>
+                )}
             </div>
 
             {/* Productos recomendados */}

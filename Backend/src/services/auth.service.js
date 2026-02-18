@@ -7,6 +7,7 @@ import { AppDataSource } from "../config/configDb.js";
 import { comparePassword, encryptPassword } from "../helpers/bcrypt.helper.js";
 import { ACCESS_TOKEN_SECRET } from "../config/configEnv.js";
 import { getNombreCompleto } from "../helpers/nameHelpers.js";
+import { sendPasswordResetEmail } from "../helpers/email.helper.js";
 import logger from "../config/logger.js";
 
 export async function loginService(user) {
@@ -241,9 +242,11 @@ export async function forgotPasswordService(email) {
 
         await resetRepository.save(resetEntry);
 
-        // Mock: log del token en vez de enviar email (email real se implementará después)
-        logger.info(`[PASSWORD RESET] Token generado para ${email}: ${token}`);
-        logger.info(`[PASSWORD RESET] URL de reset: /reset-password?token=${token}`);
+        // Enviar email con el link de recuperación
+        const [emailSent, emailError] = await sendPasswordResetEmail(email, token);
+        if (emailError) {
+            logger.warn(`[PASSWORD RESET] Email no enviado a ${email}, pero el token fue generado. Error: ${emailError}`);
+        }
 
         return [{ message: "Si el correo existe, recibirás un enlace de recuperación." }, null];
     } catch (error) {

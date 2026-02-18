@@ -7,6 +7,7 @@ import ordenRoutes from "./orden.routes.js";
 import direccionRoutes from "./direccion.routes.js";
 import reporteRoutes from "./reporte.routes.js";
 import wishlistRoutes from "./wishlist.routes.js";
+import reviewRoutes from "./review.routes.js";
 
 const router = Router();
 
@@ -17,6 +18,7 @@ router
     .use("/ordenes", ordenRoutes)
     .use("/direcciones", direccionRoutes)
     .use("/reportes", reporteRoutes)
-    .use("/wishlist", wishlistRoutes);
+    .use("/wishlist", wishlistRoutes)
+    .use("/reviews", reviewRoutes);
 
 export default router;

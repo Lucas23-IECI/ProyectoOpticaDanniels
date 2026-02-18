@@ -33,7 +33,7 @@ const Carrito = () => {
     };
     
     const handleCheckout = () => {
-        // Aquí irá la navegación al checkout cuando esté implementado
+        navigate('/checkout');
     };
     
     // Si no está autenticado, redirigir
