@@ -11,7 +11,6 @@ const useCreateUser = () => {
             setLoading(true);
             setError(null);
 
-            console.log('Datos a enviar:', userData);
             const newUser = await createUser(userData);
             
             showSuccessAlert('¡Éxito!', 'Usuario creado correctamente');

@@ -9,9 +9,6 @@ const useGetProductos = () => {
     const fetchProductos = useCallback(async (filtros = {}) => {
         try {
             setLoading(true);
-            if (import.meta.env.DEV) {
-                console.log('🔄 Cargando productos con filtros:', filtros);
-            }
             const productosData = await getProductos(filtros);
             setProductos(productosData);
             setError('');

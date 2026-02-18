@@ -11,9 +11,6 @@ const useEditUser = () => {
             setLoading(true);
             setError(null);
 
-            console.log('Datos a enviar:', userData);
-            console.log('Query params:', query);
-            
             const updatedUser = await updateUser(userData, query);
             
             showSuccessAlert('¡Éxito!', 'Usuario actualizado correctamente');

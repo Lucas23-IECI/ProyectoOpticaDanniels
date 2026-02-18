@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import { showErrorAlert } from '@helpers/sweetAlert'; // No necesario - sesión indefinida
 import { tokenMiddleware } from '@middlewares/tokenMiddleware';
 
 const API_URL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000/api';
@@ -27,16 +26,14 @@ instance.interceptors.response.use(
         if (error.response && error.response.status === 401) {
             const basePath = import.meta.env.BASE_URL || '/';
             const currentPath = window.location.pathname;
-            const isLoginPage = currentPath === `${basePath}auth` ||
-                currentPath === `${basePath}login` ||
+            const isLoginPage = currentPath === `${basePath}login` ||
                 currentPath === `${basePath}register`;
 
             if (!isLoginPage) {
-                // Sesión indefinida - solo redirigir sin mostrar alerta molesta
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
 
-                window.location.href = `${basePath}auth`;
+                window.location.href = `${basePath}login`;
             }
         }
 

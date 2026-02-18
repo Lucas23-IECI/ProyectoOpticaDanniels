@@ -9,7 +9,8 @@ import {
     validateBrand,
     validateDescription,
     validateProductName,
-    validateImage
+    validateImage,
+    validateSKU
 } from '@helpers/validation.helper';
 
 const useCreateProducto = (onSuccess) => {
@@ -46,11 +47,10 @@ const useCreateProducto = (onSuccess) => {
         if (!skuValue || skuValue.trim() === '') {
             newErrors.codigoSKU = 'El código SKU es requerido';
         }
-        // Comentar temporalmente la validación de "solo letras" para debug
-        // if (skuValue && skuValue.trim().length >= 3) {
-        //     const skuError = validateSKU(skuValue);
-        //     if (skuError) newErrors.codigoSKU = skuError;
-        // }
+        if (skuValue && skuValue.trim().length >= 3) {
+            const skuError = validateSKU(skuValue);
+            if (skuError) newErrors.codigoSKU = skuError;
+        }
 
         const descuentoError = validateDiscount(formData.get('descuento'));
         if (descuentoError) newErrors.descuento = descuentoError;

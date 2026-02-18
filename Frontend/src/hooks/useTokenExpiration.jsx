@@ -1,7 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@context/AuthContext';
-// import { showErrorAlert } from '@helpers/sweetAlert'; // No necesario - sesión indefinida
 import { decodeToken, clearTokenCache } from '@helpers/jwt.helper';
 
 export const useTokenExpiration = () => {
@@ -15,9 +14,7 @@ export const useTokenExpiration = () => {
         
         setUser(null);
         
-        // Sesión indefinida - no mostrar alertas molestas
-        
-        navigate('/auth');
+        navigate('/login');
     }, [navigate, setUser]);
 
     const checkTokenExpiration = useCallback(async () => {
@@ -43,24 +40,27 @@ export const useTokenExpiration = () => {
                 handleLogout();
                 return;
             }
-
-            // Sesión indefinida - no mostrar avisos de expiración
         } catch (error) {
             console.error('Error verificando expiración del token:', error);
-            // handleLogout(); // No auto-logout en sesión indefinida
+            handleLogout();
         }
     }, [isAuthenticated, handleLogout]);
 
     useEffect(() => {
-        // Sesión indefinida - no verificar expiración automáticamente
-        // Solo verificar si hay token válido una vez al cargar
         if (!isAuthenticated) return;
 
+        // Verificar token al cargar
         const token = localStorage.getItem('token');
         if (!token) {
             handleLogout();
+            return;
         }
-    }, [isAuthenticated, handleLogout]);
+
+        // Verificar expiración cada 60 segundos (JWT exp = 24h)
+        checkTokenExpiration();
+        const interval = setInterval(checkTokenExpiration, 60_000);
+        return () => clearInterval(interval);
+    }, [isAuthenticated, handleLogout, checkTokenExpiration]);
 
     return { handleLogout, checkTokenExpiration };
 };

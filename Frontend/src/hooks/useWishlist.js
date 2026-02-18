@@ -48,13 +48,15 @@ export const useWishlist = () => {
 
         try {
             const response = await getAllProductos();
-            const allProducts = response.productos || [];
+            const allProducts = Array.isArray(response?.productos) ? response.productos : 
+                                Array.isArray(response) ? response : [];
+            if (allProducts.length === 0) return;
+            
             const existingProductIds = new Set(allProducts.map(p => p.id));
 
             const validWishlist = wishlist.filter(item => existingProductIds.has(item.id));
 
             if (validWishlist.length !== wishlist.length) {
-                console.log(`Removiendo ${wishlist.length - validWishlist.length} productos eliminados de favoritos`);
                 setWishlist(validWishlist);
 
                 const wishlistKey = getWishlistKey();

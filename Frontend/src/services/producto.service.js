@@ -21,7 +21,8 @@ export const getProductos = async (filtros = {}) => {
 
         const response = await api.get(PRODUCTOS_ENDPOINT, { params: filtrosLimpios });
 
-        const productos = response.data.productos || [];
+        const apiData = response.data.data || response.data || {};
+        const productos = Array.isArray(apiData.productos) ? apiData.productos : [];
 
         cacheService.set(cacheKey, productos, 3 * 60 * 1000);
 
@@ -53,23 +54,16 @@ export const getAllProductos = async (queryParams = {}) => {
 
         const response = await api.get(PRODUCTOS_ENDPOINT, { params: filtrosLimpios });
 
-        if (response.data.productos && response.data.total !== undefined) {
-            return {
-                productos: response.data.productos,
-                total: response.data.total,
-                page: response.data.page,
-                totalPages: response.data.totalPages,
-                hasMore: response.data.hasMore
-            };
-        }
+        const apiData = response.data.data || response.data || {};
+        const productos = Array.isArray(apiData.productos) ? apiData.productos : [];
+        const paginacion = apiData.paginacion || {};
 
-        const productos = response.data.productos || response.data || [];
         return {
-            productos: productos,
-            total: productos.length,
-            page: 1,
-            totalPages: 1,
-            hasMore: false
+            productos,
+            total: paginacion.total || productos.length,
+            page: paginacion.pagina || 1,
+            totalPages: paginacion.paginas || 1,
+            hasMore: (paginacion.pagina || 1) < (paginacion.paginas || 1)
         };
     } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -83,7 +77,7 @@ export const getAllProductos = async (queryParams = {}) => {
 export const getProductoById = async (id) => {
     try {
         const response = await api.get(`${PRODUCTOS_ENDPOINT}/${id}`);
-        return response.data.producto;
+        return response.data.data || response.data;
     } catch (error) {
         console.error("Error en getProductoById:", error);
         throw error;
@@ -97,7 +91,7 @@ export const createProducto = async (formData) => {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        return response.data.producto;
+        return response.data.data || response.data;
     } catch (error) {
         console.error("Error en createProducto:", error);
         throw error;
@@ -118,7 +112,7 @@ export const updateProducto = async (id, data) => {
             response = await api.put(`${PRODUCTOS_ENDPOINT}/${id}`, data);
         }
 
-        return response.data.producto;
+        return response.data.data || response.data;
     } catch (error) {
         console.error("Error en updateProducto:", error);
         throw error;
@@ -132,7 +126,7 @@ export const updateProductoImagen = async (id, formData) => {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        return response.data.producto;
+        return response.data.data || response.data;
     } catch (error) {
         console.error("Error en updateProductoImagen:", error);
         throw error;
@@ -162,7 +156,8 @@ export const buscarProductosRapido = async (query, options = {}) => {
             limit: options.limit || 10
         };
         const response = await api.get(PRODUCTOS_ENDPOINT, { params });
-        return response.data.productos || [];
+        const apiData = response.data.data || response.data || {};
+        return Array.isArray(apiData.productos) ? apiData.productos : [];
     } catch (error) {
         console.error("Error en buscarProductosRapido:", error);
         return [];
@@ -175,7 +170,8 @@ export const obtenerSugerenciasBusqueda = async (termino) => {
             params: { termino }
         });
 
-        return response.data.sugerencias || [];
+        const sugData = response.data.data || response.data || {};
+        return sugData.sugerencias || [];
     } catch (error) {
         console.error('Error obteniendo sugerencias:', error);
         return [];
