@@ -2,6 +2,7 @@
 import User from "../entity/user.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 import { comparePassword, encryptPassword } from "../helpers/bcrypt.helper.js";
+import logger from "../config/logger.js";
 
 export async function getUserService(query) {
     try {
@@ -19,7 +20,7 @@ export async function getUserService(query) {
 
         return [userData, null];
     } catch (error) {
-        console.error("Error obtener el usuario:", error);
+        logger.error("Error obtener el usuario:", error);
         return [null, "Error interno del servidor"];
     }
 }
@@ -36,7 +37,7 @@ export async function getUsersService() {
 
         return [usersData, null];
     } catch (error) {
-        console.error("Error al obtener a los usuarios:", error);
+        logger.error("Error al obtener a los usuarios:", error);
         return [null, "Error interno del servidor"];
     }
 }
@@ -99,7 +100,7 @@ export async function updateUserService(query, body) {
 
         return [userUpdated, null];
     } catch (error) {
-        console.error("Error al modificar un usuario:", error);
+        logger.error("Error al modificar un usuario:", error);
         return [null, "Error interno del servidor"];
     }
 }
@@ -126,7 +127,7 @@ export async function deleteUserService(query) {
 
         return [dataUser, null];
     } catch (error) {
-        console.error("Error al eliminar un usuario:", error);
+        logger.error("Error al eliminar un usuario:", error);
         return [null, "Error interno del servidor"];
     }
 }

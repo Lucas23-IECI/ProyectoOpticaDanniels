@@ -5,6 +5,7 @@ import { AppDataSource } from "../config/configDb.js";
 import { comparePassword, encryptPassword } from "../helpers/bcrypt.helper.js";
 import { ACCESS_TOKEN_SECRET } from "../config/configEnv.js";
 import { getNombreCompleto } from "../helpers/nameHelpers.js";
+import logger from "../config/logger.js";
 
 export async function loginService(user) {
     try {
@@ -44,12 +45,12 @@ export async function loginService(user) {
         };
 
         const accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
-            expiresIn: "100y",
+            expiresIn: "24h",
         });
 
         return [accessToken, null];
     } catch (error) {
-        console.error("Error al iniciar sesión:", error);
+        logger.error("Error al iniciar sesión:", error);
         return [null, "Error interno del servidor"];
     }
 }
@@ -113,7 +114,7 @@ export async function registerService(user) {
 
         return [dataUser, null];
     } catch (error) {
-        console.error("Error al registrar un usuario", error);
+        logger.error("Error al registrar un usuario", error);
         return [null, "Error interno del servidor"];
     }
 }
@@ -197,7 +198,7 @@ export async function updateUserService(userId, updateData) {
 
         return [dataUser, null];
     } catch (error) {
-        console.error("Error al actualizar usuario", error);
+        logger.error("Error al actualizar usuario", error);
         return [null, "Error interno del servidor"];
     }
 }

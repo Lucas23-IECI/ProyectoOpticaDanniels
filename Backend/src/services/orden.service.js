@@ -3,6 +3,7 @@ import Orden from "../entity/orden.entity.js";
 import OrdenProducto from "../entity/ordenProducto.entity.js";
 import Producto from "../entity/producto.entity.js";
 import { Between, In } from "typeorm";
+import logger from "../config/logger.js";
 
 export const crearOrdenService = async (datos, usuarioId = null) => {
     try {
@@ -74,7 +75,7 @@ export const crearOrdenService = async (datos, usuarioId = null) => {
 
         return ordenGuardada;
     } catch (error) {
-        console.log("Error en crearOrdenService:", error);
+        logger.error("Error en crearOrdenService:", error);
         throw {
             status: error.status || 500,
             message: error.message || "Error al crear la orden.",

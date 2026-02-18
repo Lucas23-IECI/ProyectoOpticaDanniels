@@ -2,6 +2,9 @@
 import { AppDataSource } from "../config/configDb.js";
 import User from "../entity/user.entity.js";
 import Producto from "../entity/producto.entity.js";
+import Orden from "../entity/orden.entity.js";
+import OrdenProducto from "../entity/ordenProducto.entity.js";
+import logger from "../config/logger.js";
 
 export async function getEstadisticasGeneralesService() {
     try {
@@ -37,9 +40,6 @@ export async function getEstadisticasGeneralesService() {
         const productosInactivos = await productoRepository.count({ where: { activo: false } });
         const productosEnOferta = await productoRepository.count({ where: { oferta: true, activo: true } });
 
-        console.log("Productos en oferta:", productosEnOferta);
-        console.log("Total productos activos:", productosActivos);
-
         // Productos por categoría
         const productosPorCategoria = await productoRepository
             .createQueryBuilder("producto")
@@ -54,40 +54,12 @@ export async function getEstadisticasGeneralesService() {
             .where("producto.stock < :stock AND producto.activo = :activo", { stock: 5, activo: true })
             .getCount();
 
-        // Debug: obtener productos con stock bajo para verificar
-        const productosStockBajoDebug = await productoRepository
-            .createQueryBuilder("producto")
-            .select(["producto.nombre", "producto.stock", "producto.activo"])
-            .where("producto.stock < :stock AND producto.activo = :activo", { stock: 5, activo: true })
-            .getMany();
-
-        console.log("=== DEBUG STOCK BAJO ===");
-        console.log("Productos con stock bajo:", productosStockBajoDebug);
-        console.log("Cantidad de productos con stock bajo:", productosStockBajo);
-        console.log("Tipo de cantidad:", typeof productosStockBajo);
-
-        // Debug: obtener todos los productos activos para verificar
-        const todosProductosActivos = await productoRepository
-            .createQueryBuilder("producto")
-            .select(["producto.nombre", "producto.stock", "producto.activo"])
-            .where("producto.activo = :activo", { activo: true })
-            .orderBy("producto.stock", "ASC")
-            .getMany();
-
-        console.log("Todos los productos activos (ordenados por stock):", todosProductosActivos);
-        console.log("=== FIN DEBUG STOCK BAJO ===");
-
-
-
         // Valor total del inventario (solo productos activos con stock > 0)
         const valorInventario = await productoRepository
             .createQueryBuilder("producto")
             .select("SUM(producto.precio * producto.stock)", "total")
             .where("producto.activo = :activo AND producto.stock > 0", { activo: true })
             .getRawOne();
-
-        console.log("Valor del inventario raw:", valorInventario);
-        console.log("Valor del inventario parsed:", parseFloat(valorInventario.total) || 0);
 
         // Registros por mes en los últimos 6 meses
         const fecha6Meses = new Date();
@@ -130,7 +102,7 @@ export async function getEstadisticasGeneralesService() {
             }
         }, null];
     } catch (error) {
-        console.error("Error al obtener estadísticas generales:", error);
+        logger.error("Error al obtener estadísticas generales:", error);
         return [null, "Error interno del servidor"];
     }
 }
@@ -205,7 +177,13 @@ export async function getEstadisticasUsuariosService() {
         };
 
         usuariosConEdad.forEach(usuario => {
-            const edad = new Date().getFullYear() - new Date(usuario.fechaNacimiento).getFullYear();
+            const hoy = new Date();
+            const nacimiento = new Date(usuario.fechaNacimiento);
+            let edad = hoy.getFullYear() - nacimiento.getFullYear();
+            const m = hoy.getMonth() - nacimiento.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+                edad--;
+            }
 
             if (edad >= 18 && edad <= 25) distribucionPorEdad["18-25"]++;
             else if (edad >= 26 && edad <= 35) distribucionPorEdad["26-35"]++;
@@ -236,7 +214,7 @@ export async function getEstadisticasUsuariosService() {
             }))
         }, null];
     } catch (error) {
-        console.error("Error al obtener estadísticas de usuarios:", error);
+        logger.error("Error al obtener estadísticas de usuarios:", error);
         return [null, "Error interno del servidor"];
     }
 }
@@ -347,7 +325,136 @@ export async function getEstadisticasProductosService() {
             }))
         }, null];
     } catch (error) {
-        console.error("Error al obtener estadísticas de productos:", error);
+        logger.error("Error al obtener estadísticas de productos:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+export async function getEstadisticasOrdenesService() {
+    try {
+        const ordenRepository = AppDataSource.getRepository(Orden);
+        const ordenProductoRepository = AppDataSource.getRepository(OrdenProducto);
+
+        // Total de órdenes
+        const totalOrdenes = await ordenRepository.count();
+
+        // Órdenes por estado
+        const ordenesPorEstado = await ordenRepository
+            .createQueryBuilder("orden")
+            .select("orden.estado", "estado")
+            .addSelect("COUNT(*)", "cantidad")
+            .groupBy("orden.estado")
+            .getRawMany();
+
+        // Ingresos totales (solo órdenes pagadas/entregadas)
+        const ingresosTotales = await ordenRepository
+            .createQueryBuilder("orden")
+            .select("SUM(orden.total)", "total")
+            .where("orden.estado IN (:...estados)", {
+                estados: ["pagada", "en preparación", "en camino", "entregada"],
+            })
+            .getRawOne();
+
+        // Valor promedio de orden
+        const promedioOrden = await ordenRepository
+            .createQueryBuilder("orden")
+            .select("AVG(orden.total)", "promedio")
+            .where("orden.total > 0")
+            .getRawOne();
+
+        // Órdenes últimos 30 días
+        const fecha30Dias = new Date();
+        fecha30Dias.setDate(fecha30Dias.getDate() - 30);
+
+        const ordenesUltimos30Dias = await ordenRepository
+            .createQueryBuilder("orden")
+            .where("orden.createdAt >= :fecha", { fecha: fecha30Dias })
+            .getCount();
+
+        // Ingresos últimos 30 días
+        const ingresos30Dias = await ordenRepository
+            .createQueryBuilder("orden")
+            .select("SUM(orden.total)", "total")
+            .where("orden.createdAt >= :fecha AND orden.estado IN (:...estados)", {
+                fecha: fecha30Dias,
+                estados: ["pagada", "en preparación", "en camino", "entregada"],
+            })
+            .getRawOne();
+
+        // Órdenes por mes (últimos 6 meses)
+        const fecha6Meses = new Date();
+        fecha6Meses.setMonth(fecha6Meses.getMonth() - 6);
+
+        const ordenesPorMes = await ordenRepository
+            .createQueryBuilder("orden")
+            .select("EXTRACT(YEAR FROM orden.createdAt)", "año")
+            .addSelect("EXTRACT(MONTH FROM orden.createdAt)", "mes")
+            .addSelect("COUNT(*)", "cantidad")
+            .addSelect("SUM(orden.total)", "ingresos")
+            .where("orden.createdAt >= :fecha", { fecha: fecha6Meses })
+            .groupBy("EXTRACT(YEAR FROM orden.createdAt), EXTRACT(MONTH FROM orden.createdAt)")
+            .orderBy("año", "ASC")
+            .addOrderBy("mes", "ASC")
+            .getRawMany();
+
+        // Top 10 productos más vendidos
+        const topProductos = await ordenProductoRepository
+            .createQueryBuilder("op")
+            .leftJoinAndSelect("op.producto", "producto")
+            .select("producto.id", "id")
+            .addSelect("producto.nombre", "nombre")
+            .addSelect("producto.marca", "marca")
+            .addSelect("SUM(op.cantidad)", "cantidad_vendida")
+            .addSelect("SUM(op.precio * op.cantidad)", "ingresos")
+            .groupBy("producto.id, producto.nombre, producto.marca")
+            .orderBy("cantidad_vendida", "DESC")
+            .limit(10)
+            .getRawMany();
+
+        // Últimas 10 órdenes
+        const ultimasOrdenes = await ordenRepository.find({
+            order: { createdAt: "DESC" },
+            take: 10,
+            relations: { productos: { producto: true } },
+        });
+
+        return [{
+            resumen: {
+                totalOrdenes,
+                ordenesUltimos30Dias,
+                ingresosTotales: parseFloat(ingresosTotales?.total) || 0,
+                ingresos30Dias: parseFloat(ingresos30Dias?.total) || 0,
+                promedioOrden: Math.round(parseFloat(promedioOrden?.promedio) || 0),
+            },
+            porEstado: ordenesPorEstado.map(item => ({
+                estado: item.estado,
+                cantidad: parseInt(item.cantidad),
+            })),
+            tendencias: ordenesPorMes.map(item => ({
+                año: parseInt(item.año),
+                mes: parseInt(item.mes),
+                cantidad: parseInt(item.cantidad),
+                ingresos: parseFloat(item.ingresos) || 0,
+            })),
+            topProductos: topProductos.map(item => ({
+                id: item.id,
+                nombre: item.nombre,
+                marca: item.marca,
+                cantidadVendida: parseInt(item.cantidad_vendida),
+                ingresos: parseFloat(item.ingresos) || 0,
+            })),
+            ultimasOrdenes: ultimasOrdenes.map(o => ({
+                id: o.id,
+                nombre: o.nombre,
+                correo: o.correo,
+                total: o.total,
+                estado: o.estado,
+                fecha: o.createdAt,
+                cantidadProductos: o.productos?.reduce((s, p) => s + (p.cantidad || 0), 0) || 0,
+            })),
+        }, null];
+    } catch (error) {
+        logger.error("Error al obtener estadísticas de órdenes:", error);
         return [null, "Error interno del servidor"];
     }
 }

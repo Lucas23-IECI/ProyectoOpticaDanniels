@@ -3,6 +3,7 @@ import Producto from "../entity/producto.entity.js";
 import { Between, ILike, LessThanOrEqual, MoreThanOrEqual, Not } from "typeorm";
 import fs from "fs";
 import path from "path";
+import logger from "../config/logger.js";
 
 export const actualizarImagenProductoService = async (id, imagenUrl) => {
     const productoRepository = AppDataSource.getRepository(Producto);
@@ -83,7 +84,6 @@ export const buscarProductosService = async (filtros) => {
         );
 
         if (clavesInvalidas.length > 0) {
-            console.log("Claves inválidas en filtros:", clavesInvalidas);
             throw {
                 status: 400,
                 message: `Filtro(s) inválido(s): ${clavesInvalidas.join(", ")}`,
@@ -201,8 +201,6 @@ export const buscarProductosService = async (filtros) => {
             queryBuilder.andWhere("producto.descuento <= :descuentoMax", { descuentoMax: max });
         }
 
-        console.log("Filtros recibidos:", filtros);
-
         const pagina = filtros.page ? parseInt(filtros.page) : 1;
         const limite = filtros.limit ? parseInt(filtros.limit) : 100;
 
@@ -236,9 +234,6 @@ export const buscarProductosService = async (filtros) => {
 
         const [productos, total] = await queryBuilder.getManyAndCount();
 
-        console.log("Paginación => página:", pagina, " | límite:", limite);
-        console.log("Total productos encontrados:", total);
-
         return {
             productos,
             paginacion: {
@@ -249,7 +244,6 @@ export const buscarProductosService = async (filtros) => {
             },
         };
     } catch (error) {
-        console.log("Error en buscarProductosService:", error);
         throw {
             status: error.status || 500,
             message: error.message || "Error al buscar los productos.",
@@ -309,10 +303,9 @@ export const actualizarProductoService = async (id, datos) => {
             try {
                 if (fs.existsSync(rutaImagenAnterior)) {
                     fs.unlinkSync(rutaImagenAnterior);
-                    console.log(`✅ Imagen anterior eliminada: ${rutaImagenAnterior}`);
                 }
             } catch (errorImagen) {
-                console.error(`❌ Error al eliminar imagen anterior: ${rutaImagenAnterior}`, errorImagen);
+                logger.error(`Error al eliminar imagen anterior: ${rutaImagenAnterior}`, errorImagen);
                 // No lanzamos error aquí para que continue la actualización
             }
         }
@@ -325,10 +318,8 @@ export const actualizarProductoService = async (id, datos) => {
 
         await productoRepository.save(productoActualizado);
 
-        console.log(`✅ Producto actualizado: ID ${id}`);
         return productoActualizado;
     } catch (error) {
-        console.error("❌ Error en actualizarProductoService:", error);
         throw {
             status: error.status || 500,
             message: error.message || "Error al actualizar el producto",
@@ -358,12 +349,9 @@ export const eliminarProductoService = async (id) => {
             try {
                 if (fs.existsSync(rutaImagen)) {
                     fs.unlinkSync(rutaImagen);
-                    console.log(`✅ Imagen eliminada: ${rutaImagen}`);
-                } else {
-                    console.log(`⚠️  Imagen no encontrada en filesystem: ${rutaImagen}`);
                 }
             } catch (errorImagen) {
-                console.error(`❌ Error al eliminar imagen: ${rutaImagen}`, errorImagen);
+                logger.error(`Error al eliminar imagen: ${rutaImagen}`, errorImagen);
                 // No lanzamos error aquí para que siga eliminando el producto de la BD
             }
         }
@@ -371,10 +359,8 @@ export const eliminarProductoService = async (id) => {
         // Eliminar el producto de la base de datos
         await productoRepository.remove(producto);
 
-        console.log(`✅ Producto eliminado completamente: ID ${id}`);
         return producto;
     } catch (error) {
-        console.error("❌ Error en eliminarProductoService:", error);
         throw {
             status: error.status || 500,
             message: error.message || "Error al eliminar el producto",
@@ -389,7 +375,7 @@ export const generarSugerenciasBusqueda = async (terminoBusqueda) => {
         // Obtener todos los productos activos para generar sugerencias
         const productos = await productoRepository.find({
             where: { activo: true },
-            select: ['nombre', 'marca', 'codigoSKU', 'categoria']
+            select: ["nombre", "marca", "codigoSKU", "categoria"]
         });
 
         const termino = terminoBusqueda.toLowerCase().trim();
@@ -487,7 +473,7 @@ export const generarSugerenciasBusqueda = async (terminoBusqueda) => {
         // Limitar a 5 sugerencias
         return sugerenciasArray.slice(0, 5);
     } catch (error) {
-        console.error("Error generando sugerencias:", error);
+        logger.error("Error generando sugerencias:", error);
         return [];
     }
 };

@@ -1,6 +1,7 @@
 import { AppDataSource } from "../config/configDb.js";
 import Direccion from "../entity/direccion.entity.js";
 import User from "../entity/user.entity.js";
+import logger from "../config/logger.js";
 
 export const crearDireccionService = async (userId, datos) => {
     try {
@@ -39,7 +40,7 @@ export const crearDireccionService = async (userId, datos) => {
         const direccionCreada = await direccionRepository.save(nuevaDireccion);
         return [direccionCreada, null];
     } catch (error) {
-        console.error("Error al crear dirección:", error);
+        logger.error("Error al crear dirección:", error);
         return [null, "Error interno del servidor"];
     }
 };
@@ -56,7 +57,7 @@ export const obtenerDireccionesService = async (userId) => {
 
         return [direcciones, null];
     } catch (error) {
-        console.error("Error al obtener direcciones:", error);
+        logger.error("Error al obtener direcciones:", error);
         return [null, "Error interno del servidor"];
     }
 };
@@ -79,7 +80,7 @@ export const obtenerDireccionPorIdService = async (userId, direccionId) => {
 
         return [direccion, null];
     } catch (error) {
-        console.error("Error al obtener dirección:", error);
+        logger.error("Error al obtener dirección:", error);
         return [null, "Error interno del servidor"];
     }
 };
@@ -118,7 +119,7 @@ export const actualizarDireccionService = async (userId, direccionId, datos) => 
 
         return [direccionActualizada, null];
     } catch (error) {
-        console.error("Error al actualizar dirección:", error);
+        logger.error("Error al actualizar dirección:", error);
         return [null, "Error interno del servidor"];
     }
 };
@@ -161,7 +162,7 @@ export const eliminarDireccionService = async (userId, direccionId) => {
 
         return [true, null];
     } catch (error) {
-        console.error("Error al eliminar dirección:", error);
+        logger.error("Error al eliminar dirección:", error);
         return [null, "Error interno del servidor"];
     }
 };
@@ -198,7 +199,7 @@ export const establecerPrincipalService = async (userId, direccionId) => {
 
         return [direccionActualizada, null];
     } catch (error) {
-        console.error("Error al establecer dirección principal:", error);
+        logger.error("Error al establecer dirección principal:", error);
         return [null, "Error interno del servidor"];
     }
 }; 
