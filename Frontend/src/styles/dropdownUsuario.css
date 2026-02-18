@@ -31,7 +31,8 @@
     position: relative;
 }
 
-.admin-badge {
+.dropdown-usuario .admin-badge {
+    position: static;
     background: var(--primary-color);
     color: #fff;
     padding: 2px 7px;
@@ -44,6 +45,9 @@
     line-height: 1.3;
     white-space: nowrap;
     flex-shrink: 0;
+    width: auto;
+    height: auto;
+    box-shadow: none;
 }
 
 /* ── Menu Items ── */
