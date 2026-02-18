@@ -60,37 +60,42 @@ CREATE TABLE IF NOT EXISTS direcciones (
     "updatedAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Tabla ordenes (si la usas, dejamos FK hacia users/direcciones)
+-- Tabla ordenes (según Backend/src/entity/orden.entity.js)
+-- Soporta checkout con datos inline del cliente (invitados y logueados)
 CREATE TABLE IF NOT EXISTS ordenes (
     id SERIAL PRIMARY KEY,
-    "usuarioId" INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    "direccionId" INTEGER REFERENCES direcciones(id),
-    estado VARCHAR(50) DEFAULT 'pendiente',
-    total INTEGER NOT NULL,
-    "fechaEntrega" DATE,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20),
+    direccion VARCHAR(200) NOT NULL,
     observaciones TEXT,
+    estado VARCHAR(50) DEFAULT 'pendiente',
+    total INTEGER NOT NULL DEFAULT 0,
+    fecha TIMESTAMPTZ DEFAULT NOW(),
+    "anonId" VARCHAR(100),
+    "usuarioId" INTEGER REFERENCES users(id) ON DELETE SET NULL,
     "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     "updatedAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Many-to-many ordenes-productos
-CREATE TABLE IF NOT EXISTS orden_productos (
+-- Relación ordenes-productos (según Backend/src/entity/ordenProducto.entity.js)
+CREATE TABLE IF NOT EXISTS ordenes_productos (
     id SERIAL PRIMARY KEY,
     "ordenId" INTEGER REFERENCES ordenes(id) ON DELETE CASCADE,
-    "productoId" INTEGER REFERENCES productos(id) ON DELETE CASCADE,
+    "productoId" INTEGER REFERENCES productos(id) ON DELETE SET NULL,
     cantidad INTEGER NOT NULL DEFAULT 1,
-    precio INTEGER NOT NULL,
+    precio NUMERIC(10,2) NOT NULL,
     "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Wishlist
-CREATE TABLE IF NOT EXISTS wishlist (
-    id SERIAL PRIMARY KEY,
-    "usuarioId" INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    "productoId" INTEGER REFERENCES productos(id) ON DELETE CASCADE,
-    "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
-    UNIQUE("usuarioId", "productoId")
-);
+-- Wishlist (sin entity aún — reservada para implementación futura)
+-- CREATE TABLE IF NOT EXISTS wishlist (
+--     id SERIAL PRIMARY KEY,
+--     "usuarioId" INTEGER REFERENCES users(id) ON DELETE CASCADE,
+--     "productoId" INTEGER REFERENCES productos(id) ON DELETE CASCADE,
+--     "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+--     UNIQUE("usuarioId", "productoId")
+-- );
 
 -- =========================
 -- SEED: USUARIOS (coinciden con tu initialSetup.js)
@@ -113,7 +118,7 @@ VALUES
 ('Usuario','de Prueba','Dos',NULL,'22.222.222-2','usuario2@gmail.cl', crypt('User12345', gen_salt('bf')), 'usuario')
 ON CONFLICT (email) DO NOTHING;
 
--- También dejamos tus usuarios genéricos de prueba (password: "password")
+-- También dejamos usuarios genéricos de prueba (password: "password")
 INSERT INTO users
 ("primerNombre","segundoNombre","apellidoPaterno","apellidoMaterno",rut,email,password,rol)
 VALUES
@@ -125,20 +130,20 @@ INSERT INTO users
 ("primerNombre","segundoNombre","apellidoPaterno","apellidoMaterno",rut,email,password,rol)
 VALUES
 ('Cliente','Prueba','Optica',NULL,'88.888.888-8','cliente@test.com',
-'$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','cliente')
+'$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','usuario')
 ON CONFLICT (email) DO NOTHING;
 
 -- =========================
 -- SEED: PRODUCTOS (7)
 -- =========================
 INSERT INTO productos (nombre, descripcion, precio, categoria, marca, "codigoSKU", stock, imagen_url) VALUES
-('Ray-Ban Aviator Clásico', 'Gafas de sol icónicas con diseño atemporal', 89990, 'Gafas de Sol', 'Ray-Ban', 'RB-AVIATOR-001', 15, 'imagen-1751688907067-771859604.webp'),
-('Oakley Holbrook Polarizado', 'Gafas deportivas con lentes polarizadas', 129990, 'Gafas Deportivas', 'Oakley', 'OK-HOLBROOK-001', 10, 'imagen-1751689044390-958899014.webp'),
-('Lentes Acuvue Oasys Daily', 'Lentes de contacto diarios ultra cómodos', 25990, 'Lentes de Contacto', 'Acuvue', 'AC-OASYS-001', 50, 'imagen-1751689180232-810973486.webp'),
-('Ray-Ban Wayfarer Negro', 'El modelo más vendido de Ray-Ban', 79990, 'Gafas de Sol', 'Ray-Ban', 'RB-WAYFARER-001', 20, 'imagen-1751689254184-303307536.webp'),
-('Oakley Frogskins Sport', 'Estilo retro con tecnología moderna', 119990, 'Gafas Deportivas', 'Oakley', 'OK-FROGSKINS-001', 8, 'imagen-1751689422943-911370221.jpg'),
-('Ray-Ban Round Metal', 'Diseño circular clásico en metal', 94990, 'Gafas de Sol', 'Ray-Ban', 'RB-ROUND-001', 12, 'imagen-1751949381836-127102605.webp'),
-('Oakley Radar EV Path', 'Máximo rendimiento para deportistas', 149990, 'Gafas Deportivas', 'Oakley', 'OK-RADAR-001', 6, 'imagen-1752381832190-952681585.webp')
+('Ray-Ban Aviator Clásico', 'Gafas de sol icónicas con diseño atemporal', 89990, 'sol', 'Ray-Ban', 'RB-AVIATOR-001', 15, 'imagen-1751688907067-771859604.webp'),
+('Oakley Holbrook Polarizado', 'Gafas deportivas con lentes polarizadas', 129990, 'sol', 'Oakley', 'OK-HOLBROOK-001', 10, 'imagen-1751689044390-958899014.webp'),
+('Lentes Acuvue Oasys Daily', 'Lentes de contacto diarios ultra cómodos', 25990, 'opticos', 'Acuvue', 'AC-OASYS-001', 50, 'imagen-1751689180232-810973486.webp'),
+('Ray-Ban Wayfarer Negro', 'El modelo más vendido de Ray-Ban', 79990, 'sol', 'Ray-Ban', 'RB-WAYFARER-001', 20, 'imagen-1751689254184-303307536.webp'),
+('Oakley Frogskins Sport', 'Estilo retro con tecnología moderna', 119990, 'sol', 'Oakley', 'OK-FROGSKINS-001', 8, 'imagen-1751689422943-911370221.jpg'),
+('Ray-Ban Round Metal', 'Diseño circular clásico en metal', 94990, 'sol', 'Ray-Ban', 'RB-ROUND-001', 12, 'imagen-1751949381836-127102605.webp'),
+('Oakley Radar EV Path', 'Máximo rendimiento para deportistas', 149990, 'sol', 'Oakley', 'OK-RADAR-001', 6, 'imagen-1752381832190-952681585.webp')
 ON CONFLICT ("codigoSKU") DO NOTHING;
 
 -- Dirección ejemplo para 'cliente@test.com'
@@ -157,6 +162,11 @@ CREATE INDEX IF NOT EXISTS idx_products_act  ON productos(activo);
 CREATE INDEX IF NOT EXISTS idx_products_sku  ON productos("codigoSKU");
 CREATE INDEX IF NOT EXISTS idx_dir_user      ON direcciones("userId");
 CREATE INDEX IF NOT EXISTS idx_dir_principal ON direcciones("esPrincipal");
+CREATE INDEX IF NOT EXISTS idx_ordenes_estado    ON ordenes(estado);
+CREATE INDEX IF NOT EXISTS idx_ordenes_correo    ON ordenes(correo);
+CREATE INDEX IF NOT EXISTS idx_ordenes_usuario   ON ordenes("usuarioId");
+CREATE INDEX IF NOT EXISTS idx_ordprod_orden     ON ordenes_productos("ordenId");
+CREATE INDEX IF NOT EXISTS idx_ordprod_producto  ON ordenes_productos("productoId");
 
 -- =========================
 -- TRIGGERS updatedAt
@@ -188,14 +198,21 @@ BEGIN
         CREATE TRIGGER tg_direcciones_updated BEFORE UPDATE ON direcciones
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
     END IF;
+
+    PERFORM 1 FROM pg_trigger WHERE tgname = 'tg_ordenes_updated';
+    IF NOT FOUND THEN
+        CREATE TRIGGER tg_ordenes_updated BEFORE UPDATE ON ordenes
+        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    END IF;
 END $$;
 
 -- Resumen
 DO $$
-DECLARE u INT; p INT; d INT;
+DECLARE u INT; p INT; d INT; o INT;
 BEGIN
     SELECT COUNT(*) INTO u FROM users;
     SELECT COUNT(*) INTO p FROM productos;
     SELECT COUNT(*) INTO d FROM direcciones;
-    RAISE NOTICE '✅ Users: %, Productos: %, Direcciones: %', u, p, d;
+    SELECT COUNT(*) INTO o FROM ordenes;
+    RAISE NOTICE '✅ Users: %, Productos: %, Direcciones: %, Ordenes: %', u, p, d, o;
 END $$;

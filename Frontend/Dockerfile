@@ -13,6 +13,8 @@ RUN npm install
 COPY . .
 
 # Build the application
+ARG VITE_BASE_PATH=/
+ENV VITE_BASE_PATH=${VITE_BASE_PATH}
 RUN npm run build
 
 # Production stage
