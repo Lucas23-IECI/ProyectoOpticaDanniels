@@ -8,8 +8,7 @@ export async function getWishlist() {
   try {
     const { data } = await axios.get("/wishlist");
     return data?.data || [];
-  } catch (error) {
-    console.error("Error al obtener wishlist:", error);
+  } catch {
     return [];
   }
 }
@@ -24,8 +23,9 @@ export async function addToWishlist(productoId) {
     const { data } = await axios.post("/wishlist", { productoId });
     return data?.data || null;
   } catch (error) {
-    const message = error.response?.data?.message || "Error al agregar a la lista de deseos.";
-    console.error("Error al agregar a wishlist:", message);
+    const message =
+      error.response?.data?.message ||
+      "Error al agregar a la lista de deseos.";
     throw new Error(message);
   }
 }
@@ -40,8 +40,9 @@ export async function removeFromWishlist(productoId) {
     await axios.delete(`/wishlist/${productoId}`);
     return true;
   } catch (error) {
-    const message = error.response?.data?.message || "Error al eliminar de la lista de deseos.";
-    console.error("Error al eliminar de wishlist:", message);
+    const message =
+      error.response?.data?.message ||
+      "Error al eliminar de la lista de deseos.";
     throw new Error(message);
   }
 }
@@ -55,8 +56,7 @@ export async function checkInWishlist(productoId) {
   try {
     const { data } = await axios.get(`/wishlist/check/${productoId}`);
     return data?.data?.isInWishlist || false;
-  } catch (error) {
-    console.error("Error al verificar wishlist:", error);
+  } catch {
     return false;
   }
 }

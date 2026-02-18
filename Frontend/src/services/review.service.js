@@ -9,8 +9,7 @@ export async function getReviewsByProducto(productoId) {
     try {
         const { data } = await axios.get(`/reviews/producto/${productoId}`);
         return data?.data || [];
-    } catch (error) {
-        console.error("Error al obtener reseñas:", error);
+    } catch {
         return [];
     }
 }
@@ -24,8 +23,7 @@ export async function getReviewStats(productoId) {
     try {
         const { data } = await axios.get(`/reviews/producto/${productoId}/stats`);
         return data?.data || { promedio: 0, total: 0 };
-    } catch (error) {
-        console.error("Error al obtener stats de reseñas:", error);
+    } catch {
         return { promedio: 0, total: 0 };
     }
 }
@@ -56,8 +54,7 @@ export async function getAllReviews(filtros = {}) {
 
         const { data } = await axios.get(url);
         return data?.data || [];
-    } catch (error) {
-        console.error("Error al obtener reseñas admin:", error);
+    } catch {
         return [];
     }
 }

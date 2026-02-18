@@ -1,6 +1,12 @@
 "use strict";
 import nodemailer from "nodemailer";
-import { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, FRONTEND_URL } from "../config/configEnv.js";
+import {
+    FRONTEND_URL,
+    SMTP_HOST,
+    SMTP_PASS,
+    SMTP_PORT,
+    SMTP_USER,
+} from "../config/configEnv.js";
 import logger from "../config/logger.js";
 
 /**
@@ -31,39 +37,87 @@ export async function sendPasswordResetEmail(email, token) {
             },
         });
 
+        const tableStyle = [
+            "background:#ffffff",
+            "border-radius:12px",
+            "box-shadow:0 2px 12px rgba(0,0,0,0.08)",
+            "padding:40px",
+        ].join(";");
+
+        const bodyStyle = [
+            "margin:0",
+            "padding:0",
+            "background:#f4f6f9",
+            "font-family:'Segoe UI',Arial,sans-serif",
+        ].join(";");
+
+        const btnStyle = [
+            "display:inline-block",
+            "background:#2147A2",
+            "color:#ffffff",
+            "text-decoration:none",
+            "padding:14px 32px",
+            "border-radius:8px",
+            "font-size:16px",
+            "font-weight:600",
+        ].join(";");
+
+        const year = new Date().getFullYear();
+
         const htmlContent = `
         <!DOCTYPE html>
         <html lang="es">
         <head><meta charset="UTF-8"></head>
-        <body style="margin:0;padding:0;background:#f4f6f9;font-family:'Segoe UI',Arial,sans-serif;">
-            <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
-                <tr><td align="center">
-                    <table width="520" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);padding:40px;">
-                        <tr><td align="center" style="padding-bottom:24px;">
-                            <h1 style="margin:0;color:#2147A2;font-size:24px;">Óptica Danniels</h1>
-                        </td></tr>
-                        <tr><td style="padding-bottom:16px;">
-                            <h2 style="margin:0;color:#333;font-size:20px;">Recuperación de contraseña</h2>
-                        </td></tr>
-                        <tr><td style="padding-bottom:24px;color:#555;font-size:15px;line-height:1.6;">
-                            <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta. Haz clic en el botón de abajo para crear una nueva contraseña:</p>
-                        </td></tr>
-                        <tr><td align="center" style="padding-bottom:24px;">
-                            <a href="${resetUrl}" style="display:inline-block;background:#2147A2;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:8px;font-size:16px;font-weight:600;">
-                                Restablecer contraseña
-                            </a>
-                        </td></tr>
-                        <tr><td style="padding-bottom:16px;color:#888;font-size:13px;line-height:1.5;">
-                            <p>Si no solicitaste este cambio, puedes ignorar este correo. El enlace expirará en <strong>1 hora</strong>.</p>
-                            <p>Si el botón no funciona, copia y pega esta URL en tu navegador:</p>
-                            <p style="word-break:break-all;color:#2147A2;">${resetUrl}</p>
-                        </td></tr>
-                        <tr><td style="border-top:1px solid #eee;padding-top:16px;color:#aaa;font-size:12px;text-align:center;">
-                            © ${new Date().getFullYear()} Óptica Danniels — Av. Manuel Rodriguez 426, Chiguayante
-                        </td></tr>
-                    </table>
+        <body style="${bodyStyle}">
+          <table width="100%" cellpadding="0" cellspacing="0"
+            style="padding:40px 0;">
+            <tr><td align="center">
+              <table width="520" cellpadding="0"
+                cellspacing="0" style="${tableStyle}">
+                <tr><td align="center"
+                  style="padding-bottom:24px;">
+                  <h1 style="margin:0;color:#2147A2;
+                    font-size:24px;">Óptica Danniels</h1>
                 </td></tr>
-            </table>
+                <tr><td style="padding-bottom:16px;">
+                  <h2 style="margin:0;color:#333;
+                    font-size:20px;">
+                    Recuperación de contraseña</h2>
+                </td></tr>
+                <tr><td style="padding-bottom:24px;
+                  color:#555;font-size:15px;
+                  line-height:1.6;">
+                  <p>Recibimos una solicitud para
+                    restablecer tu contraseña.
+                    Haz clic en el botón:</p>
+                </td></tr>
+                <tr><td align="center"
+                  style="padding-bottom:24px;">
+                  <a href="${resetUrl}"
+                    style="${btnStyle}">
+                    Restablecer contraseña
+                  </a>
+                </td></tr>
+                <tr><td style="padding-bottom:16px;
+                  color:#888;font-size:13px;
+                  line-height:1.5;">
+                  <p>Si no solicitaste este cambio,
+                    ignora este correo.
+                    El enlace expira en
+                    <strong>1 hora</strong>.</p>
+                  <p>URL alternativa:</p>
+                  <p style="word-break:break-all;
+                    color:#2147A2;">
+                    ${resetUrl}</p>
+                </td></tr>
+                <tr><td style="border-top:1px solid #eee;
+                  padding-top:16px;color:#aaa;
+                  font-size:12px;text-align:center;">
+                  © ${year} Óptica Danniels
+                </td></tr>
+              </table>
+            </td></tr>
+          </table>
         </body>
         </html>`;
 
