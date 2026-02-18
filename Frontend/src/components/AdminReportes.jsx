@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { 
     FaChartBar, FaUsers, FaBox, FaSpinner, FaSync, FaCalendar,
     FaUserShield, FaUser, FaEye, FaEyeSlash, FaPercent, FaDollarSign,
-    FaChartPie, FaChartLine, FaEquals
+    FaChartPie, FaChartLine, FaEquals, FaShoppingCart, FaMoneyBillWave,
+    FaTruck, FaCheck, FaBan, FaClipboardList, FaBoxOpen
 } from 'react-icons/fa';
 import { 
     getEstadisticasGenerales, 
     getEstadisticasUsuarios, 
     getEstadisticasProductos 
 } from '@services/reporte.service';
+import { getEstadisticasOrdenes } from '@services/orden.service';
 import '@styles/adminReportes.css';
 
 const AdminReportes = () => {
@@ -19,6 +21,7 @@ const AdminReportes = () => {
     const [estadisticasGenerales, setEstadisticasGenerales] = useState(null);
     const [estadisticasUsuarios, setEstadisticasUsuarios] = useState(null);
     const [estadisticasProductos, setEstadisticasProductos] = useState(null);
+    const [estadisticasOrdenes, setEstadisticasOrdenes] = useState(null);
 
     useEffect(() => {
         cargarDatos();
@@ -29,22 +32,17 @@ const AdminReportes = () => {
             setLoading(true);
             setError(null);
 
-            const [generales, usuarios, productos] = await Promise.all([
+            const [generales, usuarios, productos, ordenes] = await Promise.all([
                 getEstadisticasGenerales(),
                 getEstadisticasUsuarios(),
-                getEstadisticasProductos()
+                getEstadisticasProductos(),
+                getEstadisticasOrdenes().catch(() => null),
             ]);
-
-            console.log('=== FRONTEND DEBUG ===');
-            console.log('Datos generales completos:', generales);
-            console.log('Productos en generales:', generales?.productos);
-            console.log('Stock bajo en frontend:', generales?.productos?.stockBajo);
-            console.log('Tipo de stock bajo en frontend:', typeof generales?.productos?.stockBajo);
-            console.log('=== FIN FRONTEND DEBUG ===');
 
             setEstadisticasGenerales(generales);
             setEstadisticasUsuarios(usuarios);
             setEstadisticasProductos(productos);
+            setEstadisticasOrdenes(ordenes);
         } catch (err) {
             console.error('Error al cargar reportes:', err);
             setError('Error al cargar los datos de reportes');
@@ -55,7 +53,6 @@ const AdminReportes = () => {
 
     const formatearNumero = (numero) => {
         if (!numero) return '0';
-        console.log('Formateando número:', numero, 'tipo:', typeof numero);
         return numero.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     };
 
@@ -434,6 +431,223 @@ const AdminReportes = () => {
         );
     };
 
+    const ESTADO_ICONS = {
+        pendiente: FaClipboardList,
+        pagada: FaMoneyBillWave,
+        'en preparación': FaBoxOpen,
+        'en camino': FaTruck,
+        entregada: FaCheck,
+        cancelada: FaBan,
+    };
+
+    const ESTADO_COLORS = {
+        pendiente: '#FFA500',
+        pagada: '#2147A2',
+        'en preparación': '#9B59B6',
+        'en camino': '#3498DB',
+        entregada: '#29A937',
+        cancelada: '#FF4444',
+    };
+
+    const renderEstadisticasOrdenes = () => {
+        if (!estadisticasOrdenes) {
+            return (
+                <div className="no-data-section">
+                    <FaShoppingCart />
+                    <p>No hay datos de órdenes disponibles</p>
+                </div>
+            );
+        }
+
+        const { resumen, porEstado, tendencias, topProductos, ultimasOrdenes } = estadisticasOrdenes;
+
+        return (
+            <div className="estadisticas-ordenes">
+                {/* Summary Cards */}
+                <div className="stats-cards">
+                    <div className="stat-card ordenes-card">
+                        <div className="stat-icon"><FaShoppingCart /></div>
+                        <div className="stat-content">
+                            <h3>{formatearNumero(resumen.totalOrdenes)}</h3>
+                            <p>Total Órdenes</p>
+                        </div>
+                        <div className="stat-trend">
+                            <span className="trend-value">+{resumen.ordenesUltimos30Dias}</span>
+                            <span className="trend-label">últimos 30 días</span>
+                        </div>
+                    </div>
+
+                    <div className="stat-card ingresos-card">
+                        <div className="stat-icon"><FaMoneyBillWave /></div>
+                        <div className="stat-content">
+                            <h3>{formatearPrecio(resumen.ingresosTotales)}</h3>
+                            <p>Ingresos Totales</p>
+                        </div>
+                        <div className="stat-trend">
+                            <span className="trend-value">{formatearPrecio(resumen.ingresos30Dias)}</span>
+                            <span className="trend-label">últimos 30 días</span>
+                        </div>
+                    </div>
+
+                    <div className="stat-card promedio-card">
+                        <div className="stat-icon"><FaDollarSign /></div>
+                        <div className="stat-content">
+                            <h3>{formatearPrecio(resumen.promedioOrden)}</h3>
+                            <p>Orden Promedio</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="charts-grid">
+                    {/* Orders by Status */}
+                    <div className="chart-card">
+                        <h3><FaChartPie className="chart-icon" /> Órdenes por Estado</h3>
+                        <div className="chart-content">
+                            {porEstado && porEstado.length > 0 ? (
+                                <div className="estado-chart">
+                                    {porEstado.map((item, index) => {
+                                        const Icon = ESTADO_ICONS[item.estado] || FaClipboardList;
+                                        const color = ESTADO_COLORS[item.estado] || '#666';
+                                        return (
+                                            <div key={index} className="estado-chart-item">
+                                                <div className="estado-chart-icon" style={{ color }}>
+                                                    <Icon />
+                                                </div>
+                                                <div className="estado-chart-bar">
+                                                    <div className="bar-label">{item.estado}</div>
+                                                    <div className="bar-container">
+                                                        <div
+                                                            className="bar-fill"
+                                                            style={{
+                                                                width: `${(item.cantidad / Math.max(...porEstado.map(e => e.cantidad))) * 100}%`,
+                                                                backgroundColor: color,
+                                                            }}
+                                                        ></div>
+                                                        <span className="bar-value">{item.cantidad}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            ) : (
+                                <p className="no-data">No hay datos de estados disponibles</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Top Products Sold */}
+                    <div className="chart-card">
+                        <h3><FaChartBar className="chart-icon" /> Top Productos Vendidos</h3>
+                        <div className="chart-content">
+                            {topProductos && topProductos.length > 0 ? (
+                                <div className="bar-chart-simple">
+                                    {topProductos.map((item, index) => (
+                                        <div key={index} className="bar-item">
+                                            <div className="bar-label" title={`${item.nombre} (${item.marca})`}>
+                                                {item.nombre}
+                                            </div>
+                                            <div className="bar-container">
+                                                <div
+                                                    className="bar-fill"
+                                                    style={{
+                                                        width: `${(item.cantidadVendida / Math.max(...topProductos.map(p => p.cantidadVendida))) * 100}%`,
+                                                    }}
+                                                ></div>
+                                                <span className="bar-value">{item.cantidadVendida} uds</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="no-data">No hay datos de ventas disponibles</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Trend (last 6 months) */}
+                    <div className="chart-card full-width">
+                        <h3><FaChartLine className="chart-icon" /> Tendencia de Órdenes (Últimos 6 meses)</h3>
+                        <div className="chart-content">
+                            {tendencias && tendencias.length > 0 ? (
+                                <div className="tendencia-ordenes">
+                                    <div className="line-chart-simple">
+                                        {tendencias.map((item, index) => (
+                                            <div key={index} className="line-item">
+                                                <div className="line-label">
+                                                    {obtenerMesNombre(item.mes)} {item.año}
+                                                </div>
+                                                <div className="line-value">
+                                                    {item.cantidad} órdenes
+                                                </div>
+                                                <div className="line-ingresos">
+                                                    {formatearPrecio(item.ingresos)}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className="no-data">No hay datos de tendencias disponibles</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Latest Orders */}
+                    <div className="chart-card full-width">
+                        <h3><FaCalendar className="chart-icon" /> Últimas Órdenes</h3>
+                        <div className="chart-content">
+                            {ultimasOrdenes && ultimasOrdenes.length > 0 ? (
+                                <div className="productos-table">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Cliente</th>
+                                                <th>Total</th>
+                                                <th>Items</th>
+                                                <th>Estado</th>
+                                                <th>Fecha</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {ultimasOrdenes.map((orden, index) => {
+                                                const color = ESTADO_COLORS[orden.estado] || '#666';
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>#{orden.id}</td>
+                                                        <td>{orden.nombre}</td>
+                                                        <td><strong>{formatearPrecio(orden.total)}</strong></td>
+                                                        <td>{orden.cantidadProductos}</td>
+                                                        <td>
+                                                            <span
+                                                                className="badge-estado"
+                                                                style={{
+                                                                    backgroundColor: `${color}20`,
+                                                                    color: color,
+                                                                    border: `1px solid ${color}`,
+                                                                }}
+                                                            >
+                                                                {orden.estado}
+                                                            </span>
+                                                        </td>
+                                                        <td>{new Date(orden.fecha).toLocaleDateString('es-CL')}</td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ) : (
+                                <p className="no-data">No hay órdenes registradas</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     const renderContent = () => {
         switch (activeTab) {
             case 'generales':
@@ -442,6 +656,8 @@ const AdminReportes = () => {
                 return renderEstadisticasUsuarios();
             case 'productos':
                 return renderEstadisticasProductos();
+            case 'ordenes':
+                return renderEstadisticasOrdenes();
             default:
                 return renderEstadisticasGenerales();
         }
@@ -512,6 +728,12 @@ const AdminReportes = () => {
                     onClick={() => setActiveTab('productos')}
                 >
                     <FaBox /> Productos
+                </button>
+                <button 
+                    className={`reporte-tab ${activeTab === 'ordenes' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('ordenes')}
+                >
+                    <FaShoppingCart /> Órdenes
                 </button>
             </div>
 

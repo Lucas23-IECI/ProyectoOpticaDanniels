@@ -60,7 +60,7 @@ const Login = () => {
                 return { field: "email", message: "Formato de email inválido" };
             }
             if (errorMessage.includes("min") || errorMessage.includes("caracteres")) {
-                return { field: "email", message: "Email debe tener entre 10-35 caracteres" };
+                return { field: "email", message: "Email debe tener entre 5-100 caracteres" };
             }
             return { field: "email", message: "Email inválido - verifica el formato" };
         }
@@ -73,7 +73,7 @@ const Login = () => {
                 return { field: "password", message: "Contraseña inválida - revisa el formato" };
             }
             if (errorMessage.includes("min") || errorMessage.includes("caracteres")) {
-                return { field: "password", message: "Contraseña debe tener entre 8-26 caracteres" };
+                return { field: "password", message: "Contraseña debe tener entre 6-50 caracteres" };
             }
             return { field: "password", message: "Contraseña inválida" };
         }
@@ -102,42 +102,32 @@ const Login = () => {
     };
 
     const validateFieldRealTime = (name, value) => {
-        // Validaciones en tiempo real para Login
+        // Validaciones en tiempo real — alineadas con backend Joi (auth.validation.js)
         switch (name) {
             case 'email':
                 if (value.length > 0) {
-                    if (value.length < 10) {
-                        return "Email debe tener al menos 10 caracteres";
+                    if (value.length < 5) {
+                        return "Email debe tener al menos 5 caracteres";
                     }
-                    if (value.length > 35) {
-                        return "Email no puede tener más de 35 caracteres";
+                    if (value.length > 100) {
+                        return "Email no puede tener más de 100 caracteres";
                     }
                     if (!value.includes('@')) {
                         return "Email debe contener @";
                     }
-                    if (value.includes('@') && !value.endsWith('.cl') && !value.endsWith('.com')) {
-                        return "Email debe terminar en .cl o .com";
-                    }
-                    if (!/^[^\s@]+@[^\s@]+\.(cl|com)$/i.test(value)) {
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
                         return "Formato de email inválido";
-                    }
-                    const beforeAt = value.split('@')[0];
-                    if (beforeAt.length < 3) {
-                        return "Mínimo 3 caracteres antes del @";
                     }
                 }
                 break;
 
             case 'password':
                 if (value.length > 0) {
-                    if (value.length < 8) {
-                        return "Contraseña debe tener al menos 8 caracteres";
+                    if (value.length < 6) {
+                        return "Contraseña debe tener al menos 6 caracteres";
                     }
-                    if (value.length > 26) {
-                        return "Contraseña no puede tener más de 26 caracteres";
-                    }
-                    if (!/^[a-zA-Z0-9]+$/.test(value)) {
-                        return "Solo letras y números permitidos";
+                    if (value.length > 50) {
+                        return "Contraseña no puede tener más de 50 caracteres";
                     }
                 }
                 break;
@@ -171,24 +161,20 @@ const Login = () => {
 
         if (!formData.email.trim()) {
             newErrors.email = "El email es obligatorio";
-        } else if (formData.email.trim().length < 10) {
-            newErrors.email = `Email debe tener al menos 10 caracteres`;
-        } else if (formData.email.trim().length > 35) {
-            newErrors.email = `Email no puede tener más de 35 caracteres`;
-        } else if (!/^[^\s@]+@[^\s@]+\.(cl|com)$/i.test(formData.email)) {
-            newErrors.email = "Email debe terminar en .cl o .com";
-        } else if (formData.email.split('@')[0].length < 3) {
-            newErrors.email = "Mínimo 3 caracteres antes del @";
+        } else if (formData.email.trim().length < 5) {
+            newErrors.email = "Email debe tener al menos 5 caracteres";
+        } else if (formData.email.trim().length > 100) {
+            newErrors.email = "Email no puede tener más de 100 caracteres";
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            newErrors.email = "Formato de email inválido";
         }
 
         if (!formData.password.trim()) {
             newErrors.password = "La contraseña es obligatoria";
-        } else if (formData.password.length < 8) {
-            newErrors.password = "Contraseña debe tener al menos 8 caracteres";
-        } else if (formData.password.length > 26) {
-            newErrors.password = "Contraseña no puede tener más de 26 caracteres";
-        } else if (!/^[a-zA-Z0-9]+$/.test(formData.password)) {
-            newErrors.password = "Solo letras y números permitidos";
+        } else if (formData.password.length < 6) {
+            newErrors.password = "Contraseña debe tener al menos 6 caracteres";
+        } else if (formData.password.length > 50) {
+            newErrors.password = "Contraseña no puede tener más de 50 caracteres";
         }
 
         setFieldErrors(newErrors);
@@ -204,7 +190,6 @@ const Login = () => {
 
         setLoading(true);
         try {
-            console.log("🔍 DEBUG - Datos enviados al login:", formData);
             const response = await login(formData);
 
             if (response.status === "Success") {
@@ -225,7 +210,6 @@ const Login = () => {
             }
         } catch (error) {
             console.error("Error en login:", error);
-            console.log("Error response data:", error.response?.data);
 
             if (error.response) {
                 const { status, data } = error.response;

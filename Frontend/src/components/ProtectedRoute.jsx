@@ -5,7 +5,7 @@ const ProtectedRoute = ({
     children, 
     allowedRoles = [], 
     requireAuth = true, 
-    redirectTo = '/auth' 
+    redirectTo = '/login' 
 }) => {
     const { isAuthenticated, user, loading } = useAuth();
     const location = useLocation();

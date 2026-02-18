@@ -46,9 +46,17 @@ const LazyImage = memo(({ src, alt, className = '', placeholder = null, onLoad =
         if (src.startsWith('data:image') || src.startsWith('http')) {
             return src;
         }
+
+        // Backend returns paths like "/uploads/productos/imagen-xxx.webp"
+        // We need the server origin (without /api) to build the full URL
+        const baseUrl = import.meta.env.VITE_BASE_URL || 'http://localhost:3000/api';
+        const origin = new URL(baseUrl).origin;
+
+        if (src.startsWith('/')) {
+            return `${origin}${src}`;
+        }
         
-        const baseUrl = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
-        return `${baseUrl}/api/productos/imagen/${src}`;
+        return `${origin}/uploads/productos/${src}`;
     };
 
     if (!src && !placeholder) {

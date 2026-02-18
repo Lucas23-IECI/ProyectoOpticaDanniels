@@ -18,7 +18,6 @@ const SugerenciasBusqueda = ({ terminoBusqueda, onSugerenciaClick }) => {
             setCargando(true);
             try {
                 const sugerenciasData = await obtenerSugerenciasBusqueda(terminoBusqueda);
-                console.log('🔍 Sugerencias obtenidas para:', terminoBusqueda, 'Resultados:', sugerenciasData);
                 setSugerencias(sugerenciasData);
             } catch (error) {
                 console.error('Error obteniendo sugerencias:', error);
@@ -45,10 +44,9 @@ const SugerenciasBusqueda = ({ terminoBusqueda, onSugerenciaClick }) => {
         return null;
     }
 
-    // Temporalmente siempre mostrar para debug
-    // if (sugerencias.length === 0 && !cargando) {
-    //     return null;
-    // }
+    if (sugerencias.length === 0 && !cargando) {
+        return null;
+    }
 
     return (
         <div className="sugerencias-busqueda">

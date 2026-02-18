@@ -64,10 +64,6 @@ const BusquedaResultados = () => {
         setCargando(true);
         setProductos([]);
         
-        if (import.meta.env.DEV) {
-            console.log('🔍 Buscando productos con query:', searchQuery, 'y filtros:', filtrosAdicionales);
-        }
-        
         try {
             const filtros = { nombre: searchQuery, activo: true, ...filtrosAdicionales };
             if (filtros.categoria && filtros.categoria.trim()) filtros.categoria = filtros.categoria.trim();

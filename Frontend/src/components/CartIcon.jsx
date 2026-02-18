@@ -55,7 +55,6 @@ const CartIcon = () => {
     const handleCheckout = () => {
         setIsOpen(false);
         // Aquí irá la navegación al checkout cuando esté implementado
-        console.log('Ir al checkout');
     };
     
     const handleViewCart = () => {

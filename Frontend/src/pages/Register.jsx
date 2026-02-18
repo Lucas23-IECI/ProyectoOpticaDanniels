@@ -428,11 +428,11 @@ const Register = () => {
                             window.location.reload();
                         }, 1000);
                     } else {
-                        navigate("/auth");
+                        navigate("/login");
                     }
                 } catch (loginError) {
                     console.error("Error en login automático:", loginError);
-                    navigate("/auth");
+                    navigate("/login");
                 }
             } else if (response.status === "Client error") {
                 // showErrorAlert("Error", response.details.message); // Removed as per new_code
@@ -444,9 +444,6 @@ const Register = () => {
             
             if (error.response) {
                 const { status, data } = error.response;
-                console.log("Error response data:", data);
-                console.log("Error response status:", status);
-                console.log("Full error response:", JSON.stringify(data, null, 2));
                 
                 if (status === 400) {
                     // Primero verificar si es error de email duplicado (mensaje específico del backend)

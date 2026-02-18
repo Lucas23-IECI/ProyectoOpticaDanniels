@@ -3,8 +3,9 @@ import { useAuth } from "@context/AuthContext";
 import { getNombreCompleto } from "@helpers/nameHelpers";
 import AdminProductos from "@components/AdminProductos";
 import AdminUsuarios from "@components/AdminUsuarios";
+import AdminOrdenes from "@components/AdminOrdenes";
 import AdminReportes from "@components/AdminReportes";
-import { FaBox, FaUsers, FaChartBar } from "react-icons/fa";
+import { FaBox, FaUsers, FaShoppingCart, FaChartBar } from "react-icons/fa";
 import "@styles/admin.css";
 
 const Admin = () => {
@@ -17,6 +18,8 @@ const Admin = () => {
                 return <AdminProductos />;
             case 'usuarios':
                 return <AdminUsuarios />;
+            case 'ordenes':
+                return <AdminOrdenes />;
             case 'reportes':
                 return <AdminReportes />;
             default:
@@ -44,6 +47,12 @@ const Admin = () => {
                     onClick={() => setActiveTab('usuarios')}
                 >
                     <FaUsers /> Usuarios
+                </button>
+                <button 
+                    className={`admin-tab ${activeTab === 'ordenes' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('ordenes')}
+                >
+                    <FaShoppingCart /> Órdenes
                 </button>
                 <button 
                     className={`admin-tab ${activeTab === 'reportes' ? 'active' : ''}`}

@@ -33,7 +33,6 @@ const Carrito = () => {
     
     const handleCheckout = () => {
         // Aquí irá la navegación al checkout cuando esté implementado
-        console.log('Proceder al checkout');
     };
     
     // Si no está autenticado, redirigir
@@ -46,7 +45,7 @@ const Carrito = () => {
                     <p>Necesitas estar autenticado para gestionar tu carrito de compras</p>
                     <button 
                         className="btn-login"
-                        onClick={() => navigate('/auth')}
+                        onClick={() => navigate('/login')}
                     >
                         Iniciar sesión
                     </button>

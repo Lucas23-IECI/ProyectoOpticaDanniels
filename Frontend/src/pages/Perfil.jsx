@@ -63,7 +63,6 @@ const Perfil = () => {
     });
 
     // Datos de direcciones - ahora manejado por el hook
-    // const [direccionesData, setDireccionesData] = useState([]);
 
     // Datos de seguridad
     const [securityData, setSecurityData] = useState({
@@ -257,8 +256,6 @@ const Perfil = () => {
 
     // Función para parsear errores del backend
     const parseBackendError = (errorMessage, section = 'personal') => {
-        console.log("Parseando error del backend:", errorMessage, "Sección:", section);
-        
         // Parsear errores estructurados del backend
         if (typeof errorMessage === 'object' && errorMessage.dataInfo && errorMessage.message) {
             const { dataInfo, message } = errorMessage;
@@ -418,7 +415,6 @@ const Perfil = () => {
         // Formatear teléfono automáticamente
         if (name === 'telefono') {
             const formattedValue = formatTelefono(value);
-            console.log('Teléfono original:', value, 'Formateado:', formattedValue);
             setPersonalData(prev => ({ ...prev, [name]: formattedValue }));
         } else {
             setPersonalData(prev => ({ ...prev, [name]: value }));
@@ -496,7 +492,6 @@ const Perfil = () => {
             
             if (error.response) {
                 const { status, data } = error.response;
-                console.log("Error response data:", data);
                 
                 if (status === 400) {
                     // Verificar errores específicos del backend
@@ -538,9 +533,7 @@ const Perfil = () => {
     // Handlers para direcciones - ahora usando el CRUD individual
     const handleCreateDireccion = async (direccionData) => {
         try {
-            console.log('📍 Perfil: Attempting to create direccion with data:', direccionData);
             await createDireccion(direccionData);
-            console.log('✅ Perfil: Direccion created successfully');
             setMessageDirecciones({ type: 'success', text: 'Dirección creada correctamente' });
             setIsEditingDirecciones(false);
         } catch (error) {
@@ -556,9 +549,7 @@ const Perfil = () => {
 
     const handleUpdateDireccion = async (direccionId, direccionData) => {
         try {
-            console.log('📍 Perfil: Attempting to update direccion:', direccionId, 'with data:', direccionData);
             await updateDireccion(direccionId, direccionData);
-            console.log('✅ Perfil: Direccion updated successfully');
             setMessageDirecciones({ type: 'success', text: 'Dirección actualizada correctamente' });
         } catch (error) {
             console.error('❌ Perfil: Error al actualizar dirección:', error);
@@ -573,9 +564,7 @@ const Perfil = () => {
 
     const handleDeleteDireccion = async (direccionId) => {
         try {
-            console.log('📍 Perfil: Attempting to delete direccion:', direccionId);
             await deleteDireccion(direccionId);
-            console.log('✅ Perfil: Direccion deleted successfully');
             setMessageDirecciones({ type: 'success', text: 'Dirección eliminada correctamente' });
         } catch (error) {
             console.error('❌ Perfil: Error al eliminar dirección:', error);
@@ -590,9 +579,7 @@ const Perfil = () => {
 
     const handleSetPrincipal = async (direccionId) => {
         try {
-            console.log('📍 Perfil: Attempting to set principal direccion:', direccionId);
             await setPrincipal(direccionId);
-            console.log('✅ Perfil: Principal direccion set successfully');
             setMessageDirecciones({ type: 'success', text: 'Dirección principal actualizada' });
         } catch (error) {
             console.error('❌ Perfil: Error al establecer dirección principal:', error);
@@ -645,7 +632,6 @@ const Perfil = () => {
             
             if (error.response) {
                 const { status, data } = error.response;
-                console.log("Error response data:", data);
                 
                 if (status === 400) {
                     if (data.message && typeof data.message === 'object' && data.message.dataInfo) {

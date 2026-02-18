@@ -61,7 +61,14 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
             });
 
             if (producto.imagen_url) {
-                setPreviewImagen(producto.imagen_url);
+                const url = producto.imagen_url;
+                if (url.startsWith('http') || url.startsWith('data:')) {
+                    setPreviewImagen(url);
+                } else {
+                    const base = import.meta.env.VITE_BASE_URL || 'http://localhost:3000/api';
+                    const origin = new URL(base).origin;
+                    setPreviewImagen(url.startsWith('/') ? `${origin}${url}` : `${origin}/uploads/productos/${url}`);
+                }
             }
         }
     }, [producto, show]);

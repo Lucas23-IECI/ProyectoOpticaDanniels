@@ -138,10 +138,8 @@ const AdminUsuarios = () => {
 
     // Resetear página cuando cambian filtros
     useEffect(() => {
-        if (currentPage !== 1) {
-            setCurrentPage(1);
-        }
-    }, [searchTerm, filters, currentPage]);
+        setCurrentPage(1);
+    }, [searchTerm, filters]);
 
     // Handlers
     const handleSearchChange = (e) => {
@@ -239,6 +237,16 @@ const AdminUsuarios = () => {
             <FaCrown className="role-icon" /> :
             <FaUserTie className="role-icon" />;
     };
+
+    // Quick stats from full dataset 
+    const quickStats = useMemo(() => {
+        const admins = usuarios.filter(u => u.rol === 'administrador').length;
+        const regulares = usuarios.filter(u => u.rol === 'usuario').length;
+        const hoy = new Date();
+        const hace30Dias = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() - 30);
+        const recientes = usuarios.filter(u => new Date(u.createdAt) >= hace30Dias).length;
+        return { admins, regulares, recientes };
+    }, [usuarios]);
 
     return (
         <div className="admin-usuarios">
@@ -415,6 +423,20 @@ const AdminUsuarios = () => {
                     Mostrando {startIndex + 1}-{endIndex} de {totalItems} usuarios
                 </div>
             </div>
+
+            {!loading && usuarios.length > 0 && (
+                <div className="usuarios-quick-stats">
+                    <span className="quick-stat">
+                        <FaUserShield /> {quickStats.admins} admin{quickStats.admins !== 1 ? 's' : ''}
+                    </span>
+                    <span className="quick-stat">
+                        <FaUser /> {quickStats.regulares} usuario{quickStats.regulares !== 1 ? 's' : ''}
+                    </span>
+                    <span className="quick-stat recientes">
+                        <FaCalendar /> {quickStats.recientes} nuevos (30d)
+                    </span>
+                </div>
+            )}
 
             <div className="usuarios-content">
                 {loading && (
