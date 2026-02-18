@@ -60,9 +60,9 @@
     right: 0;
     width: 380px;
     max-height: 500px;
-    background: white;
+    background: var(--bg-card, #fff);
     border: 1px solid var(--border-color, #e2e8f0);
-    border-radius: 12px;
+    border-radius: var(--border-radius-lg, 12px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     z-index: 1000;
     overflow: hidden;
@@ -413,46 +413,5 @@
     .cart-dropdown {
         width: 280px;
         right: -80px;
-    }
-}
-
-/* ===============================================
-   DARK MODE SUPPORT
-   =============================================== */
-
-@media (prefers-color-scheme: dark) {
-    .cart-dropdown {
-        background: var(--bg-dark, #2d3748);
-        border-color: var(--border-dark, #4a5568);
-    }
-    
-    .cart-header {
-        background: var(--bg-dark-secondary, #1a202c);
-        border-bottom-color: var(--border-dark, #4a5568);
-    }
-    
-    .cart-header h3 {
-        color: var(--text-dark-primary, #f7fafc);
-    }
-    
-    .cart-item:hover {
-        background: var(--bg-dark-secondary, #1a202c);
-    }
-    
-    .item-name {
-        color: var(--text-dark-primary, #f7fafc);
-    }
-    
-    .quantity {
-        color: var(--text-dark-primary, #f7fafc);
-    }
-    
-    .cart-footer {
-        background: var(--bg-dark-secondary, #1a202c);
-        border-top-color: var(--border-dark, #4a5568);
-    }
-    
-    .total-label {
-        color: var(--text-dark-primary, #f7fafc);
     }
 }

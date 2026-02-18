@@ -6,6 +6,7 @@ import authRoutes from "./auth.routes.js";
 import ordenRoutes from "./orden.routes.js";
 import direccionRoutes from "./direccion.routes.js";
 import reporteRoutes from "./reporte.routes.js";
+import wishlistRoutes from "./wishlist.routes.js";
 
 const router = Router();
 
@@ -15,6 +16,7 @@ router
     .use("/productos", productoRoutes)
     .use("/ordenes", ordenRoutes)
     .use("/direcciones", direccionRoutes)
-    .use("/reportes", reporteRoutes);
+    .use("/reportes", reporteRoutes)
+    .use("/wishlist", wishlistRoutes);
 
 export default router;

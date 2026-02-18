@@ -169,8 +169,7 @@ body:not(:has(.navbar-fixed)) {
     width: 200px;
 }
 
-.popup-auth button,
-.dropdown-usuario button {
+.popup-auth button {
     width: 100%;
     background-color: var(--btn-secondary-bg);
     border: none;
@@ -183,8 +182,7 @@ body:not(:has(.navbar-fixed)) {
     transition: var(--transition-fast);
 }
 
-.popup-auth button:hover,
-.dropdown-usuario button:hover {
+.popup-auth button:hover {
     background-color: var(--btn-secondary-hover);
 }
 

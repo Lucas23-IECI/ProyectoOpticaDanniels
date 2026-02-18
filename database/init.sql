@@ -88,14 +88,40 @@ CREATE TABLE IF NOT EXISTS ordenes_productos (
     "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
--- Wishlist (sin entity aún — reservada para implementación futura)
--- CREATE TABLE IF NOT EXISTS wishlist (
---     id SERIAL PRIMARY KEY,
---     "usuarioId" INTEGER REFERENCES users(id) ON DELETE CASCADE,
---     "productoId" INTEGER REFERENCES productos(id) ON DELETE CASCADE,
---     "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
---     UNIQUE("usuarioId", "productoId")
--- );
+-- Wishlist (lista de deseos del usuario)
+CREATE TABLE IF NOT EXISTS wishlist (
+    id SERIAL PRIMARY KEY,
+    "userId" INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    "productoId" INTEGER NOT NULL REFERENCES productos(id) ON DELETE CASCADE,
+    "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    UNIQUE("userId", "productoId")
+);
+
+CREATE TABLE IF NOT EXISTS password_resets (
+    id SERIAL PRIMARY KEY,
+    token VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL,
+    "expiresAt" TIMESTAMPTZ NOT NULL,
+    used BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- Tabla reviews (reseñas de productos con moderación admin)
+CREATE TABLE IF NOT EXISTS reviews (
+    id SERIAL PRIMARY KEY,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comentario TEXT,
+    estado VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+    "userId" INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    "productoId" INTEGER NOT NULL REFERENCES productos(id) ON DELETE CASCADE,
+    "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    "updatedAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    UNIQUE("userId", "productoId")
+);
+
+CREATE INDEX IF NOT EXISTS idx_review_producto ON reviews ("productoId");
+CREATE INDEX IF NOT EXISTS idx_review_usuario ON reviews ("userId");
+CREATE INDEX IF NOT EXISTS idx_review_estado ON reviews (estado);
 
 -- =========================
 -- SEED: USUARIOS (coinciden con tu initialSetup.js)
@@ -167,6 +193,8 @@ CREATE INDEX IF NOT EXISTS idx_ordenes_correo    ON ordenes(correo);
 CREATE INDEX IF NOT EXISTS idx_ordenes_usuario   ON ordenes("usuarioId");
 CREATE INDEX IF NOT EXISTS idx_ordprod_orden     ON ordenes_productos("ordenId");
 CREATE INDEX IF NOT EXISTS idx_ordprod_producto  ON ordenes_productos("productoId");
+CREATE INDEX IF NOT EXISTS idx_pwreset_token     ON password_resets(token);
+CREATE INDEX IF NOT EXISTS idx_pwreset_email     ON password_resets(email);
 
 -- =========================
 -- TRIGGERS updatedAt

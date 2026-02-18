@@ -7,7 +7,7 @@ import ProductCard from "@components/ProductCard";
 import DropdownCategorias from "@components/DropdownCategorias";
 import "@styles/productos.css";
 import { Link } from "react-router-dom";
-import { FaFilter, FaTimes, FaEye, FaHeart, FaShoppingCart, FaStar, FaSearch, FaTh, FaList, FaSort, FaTags, FaEyeSlash, FaCog } from 'react-icons/fa';
+import { FaFilter, FaTimes, FaEye, FaHeart, FaShoppingCart, FaStar, FaSearch, FaTh, FaList, FaSort, FaTags, FaEyeSlash, FaCog, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import SugerenciasBusqueda from "@components/SugerenciasBusqueda";
 import FiltrosAvanzados from "@components/FiltrosAvanzados";
 
@@ -25,6 +25,8 @@ const Productos = () => {
     const [showFilters, setShowFilters] = useState(false);
     const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
     const [searchTerm, setSearchTerm] = useState(searchParams.get("busqueda") || "");
+    const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
+    const ITEMS_PER_PAGE = 12;
     
     const [isFilteringDebounced, setIsFilteringDebounced] = useState(false);
 
@@ -38,7 +40,7 @@ const Productos = () => {
         tamaño: []
     });
 
-    const { productos, fetchProductos } = useGetProductos({ activo: true });
+    const { productos, paginacion, fetchProductos } = useGetProductos({ activo: true });
     const debounceRef = useRef(null);
 
     const actualizarURL = useCallback((filtros) => {
@@ -50,6 +52,7 @@ const Productos = () => {
         if (filtros.precioMax) params.set("precioMax", filtros.precioMax);
         if (filtros.orden) params.set("orden", filtros.orden);
         if (filtros.busqueda) params.set("busqueda", filtros.busqueda);
+        if (filtros.page && filtros.page > 1) params.set("page", String(filtros.page));
         
         setSearchParams(params);
     }, [setSearchParams]);
@@ -87,6 +90,9 @@ const Productos = () => {
                     paramsFiltros.nombre = filtros.busqueda.trim();
                 }
 
+                paramsFiltros.page = filtros.page || 1;
+                paramsFiltros.limit = ITEMS_PER_PAGE;
+
                 await fetchProductos(paramsFiltros);
                 
             } catch (error) {
@@ -110,7 +116,8 @@ const Productos = () => {
             precioMin,
             precioMax,
             orden,
-            busqueda: searchTerm
+            busqueda: searchTerm,
+            page: currentPage
         };
 
         const hayFiltrosActivos = categoria || subcategoria || disponibilidad || precioMin || precioMax || orden || searchTerm;
@@ -122,8 +129,7 @@ const Productos = () => {
             const cargarTodosLosProductos = async () => {
                 try {
                     setLoading(true);
-                    // Siempre cargar solo productos activos para clientes
-                    await fetchProductos({ activo: true });
+                    await fetchProductos({ activo: true, page: currentPage, limit: ITEMS_PER_PAGE });
                 } catch (error) {
                     console.error("Error al cargar productos:", error);
                 } finally {
@@ -132,7 +138,7 @@ const Productos = () => {
             };
             cargarTodosLosProductos();
         }
-    }, [categoria, subcategoria, disponibilidad, precioMin, precioMax, orden, searchTerm, actualizarURL, obtenerProductosConDebounce, fetchProductos]);
+    }, [categoria, subcategoria, disponibilidad, precioMin, precioMax, orden, searchTerm, currentPage, actualizarURL, obtenerProductosConDebounce, fetchProductos]);
 
     const restablecerFiltros = useCallback(() => {
         setCategoria("");
@@ -142,6 +148,7 @@ const Productos = () => {
         setPrecioMax("");
         setOrden("");
         setSearchTerm("");
+        setCurrentPage(1);
         setFiltrosAvanzados({
             forma: [],
             marca: [],
@@ -224,7 +231,7 @@ const Productos = () => {
                             type="text"
                             placeholder="Buscar productos..."
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                             className="search-input"
                         />
                         {searchTerm && (
@@ -265,7 +272,7 @@ const Productos = () => {
                         <FaSort className="sort-icon" />
                         <select 
                             value={orden} 
-                            onChange={(e) => setOrden(e.target.value)}
+                            onChange={(e) => { setOrden(e.target.value); setCurrentPage(1); }}
                             className="sort-select"
                         >
                             <option value="">Más relevantes</option>
@@ -296,8 +303,8 @@ const Productos = () => {
                             <DropdownCategorias
                                 selectedCategoria={categoria}
                                 selectedSubcategoria={subcategoria}
-                                onCategoriaChange={setCategoria}
-                                onSubcategoriaChange={setSubcategoria}
+                                onCategoriaChange={(val) => { setCategoria(val); setCurrentPage(1); }}
+                                onSubcategoriaChange={(val) => { setSubcategoria(val); setCurrentPage(1); }}
                                 placeholder="Todas las categorías"
                                 dropdownActivo={dropdownActivo}
                                 setDropdownActivo={setDropdownActivo}
@@ -315,7 +322,7 @@ const Productos = () => {
                                     { valor: "agotado", etiqueta: "Agotado" },
                                 ]}
                                 seleccion={disponibilidad}
-                                onSeleccion={(valor) => setDisponibilidad(valor)}
+                                onSeleccion={(valor) => { setDisponibilidad(valor); setCurrentPage(1); }}
                                 dropdownActivo={dropdownActivo}
                                 setDropdownActivo={setDropdownActivo}
                                 id="disponibilidad"
@@ -359,7 +366,12 @@ const Productos = () => {
                     ) : Array.isArray(displayedProducts) && displayedProducts.length > 0 ? (
                         <>
                             <div className="results-info">
-                                <p>Mostrando {displayedProducts.length} producto{displayedProducts.length !== 1 ? 's' : ''}</p>
+                                <p>
+                                    Mostrando {displayedProducts.length} de {paginacion?.total || displayedProducts.length} producto{(paginacion?.total || displayedProducts.length) !== 1 ? 's' : ''}
+                                    {paginacion && paginacion.paginas > 1 && (
+                                        <span className="page-indicator"> — Página {paginacion.pagina} de {paginacion.paginas}</span>
+                                    )}
+                                </p>
                                 {isFilteringDebounced && (
                                     <div className="filtering-indicator">
                                         <div className="mini-spinner"></div>
@@ -382,6 +394,68 @@ const Productos = () => {
                                     </Link>
                                 ))}
                             </div>
+
+                            {paginacion && paginacion.paginas > 1 && (
+                                <div className="pagination-controls">
+                                    <button
+                                        className="pagination-btn"
+                                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                                        disabled={currentPage <= 1 || loading}
+                                        title="Página anterior"
+                                    >
+                                        <FaChevronLeft />
+                                        <span>Anterior</span>
+                                    </button>
+
+                                    <div className="pagination-pages">
+                                        {(() => {
+                                            const pages = [];
+                                            const total = paginacion.paginas;
+                                            const current = paginacion.pagina;
+                                            
+                                            // Always show first page
+                                            pages.push(1);
+                                            
+                                            if (current > 3) pages.push('...');
+                                            
+                                            // Pages around current
+                                            for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+                                                pages.push(i);
+                                            }
+                                            
+                                            if (current < total - 2) pages.push('...');
+                                            
+                                            // Always show last page
+                                            if (total > 1) pages.push(total);
+                                            
+                                            return pages.map((page, idx) => (
+                                                page === '...' ? (
+                                                    <span key={`ellipsis-${idx}`} className="pagination-ellipsis">...</span>
+                                                ) : (
+                                                    <button
+                                                        key={page}
+                                                        className={`pagination-page ${page === current ? 'active' : ''}`}
+                                                        onClick={() => setCurrentPage(page)}
+                                                        disabled={loading}
+                                                    >
+                                                        {page}
+                                                    </button>
+                                                )
+                                            ));
+                                        })()}
+                                    </div>
+
+                                    <button
+                                        className="pagination-btn"
+                                        onClick={() => setCurrentPage(prev => Math.min(paginacion.paginas, prev + 1))}
+                                        disabled={currentPage >= paginacion.paginas || loading}
+                                        title="Página siguiente"
+                                    >
+                                        <span>Siguiente</span>
+                                        <FaChevronRight />
+                                    </button>
+                                </div>
+                            )}
                         </>
                     ) : (
                         <div className="empty-state">

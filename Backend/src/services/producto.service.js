@@ -202,7 +202,7 @@ export const buscarProductosService = async (filtros) => {
         }
 
         const pagina = filtros.page ? parseInt(filtros.page) : 1;
-        const limite = filtros.limit ? parseInt(filtros.limit) : 100;
+        const limite = filtros.limit ? parseInt(filtros.limit) : 12;
 
         if (pagina < 1 || limite < 1)
             throw { status: 400, message: "Parámetros de paginación inválidos" };

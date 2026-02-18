@@ -21,8 +21,8 @@ function Home() {
         const cargarProductosDestacados = async () => {
             try {
                 // Solo cargar productos activos para clientes
-                const productosData = await getProductos({ activo: true });
-                const destacados = productosData.slice(0, 6);
+                const result = await getProductos({ activo: true, limit: 6 });
+                const destacados = result?.productos || [];
                 setProductosDestacados(destacados);
             } catch (error) {
                 console.error('Error al cargar productos destacados:', error);

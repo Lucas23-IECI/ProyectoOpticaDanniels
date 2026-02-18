@@ -19,6 +19,7 @@ import Contacto from "@pages/Contacto";
 import Privacidad from "@pages/Privacidad";
 import Terminos from "@pages/Terminos";
 import Admin from "@pages/Admin";
+import RecuperarPassword from "@pages/RecuperarPassword";
 
 
 function AppContent() {
@@ -49,6 +50,14 @@ function AppContent() {
             }
           />
           <Route path="/auth" element={<Navigate to="/login" replace />} />
+          <Route
+            path="/recuperar-password"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <RecuperarPassword />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/register"
             element={

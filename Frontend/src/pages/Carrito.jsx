@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaTrash, FaPlus, FaMinus, FaArrowLeft, FaCreditCard } from 'react-icons/fa';
 import { useCart } from '@context/CartContext';
 import { useAuth } from '@context/AuthContext';
+import LazyImage from '@components/LazyImage';
 import '@styles/carrito.css';
 
 const Carrito = () => {
@@ -102,10 +103,9 @@ const Carrito = () => {
                         {cart.map((item) => (
                             <div key={item.id} className="carrito-item">
                                 <div className="item-image">
-                                    <img 
+                                    <LazyImage 
                                         src={item.imagen_url} 
                                         alt={item.nombre}
-                                        loading="lazy"
                                     />
                                 </div>
                                 
@@ -162,7 +162,10 @@ const Carrito = () => {
                                     <div className="item-total">
                                         <label>Subtotal:</label>
                                         <span className="subtotal-price">
-                                            {formatPrice(item.precio * item.cantidad)}
+                                            {item.oferta && item.descuento > 0
+                                                ? formatPrice(Math.round(item.precio * (1 - item.descuento / 100)) * item.cantidad)
+                                                : formatPrice(item.precio * item.cantidad)
+                                            }
                                         </span>
                                     </div>
                                     

@@ -1,156 +1,139 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@context/AuthContext';
-import { getAllProductos } from '../services/producto.service';
+import {
+    getWishlist as getWishlistAPI,
+    addToWishlist as addToWishlistAPI,
+    removeFromWishlist as removeFromWishlistAPI,
+} from '../services/wishlist.service';
 
-const WISHLIST_KEY_BASE = 'optica-danniels-wishlist';
+const WISHLIST_GUEST_KEY = 'optica-danniels-wishlist-guest';
 
+/**
+ * Hook de wishlist híbrido:
+ * - Usuario autenticado → API backend (fuente de verdad)
+ * - Invitado → localStorage
+ */
 export const useWishlist = () => {
     const [wishlist, setWishlist] = useState([]);
-    const { user, loading, isAuthenticated, userChangeFlag } = useAuth();
-    const previousUserRef = useRef(undefined);
+    const [loadingWishlist, setLoadingWishlist] = useState(false);
+    const { user, loading: authLoading, isAuthenticated } = useAuth();
+    const previousAuthRef = useRef(null);
     const isInitialized = useRef(false);
-    const justLoaded = useRef(false);
 
-    const getWishlistKey = useCallback(() => {
-        const userRut = user?.rut;
-        if (userRut) {
-            return `${WISHLIST_KEY_BASE}-${userRut}`;
-        }
-        return `${WISHLIST_KEY_BASE}-guest`;
-    }, [user?.rut]);
+    // ───────────────────────────────────────
+    // Cargar wishlist según modo (API o guest)
+    // ───────────────────────────────────────
+    const loadWishlist = useCallback(async () => {
+        if (authLoading) return;
 
-    const forceReloadWishlist = useCallback(() => {
-        const currentUserRut = user?.rut || null;
-        const wishlistKey = currentUserRut ? `${WISHLIST_KEY_BASE}-${currentUserRut}` : `${WISHLIST_KEY_BASE}-guest`;
-        const savedWishlist = localStorage.getItem(wishlistKey);
-
-        if (savedWishlist && savedWishlist !== '[]') {
-            try {
-                const parsedWishlist = JSON.parse(savedWishlist);
-                setWishlist(parsedWishlist);
-            } catch {
-                setWishlist([]);
-            }
-        } else {
-            setWishlist([]);
-        }
-
-        isInitialized.current = true;
-        justLoaded.current = true;
-
-        setTimeout(() => {
-            justLoaded.current = false;
-        }, 100);
-    }, [user]);
-
-    const validateWishlistProducts = useCallback(async () => {
-        if (wishlist.length === 0) return;
-
+        setLoadingWishlist(true);
         try {
-            const response = await getAllProductos();
-            const allProducts = Array.isArray(response?.productos) ? response.productos : 
-                                Array.isArray(response) ? response : [];
-            if (allProducts.length === 0) return;
-            
-            const existingProductIds = new Set(allProducts.map(p => p.id));
-
-            const validWishlist = wishlist.filter(item => existingProductIds.has(item.id));
-
-            if (validWishlist.length !== wishlist.length) {
-                setWishlist(validWishlist);
-
-                const wishlistKey = getWishlistKey();
-                localStorage.setItem(wishlistKey, JSON.stringify(validWishlist));
+            if (isAuthenticated) {
+                // Modo API: obtener desde backend
+                const items = await getWishlistAPI();
+                // Los items vienen con producto cargado (eager), extraer datos del producto
+                const mapped = items.map(item => ({
+                    id: item.producto?.id || item.productoId,
+                    nombre: item.producto?.nombre,
+                    precio: item.producto?.precio,
+                    imagen_url: item.producto?.imagen_url,
+                    marca: item.producto?.marca,
+                    categoria: item.producto?.categoria,
+                    oferta: item.producto?.oferta,
+                    descuento: item.producto?.descuento,
+                    stock: item.producto?.stock,
+                    activo: item.producto?.activo,
+                    wishlistItemId: item.id,
+                }));
+                setWishlist(mapped);
+            } else {
+                // Modo guest: localStorage
+                const saved = localStorage.getItem(WISHLIST_GUEST_KEY);
+                if (saved) {
+                    try {
+                        setWishlist(JSON.parse(saved));
+                    } catch {
+                        setWishlist([]);
+                    }
+                } else {
+                    setWishlist([]);
+                }
             }
         } catch (error) {
-            console.error('Error validando productos en wishlist:', error);
+            console.error('Error al cargar wishlist:', error);
+            setWishlist([]);
+        } finally {
+            setLoadingWishlist(false);
+            isInitialized.current = true;
         }
-    }, [wishlist, getWishlistKey]);
+    }, [isAuthenticated, authLoading]);
 
-
+    // Cargar al montar y cuando cambia el estado de autenticación
     useEffect(() => {
-        if (wishlist.length > 0 && isInitialized.current && !justLoaded.current) {
-            validateWishlistProducts();
+        if (authLoading) return;
+
+        const authState = isAuthenticated ? user?.id : 'guest';
+        if (authState !== previousAuthRef.current || !isInitialized.current) {
+            previousAuthRef.current = authState;
+            loadWishlist();
         }
-    }, [wishlist.length, validateWishlistProducts]);
+    }, [isAuthenticated, user?.id, authLoading, loadWishlist]);
 
+    // Persistir wishlist de invitado en localStorage
     useEffect(() => {
-        if (wishlist.length > 0) {
-            validateWishlistProducts();
-        }
-    }, [wishlist.length, validateWishlistProducts]);
+        if (authLoading || !isInitialized.current || isAuthenticated) return;
+        localStorage.setItem(WISHLIST_GUEST_KEY, JSON.stringify(wishlist));
+    }, [wishlist, isAuthenticated, authLoading]);
 
-    useEffect(() => {
-        if (loading) return;
-
-        const currentUserRut = user?.rut || null;
-        const previousUserRut = previousUserRef.current;
-
-        const userChanged = currentUserRut !== previousUserRut;
-        const shouldLoad = !isInitialized.current || userChanged;
-
-        if (shouldLoad) {
-            previousUserRef.current = currentUserRut;
-
-            forceReloadWishlist();
-        }
-    }, [user?.rut, user, isAuthenticated, userChangeFlag, forceReloadWishlist, loading]);
-
-    useEffect(() => {
-        const handleUserChanged = () => {
-            setTimeout(() => {
-                forceReloadWishlist();
-            }, 50);
-        };
-
-        window.addEventListener('userChanged', handleUserChanged);
-        return () => window.removeEventListener('userChanged', handleUserChanged);
-    }, [forceReloadWishlist]);
-
+    // Escuchar evento de producto eliminado (admin)
     useEffect(() => {
         const handleProductoEliminado = (event) => {
             const { productoId } = event.detail;
-            setWishlist(prev => {
-                const newWishlist = prev.filter(item => item.id !== productoId);
-                const wishlistKey = getWishlistKey();
-                localStorage.setItem(wishlistKey, JSON.stringify(newWishlist));
-                return newWishlist;
-            });
+            setWishlist(prev => prev.filter(item => item.id !== productoId));
         };
 
         window.addEventListener('productoEliminado', handleProductoEliminado);
         return () => window.removeEventListener('productoEliminado', handleProductoEliminado);
-    }, [getWishlistKey]);
+    }, []);
 
-    useEffect(() => {
-        if (userChangeFlag > 0) {
-            setTimeout(() => {
-                forceReloadWishlist();
-            }, 100);
-        }
-    }, [userChangeFlag, forceReloadWishlist]);
-
-    useEffect(() => {
-        if (loading || !isInitialized.current || justLoaded.current) {
-            return;
-        }
-
-        const wishlistKey = getWishlistKey();
-        localStorage.setItem(wishlistKey, JSON.stringify(wishlist));
-    }, [wishlist, getWishlistKey, loading]);
-
-    const addToWishlist = useCallback((producto) => {
+    // ───────────────────────────────────────
+    // Acciones
+    // ───────────────────────────────────────
+    const addToWishlist = useCallback(async (producto) => {
+        // Optimistic update
         setWishlist(prev => {
-            if (!prev.some(item => item.id === producto.id)) {
-                return [...prev, producto];
-            }
-            return prev;
+            if (prev.some(item => item.id === producto.id)) return prev;
+            return [...prev, producto];
         });
-    }, []);
 
-    const removeFromWishlist = useCallback((productoId) => {
+        if (isAuthenticated) {
+            try {
+                await addToWishlistAPI(producto.id);
+            } catch (error) {
+                // Rollback on failure
+                setWishlist(prev => prev.filter(item => item.id !== producto.id));
+                console.error('Error al agregar a wishlist:', error.message);
+            }
+        }
+    }, [isAuthenticated]);
+
+    const removeFromWishlist = useCallback(async (productoId) => {
+        // Keep for rollback
+        const previousWishlist = wishlist;
+
+        // Optimistic update
         setWishlist(prev => prev.filter(item => item.id !== productoId));
-    }, []);
+
+        if (isAuthenticated) {
+            try {
+                await removeFromWishlistAPI(productoId);
+            } catch (error) {
+                // Rollback on failure
+                setWishlist(previousWishlist);
+                console.error('Error al eliminar de wishlist:', error.message);
+            }
+        }
+    }, [isAuthenticated, wishlist]);
 
     const toggleWishlist = useCallback((producto) => {
         if (wishlist.some(item => item.id === producto.id)) {
@@ -164,9 +147,19 @@ export const useWishlist = () => {
         return wishlist.some(item => item.id === productoId);
     }, [wishlist]);
 
-    const clearWishlist = useCallback(() => {
+    const clearWishlist = useCallback(async () => {
+        if (isAuthenticated) {
+            // Remove all one by one (no bulk endpoint)
+            const promises = wishlist.map(item => removeFromWishlistAPI(item.id).catch(() => {}));
+            await Promise.all(promises);
+        }
         setWishlist([]);
-    }, []);
+    }, [isAuthenticated, wishlist]);
+
+    const forceReloadWishlist = useCallback(() => {
+        isInitialized.current = false;
+        loadWishlist();
+    }, [loadWishlist]);
 
     return {
         wishlist,
@@ -176,7 +169,7 @@ export const useWishlist = () => {
         isInWishlist,
         clearWishlist,
         forceReloadWishlist,
-        validateWishlistProducts,
-        wishlistCount: wishlist.length
+        loadingWishlist,
+        wishlistCount: wishlist.length,
     };
 };

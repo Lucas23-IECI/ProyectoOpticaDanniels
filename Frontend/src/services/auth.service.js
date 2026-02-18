@@ -52,3 +52,13 @@ export async function updateProfile(userData) {
     }
 }
 
+export async function forgotPassword(email) {
+    const response = await axios.post('/auth/forgot-password', { email });
+    return response.data;
+}
+
+export async function resetPassword(token, newPassword) {
+    const response = await axios.post('/auth/reset-password', { token, newPassword });
+    return response.data;
+}
+

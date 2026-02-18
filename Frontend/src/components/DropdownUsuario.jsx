@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@context/AuthContext';
 import { getNombreCorto } from '@helpers/nameHelpers';
 import { showSuccessAlert } from '@helpers/sweetAlert';
+import { FaUser, FaHeart, FaShieldAlt, FaShoppingBag, FaSignOutAlt } from 'react-icons/fa';
 import '@styles/dropdownUsuario.css';
 
 function DropdownUsuario({ onClose }) {
@@ -18,29 +19,47 @@ function DropdownUsuario({ onClose }) {
         }, 1000);
     };
 
+    const goTo = (path) => {
+        navigate(path);
+        if (onClose) onClose();
+    };
+
     return (
         <div className="dropdown-usuario">
             <p className="usuario-saludo">
                 {user?.rol === 'administrador' ? '👑' : '👤'} {getNombreCorto(user) || 'Usuario'}
                 {user?.rol === 'administrador' && <span className="admin-badge">Admin</span>}
             </p>
-            <button onClick={() => { navigate('/perfil'); if (onClose) onClose(); }}>
+
+            <button onClick={() => goTo('/perfil')}>
+                <span className="dropdown-icon"><FaUser /></span>
                 Mi perfil
             </button>
-            <button onClick={() => { navigate('/favoritos'); onClose(); }}>
+
+            <button onClick={() => goTo('/favoritos')}>
+                <span className="dropdown-icon"><FaHeart /></span>
                 Mis favoritos
             </button>
-            {user?.rol === 'administrador' && (
-                <button 
-                    onClick={() => { navigate('/admin'); onClose(); }}
-                >
-                    Panel de Administración
-                </button>
-            )}
-            <button onClick={() => { navigate('/mis-compras'); onClose(); }}>
+
+            <button onClick={() => goTo('/mis-compras')}>
+                <span className="dropdown-icon"><FaShoppingBag /></span>
                 Mis compras
             </button>
-            <button onClick={handleLogout}>
+
+            {user?.rol === 'administrador' && (
+                <>
+                    <div className="dropdown-separator" />
+                    <button className="admin-button" onClick={() => goTo('/admin')}>
+                        <span className="dropdown-icon"><FaShieldAlt /></span>
+                        Panel de Administración
+                    </button>
+                </>
+            )}
+
+            <div className="dropdown-separator" />
+            
+            <button className="logout-button" onClick={handleLogout}>
+                <span className="dropdown-icon"><FaSignOutAlt /></span>
                 Cerrar sesión
             </button>
         </div>

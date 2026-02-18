@@ -317,7 +317,7 @@ const Login = () => {
                         <span className="checkmark"></span>
                         Recordarme
                     </label>
-                    <a href="#" className="forgot-password">¿Olvidaste tu contraseña?</a>
+                    <Link to="/recuperar-password" className="forgot-password">¿Olvidaste tu contraseña?</Link>
                 </div>
 
                 <button

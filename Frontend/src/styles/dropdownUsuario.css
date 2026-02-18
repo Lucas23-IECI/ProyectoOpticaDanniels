@@ -3,93 +3,134 @@
     top: 100%;
     right: 50%;
     transform: translateX(50%);
-    background: var(--surface-color);
-    border-radius: 16px;
+    background: var(--bg-card, #fff);
+    border-radius: var(--border-radius-lg);
     box-shadow: 
-        0 12px 48px rgba(0, 0, 0, 0.15),
-        0 6px 24px rgba(0, 0, 0, 0.08);
-    padding: 0.75rem 0;
-    min-width: 220px;
+        0 12px 48px rgba(0, 0, 0, 0.12),
+        0 4px 16px rgba(0, 0, 0, 0.06);
+    padding: 0.5rem;
+    min-width: 240px;
     z-index: 999;
-    animation: fadeIn 0.3s ease;
-    border: 1px solid rgba(18, 52, 86, 0.08);
+    animation: dropdownFadeIn 0.2s ease;
+    border: 1px solid rgba(0, 0, 0, 0.06);
     margin-top: 8px;
 }
 
-.dropdown-usuario button {
-    width: 100%;
-    padding: 0.875rem 1.25rem;
-    background: none;
-    border: none;
-    text-align: left;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    color: var(--text-color);
-    font-weight: 500;
+/* ── Greeting ── */
+.usuario-saludo {
+    padding: 0.75rem 1rem;
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+    color: var(--text-primary);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
     display: flex;
     align-items: center;
     gap: 8px;
-}
-
-.dropdown-usuario button:hover {
-    background: rgba(18, 52, 86, 0.04);
-    color: var(--primary-color);
-    transform: translateX(2px);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: relative;
 }
 
 .admin-badge {
-    background: var(--error-color);
-    color: var(--surface-color);
-    padding: 0.25rem 0.6rem;
-    border-radius: 12px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    margin-left: 0.5rem;
-    animation: pulse 2s infinite;
+    background: var(--primary-color);
+    color: #fff;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    margin-left: auto;
+    line-height: 1.3;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.admin-button {
-    background: var(--primary-color) !important;
-    color: var(--surface-color) !important;
-    font-weight: 600;
-    border-radius: 10px !important;
-    margin: 4px 0px !important;
-    box-shadow: 0 4px 16px rgba(18, 52, 86, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.admin-button:hover {
-    background: var(--secondary-color) !important;
-    transform: translateX(2px) translateY(-1px) !important;
-    box-shadow: 0 6px 24px rgba(18, 52, 86, 0.3) !important;
-}
-
-.usuario-saludo {
-    padding: 0.875rem 1.25rem;
-    margin: 0;
-    font-weight: 600;
-    color: var(--primary-color);
-    border-bottom: 1px solid rgba(18, 52, 86, 0.08);
-    margin-bottom: 0.5rem;
+/* ── Menu Items ── */
+.dropdown-usuario button {
+    all: unset;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.65rem 1rem;
+    background: transparent;
+    border: none;
+    border-radius: var(--border-radius);
+    text-align: left;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--text-primary);
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.95rem;
+    gap: 10px;
+    line-height: 1;
 }
 
-@keyframes fadeIn {
+.dropdown-usuario button:hover {
+    background: var(--bg-secondary, #f5f5f5);
+    color: var(--primary-color);
+}
+
+.dropdown-usuario button:active {
+    transform: scale(0.98);
+}
+
+.dropdown-usuario button .dropdown-icon {
+    font-size: 1rem;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+.dropdown-usuario button:hover .dropdown-icon {
+    opacity: 1;
+}
+
+/* ── Admin Panel Button ── */
+.admin-button {
+    font-weight: 600 !important;
+}
+
+/* ── Separator ── */
+.dropdown-separator {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.06);
+    margin: 0.35rem 0.5rem;
+}
+
+/* ── Logout Button ── */
+.logout-button {
+    color: var(--error-color) !important;
+}
+
+.logout-button:hover {
+    background: rgba(255, 68, 68, 0.08) !important;
+    color: var(--error-color) !important;
+}
+
+.logout-button .dropdown-icon {
+    opacity: 1 !important;
+}
+
+/* ── Animations ── */
+@keyframes dropdownFadeIn {
     from {
         opacity: 0;
-        transform: translateX(50%) translateY(-10px) scale(0.95);
+        transform: translateX(50%) translateY(-8px);
     }
-
     to {
         opacity: 1;
-        transform: translateX(50%) translateY(0) scale(1);
+        transform: translateX(50%) translateY(0);
     }
 }
 
+
+
+/* ── Mobile ── */
 @media (max-width: 768px) {
     .dropdown-usuario {
         right: 0;
@@ -98,19 +139,24 @@
         max-width: 90vw;
     }
 
-    .dropdown-usuario::before {
-        left: auto;
-        right: 20px;
-        transform: none;
-    }
-
     .dropdown-usuario button {
-        padding: 1rem 1.25rem;
-        font-size: 1rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.925rem;
     }
 
     .usuario-saludo {
-        padding: 1rem 1.25rem;
-        font-size: 1rem;
+        padding: 0.75rem 1rem;
+        font-size: 0.925rem;
+    }
+
+    @keyframes dropdownFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 }

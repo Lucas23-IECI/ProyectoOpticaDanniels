@@ -172,7 +172,12 @@ export const CartProvider = ({ children }) => {
     };
 
     const getTotalPrice = () => {
-        return state.items.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+        return state.items.reduce((total, item) => {
+            const unitPrice = item.oferta && item.descuento > 0
+                ? Math.round(item.precio * (1 - item.descuento / 100))
+                : item.precio;
+            return total + (unitPrice * item.cantidad);
+        }, 0);
     };
 
     const getTotalItems = () => {

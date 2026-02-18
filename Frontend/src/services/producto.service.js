@@ -23,13 +23,15 @@ export const getProductos = async (filtros = {}) => {
 
         const apiData = response.data.data || response.data || {};
         const productos = Array.isArray(apiData.productos) ? apiData.productos : [];
+        const paginacion = apiData.paginacion || null;
 
-        cacheService.set(cacheKey, productos, 3 * 60 * 1000);
+        const result = { productos, paginacion };
+        cacheService.set(cacheKey, result, 3 * 60 * 1000);
 
-        return productos;
+        return result;
     } catch (error) {
         if (error.response && error.response.status === 404) {
-            return [];
+            return { productos: [], paginacion: null };
         }
         console.error("Error en getProductos:", error);
         throw error;

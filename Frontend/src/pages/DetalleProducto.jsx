@@ -191,16 +191,16 @@ function DetalleProducto() {
                         </div>
                         <h1 className="producto-title">{producto.nombre}</h1>
 
-                        {/* Rating simulado */}
+                        {/* TODO: Reemplazar con datos reales del endpoint /reviews cuando se implemente el CRUD */}
                         <div className="producto-rating">
                             <div className="stars">
-                                <FaStar className="star active" />
-                                <FaStar className="star active" />
-                                <FaStar className="star active" />
-                                <FaStar className="star active" />
+                                <FaStar className="star" />
+                                <FaStar className="star" />
+                                <FaStar className="star" />
+                                <FaStar className="star" />
                                 <FaStar className="star" />
                             </div>
-                            <span className="rating-text">(4.2) • 127 reseñas</span>
+                            <span className="rating-text">Sin reseñas aún</span>
                         </div>
                     </div>
 

@@ -1,5 +1,11 @@
 "use strict";
-import { loginService, registerService, updateUserService as updateProfileService } from "../services/auth.service.js";
+import {
+    forgotPasswordService,
+    loginService,
+    registerService,
+    resetPasswordService,
+    updateUserService as updateProfileService,
+} from "../services/auth.service.js";
 import { AppDataSource } from "../config/configDb.js";
 import User from "../entity/user.entity.js";
 import {
@@ -106,8 +112,45 @@ export async function updateProfile(req, res) {
 }
 
 export async function logout(req, res) {
+    // Logout stateless: el client elimina el token del localStorage.
+    // No se implementa blacklist server-side por diseño arquitectónico:
+    // - Proyecto académico sin alta concurrencia
+    // - JWT expira en 24h (auth.service.js)
+    // - Blacklist añade complejidad (store + cleanup) sin beneficio real
     try {
         handleSuccess(res, 200, "Sesión cerrada exitosamente");
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+}
+
+export async function forgotPassword(req, res) {
+    try {
+        const { email } = req.body;
+
+        const [result, error] = await forgotPasswordService(email);
+
+        if (error) {
+            return handleErrorClient(res, 400, error);
+        }
+
+        handleSuccess(res, 200, "Si el correo existe, se ha enviado un enlace de recuperación", result);
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+}
+
+export async function resetPassword(req, res) {
+    try {
+        const { token, newPassword } = req.body;
+
+        const [result, error] = await resetPasswordService(token, newPassword);
+
+        if (error) {
+            return handleErrorClient(res, 400, error);
+        }
+
+        handleSuccess(res, 200, "Contraseña actualizada correctamente", result);
     } catch (error) {
         handleErrorServer(res, 500, error.message);
     }

@@ -6,7 +6,7 @@ import ProductCard from '../components/ProductCard';
 import '../styles/wishlist.css';
 
 const Wishlist = () => {
-    const { wishlist, clearWishlist, wishlistCount, validateWishlistProducts } = useWishlistContext();
+    const { wishlist, clearWishlist, wishlistCount, forceReloadWishlist } = useWishlistContext();
     const { isAuthenticated, loading } = useAuth();
     const navigate = useNavigate();
 
@@ -17,11 +17,12 @@ const Wishlist = () => {
         }
     }, [isAuthenticated, loading, navigate]);
 
+    // Recargar wishlist al montar la página
     useEffect(() => {
-        if (wishlistCount > 0) {
-            validateWishlistProducts();
+        if (isAuthenticated && !loading) {
+            forceReloadWishlist();
         }
-    }, [wishlistCount, validateWishlistProducts]);
+    }, [isAuthenticated, loading, forceReloadWishlist]);
 
     // Mostrar loading mientras se verifica autenticación
     if (loading) {

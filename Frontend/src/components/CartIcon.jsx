@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaTrash, FaEye } from 'react-icons/fa';
 import { useCart } from '@context/CartContext';
 import { useAuth } from '@context/AuthContext';
+import LazyImage from '@components/LazyImage';
 import '@styles/cartIcon.css';
 
 const CartIcon = () => {
@@ -120,10 +121,9 @@ const CartIcon = () => {
                                     {cart.map((item) => (
                                         <div key={`item-${item.id}-v${cartVersion}`} className="cart-item">
                                             <div className="item-image">
-                                                <img 
+                                                <LazyImage 
                                                     src={item.imagen_url} 
                                                     alt={item.nombre}
-                                                    loading="lazy"
                                                 />
                                             </div>
                                             

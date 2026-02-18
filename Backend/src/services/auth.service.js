@@ -1,5 +1,7 @@
 "use strict";
+import crypto from "crypto";
 import User from "../entity/user.entity.js";
+import PasswordReset from "../entity/passwordReset.entity.js";
 import jwt from "jsonwebtoken";
 import { AppDataSource } from "../config/configDb.js";
 import { comparePassword, encryptPassword } from "../helpers/bcrypt.helper.js";
@@ -199,6 +201,93 @@ export async function updateUserService(userId, updateData) {
         return [dataUser, null];
     } catch (error) {
         logger.error("Error al actualizar usuario", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+export async function forgotPasswordService(email) {
+    try {
+        const userRepository = AppDataSource.getRepository(User);
+        const resetRepository = AppDataSource.getRepository(PasswordReset);
+
+        // Siempre responder 200 para no revelar si el email existe
+        const user = await userRepository.findOne({ where: { email } });
+
+        if (!user) {
+            // No revelar que el email no existe — responder igual
+            return [{ message: "Si el correo existe, recibirás un enlace de recuperación." }, null];
+        }
+
+        // Invalidar tokens anteriores del mismo email
+        await resetRepository
+            .createQueryBuilder()
+            .update()
+            .set({ used: true })
+            .where("email = :email AND used = false", { email })
+            .execute();
+
+        // Generar token seguro
+        const token = crypto.randomBytes(32).toString("hex");
+
+        // Expiración: 1 hora
+        const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+        const resetEntry = resetRepository.create({
+            token,
+            email,
+            expiresAt,
+            used: false,
+        });
+
+        await resetRepository.save(resetEntry);
+
+        // Mock: log del token en vez de enviar email (email real se implementará después)
+        logger.info(`[PASSWORD RESET] Token generado para ${email}: ${token}`);
+        logger.info(`[PASSWORD RESET] URL de reset: /reset-password?token=${token}`);
+
+        return [{ message: "Si el correo existe, recibirás un enlace de recuperación." }, null];
+    } catch (error) {
+        logger.error("Error en forgotPasswordService:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+export async function resetPasswordService(token, newPassword) {
+    try {
+        const userRepository = AppDataSource.getRepository(User);
+        const resetRepository = AppDataSource.getRepository(PasswordReset);
+
+        // Buscar token válido (no usado, no expirado)
+        const resetEntry = await resetRepository
+            .createQueryBuilder("pr")
+            .where("pr.token = :token", { token })
+            .andWhere("pr.used = false")
+            .andWhere("pr.expiresAt > :now", { now: new Date() })
+            .getOne();
+
+        if (!resetEntry) {
+            return [null, "El enlace de recuperación es inválido o ha expirado."];
+        }
+
+        // Buscar usuario por email
+        const user = await userRepository.findOne({ where: { email: resetEntry.email } });
+
+        if (!user) {
+            return [null, "Usuario no encontrado."];
+        }
+
+        // Encriptar y actualizar contraseña
+        const hashedPassword = await encryptPassword(newPassword);
+        await userRepository.update(user.id, { password: hashedPassword });
+
+        // Marcar token como usado
+        await resetRepository.update(resetEntry.id, { used: true });
+
+        logger.info(`[PASSWORD RESET] Contraseña actualizada para ${resetEntry.email}`);
+
+        return [{ message: "Contraseña actualizada correctamente." }, null];
+    } catch (error) {
+        logger.error("Error en resetPasswordService:", error);
         return [null, "Error interno del servidor"];
     }
 }
