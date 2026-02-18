@@ -1,27 +1,25 @@
-import User from "../entity/user.entity.js";
-import { AppDataSource } from "../config/configDb.js";
 import {
     handleErrorClient,
     handleErrorServer,
 } from "../handlers/responseHandlers.js";
 
+/**
+ * Middleware que verifica si el usuario autenticado tiene rol de administrador.
+ * Lee el rol directamente del JWT (req.user) en vez de hacer query a la BD.
+ * Requiere que authenticateJwt se ejecute antes en la cadena de middlewares.
+ */
 export async function isAdmin(req, res, next) {
     try {
-        const userRepository = AppDataSource.getRepository(User);
-
-        const userFound = await userRepository.findOneBy({ email: req.user.email });
-
-        if (!userFound) {
+        if (!req.user) {
             return handleErrorClient(
                 res,
-                404,
-                "Usuario no encontrado en la base de datos",
+                401,
+                "No autenticado",
+                "Debe iniciar sesión para acceder a este recurso."
             );
         }
 
-        const rolUser = userFound.rol;
-
-        if (rolUser !== "administrador") {
+        if (req.user.rol !== "administrador") {
             return handleErrorClient(
                 res,
                 403,

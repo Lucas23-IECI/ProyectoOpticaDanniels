@@ -35,6 +35,11 @@ const Orden = new EntitySchema({
             type: "varchar",
             default: "pendiente",
         },
+        total: {
+            type: "int",
+            nullable: false,
+            default: 0,
+        },
         fecha: {
             type: "timestamp",
             createDate: true,

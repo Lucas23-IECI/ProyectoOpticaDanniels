@@ -2,8 +2,9 @@
 import { Router } from "express";
 import {
     getEstadisticasGenerales,
+    getEstadisticasOrdenes,
     getEstadisticasProductos,
-    getEstadisticasUsuarios
+    getEstadisticasUsuarios,
 } from "../controllers/reporte.controller.js";
 import { authenticateJwt } from "../middlewares/authentication.middleware.js";
 import { isAdmin } from "../middlewares/authorization.middleware.js";
@@ -17,6 +18,7 @@ router
 router
     .get("/generales", getEstadisticasGenerales)
     .get("/usuarios", getEstadisticasUsuarios)
-    .get("/productos", getEstadisticasProductos);
+    .get("/productos", getEstadisticasProductos)
+    .get("/ordenes", getEstadisticasOrdenes);
 
 export default router;

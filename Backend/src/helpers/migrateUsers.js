@@ -2,14 +2,15 @@
 import { AppDataSource } from "../config/configDb.js";
 import User from "../entity/user.entity.js";
 import { transformUserToNewStructure } from "../helpers/nameHelpers.js";
+import logger from "../config/logger.js";
 
 export async function migrateUsers() {
     try {
-        console.log("🔄 Iniciando migración de usuarios...");
+        logger.info("Iniciando migración de usuarios...");
         
         // Verificar que la conexión esté activa
         if (!AppDataSource.isInitialized) {
-            console.log("⚠️  Base de datos no inicializada. Saltando migración.");
+            logger.warn("Base de datos no inicializada. Saltando migración.");
             return;
         }
 
@@ -20,13 +21,13 @@ export async function migrateUsers() {
         try {
             userCount = await userRepository.count();
         } catch (error) {
-            console.log("⚠️  Tabla users no existe aún. Saltando migración.");
+            logger.warn("Tabla users no existe aún. Saltando migración.");
             return;
         }
 
         // Si no hay usuarios, no hay nada que migrar
         if (userCount === 0) {
-            console.log("ℹ️  No hay usuarios para migrar.");
+            logger.info("No hay usuarios para migrar.");
             return;
         }
         
@@ -37,13 +38,13 @@ export async function migrateUsers() {
             // Verificar si la tabla existe
             const tableExists = await queryRunner.hasTable("users");
             if (!tableExists) {
-                console.log("⚠️  Tabla users no existe. Saltando migración.");
+                logger.warn("Tabla users no existe. Saltando migración.");
                 return;
             }
 
             const table = await queryRunner.getTable("users");
             if (!table) {
-                console.log("⚠️  No se pudo obtener información de la tabla users. Saltando migración.");
+                logger.warn("No se pudo obtener información de la tabla users. Saltando migración.");
                 return;
             }
 
@@ -52,11 +53,11 @@ export async function migrateUsers() {
             
             // Si ya tenemos primerNombre, la migración ya se hizo o no es necesaria
             if (primerNombreColumn) {
-                console.log("✅ La tabla users ya tiene la estructura correcta (campos separados).");
+                logger.info("La tabla users ya tiene la estructura correcta (campos separados).");
                 
                 // Si además existe nombreCompleto, podemos migrarlo
                 if (nombreCompletoColumn) {
-                    console.log("🔄 Migrando datos de nombreCompleto a campos separados...");
+                    logger.info("Migrando datos de nombreCompleto a campos separados...");
                     
                     const usersWithNombreCompleto = await queryRunner.query(`
                         SELECT id, nombreCompleto 
@@ -85,21 +86,21 @@ export async function migrateUsers() {
                         ]);
                     }
                     
-                    console.log(`✅ Migrados ${usersWithNombreCompleto.length} usuarios`);
+                    logger.info(`Migrados ${usersWithNombreCompleto.length} usuarios`);
                     
                     // Solo eliminar nombreCompleto si se migraron datos
                     if (usersWithNombreCompleto.length > 0) {
                         await queryRunner.query("ALTER TABLE users DROP COLUMN nombreCompleto");
-                        console.log("🗑️  Columna nombreCompleto eliminada");
+                        logger.info("Columna nombreCompleto eliminada");
                     }
                 }
                 
-                console.log("✅ Migración de usuarios completada exitosamente");
+                logger.info("Migración de usuarios completada exitosamente");
                 return;
             }
             
             // Si llegamos aquí, no tenemos primerNombre, necesitamos agregarlo
-            console.log("⚠️  Las columnas nuevas no existen aún. Ejecutando migración de esquema...");
+            logger.warn("Las columnas nuevas no existen aún. Ejecutando migración de esquema...");
             
             await queryRunner.query(`
                 ALTER TABLE users 
@@ -109,11 +110,11 @@ export async function migrateUsers() {
                 ADD COLUMN apellidoMaterno VARCHAR(100)
             `);
             
-            console.log("✅ Columnas agregadas exitosamente");
+            logger.info("Columnas agregadas exitosamente");
             
             // Ahora migrar datos si existe nombreCompleto
             if (nombreCompletoColumn) {
-                console.log("🔄 Migrando datos de nombreCompleto a campos separados...");
+                logger.info("Migrando datos de nombreCompleto a campos separados...");
                 
                 const usersWithNombreCompleto = await queryRunner.query(`
                     SELECT id, nombreCompleto 
@@ -142,21 +143,21 @@ export async function migrateUsers() {
                     ]);
                 }
                 
-                console.log(`✅ Migrados ${usersWithNombreCompleto.length} usuarios`);
+                logger.info(`Migrados ${usersWithNombreCompleto.length} usuarios`);
                 
                 await queryRunner.query("ALTER TABLE users DROP COLUMN nombreCompleto");
-                console.log("🗑️  Columna nombreCompleto eliminada");
+                logger.info("Columna nombreCompleto eliminada");
             }
             
         } finally {
             await queryRunner.release();
         }
         
-        console.log("✅ Migración de usuarios completada exitosamente");
+        logger.info("Migración de usuarios completada exitosamente");
         
     } catch (error) {
-        console.error("❌ Error en migración de usuarios:", error);
+        logger.error("Error en migración de usuarios:", error);
         // No lanzar el error para que no rompa el inicio de la aplicación
-        console.log("⚠️  Continuando con el inicio de la aplicación...");
+        logger.warn("Continuando con el inicio de la aplicación...");
     }
 }

@@ -169,7 +169,10 @@ export const userBodyValidation = Joi.object({
             "string.base": "La fecha de nacimiento debe ser de tipo string.",
         }),
     genero: Joi.string()
-        .valid("masculino", "femenino", "otro", "no especificar", "Masculino", "Femenino", "No binario", "Prefiero no decir")
+        .valid(
+            "masculino", "femenino", "otro", "no especificar",
+            "Masculino", "Femenino", "No binario", "Prefiero no decir",
+        )
         .allow(null, "")
         .optional()
         .messages({

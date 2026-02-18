@@ -15,31 +15,28 @@ const domainEmailValidator = (value, helper) => {
 
 export const authValidation = Joi.object({
     email: Joi.string()
-        .min(8)
-        .max(50)
+        .min(5)
+        .max(100)
         .email()
         .required()
         .messages({
-            "string.empty": "El correo electrónico no puede estar vacío.",
-            "any.required": "El correo electrónico es obligatorio.",
-            "string.base": "El correo electrónico debe ser de tipo texto.",
-            "string.email": "El correo electrónico debe ser de dominio .cl o .com",
-            "string.min": "El correo electrónico debe tener al menos 8 caracteres.",
-            "string.max": "El correo electrónico debe tener como máximo 50 caracteres.",
-        })
-        .custom(domainEmailValidator, "Validación dominio email"),
+            "string.empty": "El correo electr\u00f3nico no puede estar vac\u00edo.",
+            "any.required": "El correo electr\u00f3nico es obligatorio.",
+            "string.base": "El correo electr\u00f3nico debe ser de tipo texto.",
+            "string.email": "El correo electr\u00f3nico debe tener un formato v\u00e1lido.",
+            "string.min": "El correo electr\u00f3nico debe tener al menos 5 caracteres.",
+            "string.max": "El correo electr\u00f3nico debe tener como m\u00e1ximo 100 caracteres.",
+        }),
     password: Joi.string()
-        .min(8)
-        .max(26)
-        .pattern(/^[a-zA-Z0-9]+$/)
+        .min(6)
+        .max(50)
         .required()
         .messages({
             "string.empty": "La contraseña no puede estar vacía.",
             "any.required": "La contraseña es obligatoria.",
             "string.base": "La contraseña debe ser de tipo texto.",
-            "string.min": "La contraseña debe tener al menos 8 caracteres.",
-            "string.max": "La contraseña debe tener como máximo 26 caracteres.",
-            "string.pattern.base": "La contraseña solo puede contener letras y números.",
+            "string.min": "La contraseña debe tener al menos 6 caracteres.",
+            "string.max": "La contraseña debe tener como máximo 50 caracteres.",
         }),
 }).unknown(false).messages({
     "object.unknown": "No se permiten propiedades adicionales.",

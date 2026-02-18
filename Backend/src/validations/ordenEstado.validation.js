@@ -5,7 +5,8 @@ export const actualizarEstadoSchema = Joi.object({
         .valid("pendiente", "pagada", "en preparación", "en camino", "entregada", "cancelada")
         .required()
         .messages({
-            "any.only": "Estado inválido. Los estados permitidos son: pendiente, pagada, en preparación, en camino, entregada, cancelada.",
+            "any.only": "Estado inválido. Los estados permitidos son: "
+                + "pendiente, pagada, en preparación, en camino, entregada, cancelada.",
             "string.empty": "El estado no puede estar vacío.",
             "any.required": "El estado es obligatorio.",
         }),

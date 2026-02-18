@@ -14,8 +14,8 @@ const skuPattern = () => Joi.string()
     .max(100)
     .pattern(/^[a-zA-Z0-9\-_]+$/)
     .custom((value, helpers) => {
-        if (value.endsWith('-')) {
-            return helpers.error('string.custom', { message: 'El código SKU no puede terminar con guión' });
+        if (value.endsWith("-")) {
+            return helpers.error("string.custom", { message: "El código SKU no puede terminar con guión" });
         }
         return value;
     })
