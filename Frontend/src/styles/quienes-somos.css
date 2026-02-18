@@ -35,7 +35,7 @@
 }
 
 .quienes-somos-hero {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #667eea;
     color: white;
     padding: 80px 0;
     min-height: 500px;
@@ -342,7 +342,7 @@
 
 .cta-quienes-somos {
     padding: 80px 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #667eea;
     color: white;
     text-align: center;
 }

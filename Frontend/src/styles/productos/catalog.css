@@ -6,7 +6,7 @@
 }
 
 .catalog-header {
-    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    background: var(--primary-color);
     color: white;
     padding: 3rem 0;
     text-align: center;

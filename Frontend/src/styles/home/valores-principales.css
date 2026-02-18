@@ -1,7 +1,7 @@
 
 .valores-principales {
     padding: 100px 0;
-    background: linear-gradient(135deg, #f8faff 0%, #e6f3ff 100%);
+    background: #f8faff;
 }
 
 .valores-header {
@@ -52,7 +52,7 @@
 }
 
 .valor-card.destacado {
-    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    background: var(--primary-color);
     color: white;
 }
 

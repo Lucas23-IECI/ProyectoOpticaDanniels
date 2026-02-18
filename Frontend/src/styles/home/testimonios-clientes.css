@@ -1,7 +1,7 @@
 
 .testimonios-clientes {
     padding: 100px 0;
-    background: linear-gradient(135deg, #f8faff 0%, #e6f3ff 100%);
+    background: #f8faff;
 }
 
 .testimonios-header {
@@ -285,7 +285,7 @@
 
 .testimonios-cta {
     text-align: center;
-    background: linear-gradient(135deg, var(--primary-color), #0056b3);
+    background: var(--primary-color);
     color: white;
     padding: 60px 40px;
     border-radius: 20px;

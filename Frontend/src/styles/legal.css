@@ -9,7 +9,7 @@
 
 /* ===== HEADER DE PÁGINAS LEGALES ===== */
 .legal-header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);
     color: var(--white);
     padding: 80px 0 60px;
     text-align: center;
@@ -234,7 +234,7 @@
 
 /* ===== ELEMENTOS ESPECIALES ===== */
 .important-notice {
-    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 193, 7, 0.05));
+    background: rgba(255, 193, 7, 0.1);
     border: 1px solid #ffc107;
     border-left: 5px solid #ffc107;
     border-radius: var(--border-radius);
@@ -299,7 +299,7 @@
 
 /* ===== NOTA FINAL ===== */
 .legal-footer-note {
-    background: linear-gradient(135deg, rgba(33, 71, 162, 0.05), rgba(41, 169, 55, 0.05));
+    background: rgba(33, 71, 162, 0.05);
     border: 1px solid rgba(33, 71, 162, 0.2);
     border-radius: var(--border-radius-lg);
     padding: 30px;

@@ -685,3 +685,75 @@
         transform: rotate(360deg);
     }
 }
+
+/* ===== ORDENES TAB STYLES ===== */
+
+.estadisticas-ordenes .stats-cards .ordenes-card .stat-icon {
+    background: rgba(33, 71, 162, 0.1);
+    color: #2147A2;
+}
+
+.estadisticas-ordenes .stats-cards .ingresos-card .stat-icon {
+    background: rgba(41, 169, 55, 0.1);
+    color: #29A937;
+}
+
+.estadisticas-ordenes .stats-cards .promedio-card .stat-icon {
+    background: rgba(255, 165, 0, 0.1);
+    color: #FFA500;
+}
+
+.estado-chart .estado-chart-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.estado-chart-icon {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.estado-chart-bar {
+    flex: 1;
+}
+
+.badge-estado {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.no-data-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+    gap: 1rem;
+}
+
+.no-data-section svg {
+    font-size: 3rem;
+    color: var(--text-muted);
+}
+
+.tendencia-ordenes .line-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.tendencia-ordenes .line-ingresos {
+    font-weight: 600;
+    color: #29A937;
+    font-size: 0.9rem;
+    margin-left: auto;
+}

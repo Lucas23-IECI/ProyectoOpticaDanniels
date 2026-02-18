@@ -46,7 +46,7 @@ body.no-scroll {
 }
 
 .crear-producto-header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);
     color: var(--surface-color);
     padding: 25px 30px;
     display: flex;
@@ -106,13 +106,13 @@ body.no-scroll {
 }
 
 .crear-producto-form::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);
     border-radius: 10px;
     border: 2px solid rgba(18, 52, 86, 0.05);
 }
 
 .crear-producto-form::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    background: #5a6fd8;
 }
 
 .form-grid {
@@ -240,12 +240,12 @@ body.no-scroll {
 }
 
 .form-group textarea::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #667eea;
     border-radius: 6px;
 }
 
 .form-group textarea::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    background: #5a6fd8;
 }
 
 .char-counter {
@@ -288,21 +288,21 @@ body.no-scroll {
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    background: linear-gradient(145deg, #ffffff 0%, #f8faff 100%);
+    background: #ffffff;
     position: relative;
     overflow: hidden;
 }
 
 .image-upload-area:hover {
     border-color: #667eea;
-    background: linear-gradient(145deg, #f8faff 0%, #eef2ff 100%);
+    background: #f8faff;
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
 }
 
 .image-upload-area.error {
     border-color: #e53e3e;
-    background: linear-gradient(145deg, #fff5f5 0%, #fed7d7 100%);
+    background: #fff5f5;
 }
 
 .upload-placeholder {
@@ -457,7 +457,7 @@ body.no-scroll {
 }
 
 .btn-create {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #667eea;
     color: white;
     border-color: transparent;
     cursor: pointer;
@@ -547,7 +547,7 @@ body.no-scroll {
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    background: #ff6b6b;
     color: white;
     padding: 16px 24px;
     border-radius: 12px;

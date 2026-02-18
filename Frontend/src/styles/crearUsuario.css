@@ -47,7 +47,7 @@ body.no-scroll {
 }
 
 .crear-usuario-header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);
     color: var(--surface-color);
     padding: 25px 30px;
     display: flex;
@@ -107,13 +107,13 @@ body.no-scroll {
 }
 
 .crear-usuario-form::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    background: var(--primary-color);
     border-radius: 10px;
     border: 2px solid rgba(18, 52, 86, 0.05);
 }
 
 .crear-usuario-form::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+    background: #5a6fd8;
 }
 
 .usuario-form-grid {
@@ -386,7 +386,7 @@ body.no-scroll {
 }
 
 .btn-create {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #667eea;
     color: white;
     border-color: transparent;
     cursor: pointer;
@@ -476,7 +476,7 @@ body.no-scroll {
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    background: #ff6b6b;
     color: white;
     padding: 16px 24px;
     border-radius: 12px;

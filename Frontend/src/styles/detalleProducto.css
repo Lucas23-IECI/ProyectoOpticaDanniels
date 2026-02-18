@@ -64,7 +64,7 @@
 /* ===== CONTENEDOR PRINCIPAL ===== */
 .detalle-producto-modern {
     min-height: 100vh;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #f8f9fa;
     padding: 2rem 0;
     animation: fadeIn 0.5s ease-out;
 }
@@ -88,7 +88,7 @@
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 25px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     color: var(--primary-color);
     font-weight: 600;
     cursor: pointer;
@@ -100,7 +100,7 @@
 .btn-back-modern:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    background: linear-gradient(135deg, #ffffff 0%, #e9ecef 100%);
+    background: #ffffff;
 }
 
 .header-actions {
@@ -116,7 +116,7 @@
     height: 45px;
     border: none;
     border-radius: 50%;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     color: #6c757d;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -151,7 +151,7 @@
     position: relative;
     border-radius: 20px;
     overflow: hidden;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     box-shadow: 
         0 10px 40px rgba(0, 0, 0, 0.1),
         0 4px 20px rgba(0, 0, 0, 0.05);
@@ -175,7 +175,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    background: #e9ecef;
     color: #6c757d;
     font-size: 4rem;
 }
@@ -188,7 +188,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.25rem;
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    background: #ff6b6b;
     color: white;
     border-radius: 25px;
     font-weight: 700;
@@ -225,7 +225,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     padding: 0.4rem 1rem;
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    background: #e3f2fd;
     border-radius: 15px;
     border: 1px solid rgba(0, 123, 255, 0.2);
 }
@@ -238,7 +238,7 @@
     font-size: 0.85rem;
     font-weight: 600;
     padding: 0.4rem 1rem;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #f8f9fa;
     border-radius: 15px;
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -249,7 +249,7 @@
     color: #2c3e50;
     line-height: 1.2;
     margin: 0;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    background: #2c3e50;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -286,7 +286,7 @@
 /* ===== PRECIOS ===== */
 .producto-pricing-modern {
     padding: 1.5rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -309,7 +309,7 @@
     color: #e74c3c;
     font-size: 2.5rem;
     font-weight: 900;
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    background: #e74c3c;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -328,7 +328,7 @@
     font-size: 1rem;
     font-weight: 600;
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    background: #d4edda;
     border-radius: 12px;
     display: inline-block;
     width: fit-content;
@@ -346,19 +346,19 @@
 }
 
 .stock-status-modern.in-stock {
-    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    background: #d4edda;
     color: #155724;
     border: 2px solid rgba(21, 87, 36, 0.2);
 }
 
 .stock-status-modern.low-stock {
-    background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+    background: #fff3cd;
     color: #856404;
     border: 2px solid rgba(133, 100, 4, 0.2);
 }
 
 .stock-status-modern.out-of-stock {
-    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    background: #f8d7da;
     color: #721c24;
     border: 2px solid rgba(114, 28, 36, 0.2);
 }
@@ -372,7 +372,7 @@
 /* ===== DESCRIPCIÓN ===== */
 .producto-description-modern {
     padding: 1.5rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -398,7 +398,7 @@
     flex-direction: column;
     gap: 1.5rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(0, 0, 0, 0.05);
@@ -431,7 +431,7 @@
     height: 40px;
     border: 2px solid var(--primary-color);
     border-radius: 10px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     color: var(--primary-color);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -456,7 +456,7 @@
     justify-content: center;
     width: 60px;
     height: 40px;
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    background: #e3f2fd;
     color: var(--primary-color);
     font-weight: 700;
     font-size: 1.1rem;
@@ -478,7 +478,7 @@
     padding: 1rem 2rem;
     border: none;
     border-radius: 25px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    background: var(--primary-color);
     color: white;
     font-weight: 700;
     font-size: 1.1rem;
@@ -500,7 +500,7 @@
     height: 55px;
     border: 2px solid #e9ecef;
     border-radius: 50%;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     color: #6c757d;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -511,7 +511,7 @@
 .btn-wishlist.active {
     border-color: #e74c3c;
     color: #e74c3c;
-    background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+    background: #fff5f5;
     transform: scale(1.1);
 }
 
@@ -521,7 +521,7 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #f8f9fa;
     border-radius: 20px;
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -558,7 +558,7 @@
     font-weight: 800;
     color: #2c3e50;
     margin: 0 0 0.5rem 0;
-    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    background: #2c3e50;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -583,7 +583,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #f8f9fa;
     padding: 2rem;
 }
 
@@ -591,7 +591,7 @@
 .detalle-error {
     text-align: center;
     padding: 3rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    background: #ffffff;
     border-radius: 25px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     max-width: 500px;
@@ -625,7 +625,7 @@
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 25px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+    background: var(--primary-color);
     color: white;
     font-weight: 600;
     cursor: pointer;
