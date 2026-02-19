@@ -1,5 +1,4 @@
 import { EntitySchema } from "typeorm";
-import UserSchema from "./user.entity.js";
 
 const Orden = new EntitySchema({
     name: "Orden",
@@ -35,10 +34,61 @@ const Orden = new EntitySchema({
             type: "varchar",
             default: "pendiente",
         },
+        estadoPago: {
+            type: "varchar",
+            length: 50,
+            default: "pendiente",
+        },
+        metodoPago: {
+            type: "varchar",
+            length: 50,
+            nullable: true,
+        },
+        metodoEntrega: {
+            type: "varchar",
+            length: 50,
+            default: "envio",
+        },
+        subtotal: {
+            type: "numeric",
+            precision: 10,
+            scale: 2,
+            default: 0,
+        },
+        iva: {
+            type: "numeric",
+            precision: 10,
+            scale: 2,
+            default: 0,
+        },
+        costoEnvio: {
+            type: "numeric",
+            precision: 10,
+            scale: 2,
+            default: 0,
+        },
         total: {
-            type: "int",
+            type: "numeric",
+            precision: 10,
+            scale: 2,
             nullable: false,
             default: 0,
+        },
+        transactionId: {
+            type: "varchar",
+            length: 255,
+            nullable: true,
+        },
+        tokenWs: {
+            type: "varchar",
+            length: 255,
+            nullable: true,
+        },
+        numeroBoleta: {
+            type: "varchar",
+            length: 50,
+            nullable: true,
+            unique: true,
         },
         fecha: {
             type: "timestamp",
@@ -48,7 +98,11 @@ const Orden = new EntitySchema({
             type: "varchar",
             length: 100,
             nullable: true,
-          },
+        },
+        direccionId: {
+            type: "int",
+            nullable: true,
+        },
         createdAt: {
             type: "timestamp with time zone",
             default: () => "CURRENT_TIMESTAMP",
@@ -73,6 +127,19 @@ const Orden = new EntitySchema({
             type: "many-to-one",
             target: "User",
             joinColumn: true,
+            nullable: true,
+            onDelete: "SET NULL",
+        },
+        pagos: {
+            type: "one-to-many",
+            target: "Pago",
+            inverseSide: "orden",
+            cascade: true,
+        },
+        direccionRef: {
+            type: "many-to-one",
+            target: "Direccion",
+            joinColumn: { name: "direccionId" },
             nullable: true,
             onDelete: "SET NULL",
         },

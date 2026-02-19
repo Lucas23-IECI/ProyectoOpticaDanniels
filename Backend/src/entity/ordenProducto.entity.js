@@ -18,6 +18,18 @@ const OrdenProducto = new EntitySchema({
             scale: 2,
             nullable: false,
         },
+        descuento: {
+            type: "int",
+            default: 0,
+            nullable: false,
+        },
+        subtotal: {
+            type: "numeric",
+            precision: 10,
+            scale: 2,
+            nullable: false,
+            default: 0,
+        },
     },
     relations: {
         orden: {

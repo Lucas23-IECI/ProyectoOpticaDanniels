@@ -3,7 +3,8 @@ import {
     crearOrdenService,
     eliminarOrdenService,
     obtenerOrdenesService,
-    obtenerOrdenPorIdService
+    obtenerOrdenPorIdService,
+    obtenerMisOrdenesService,
 } from "../services/orden.service.js";
 import { AppDataSource } from "../config/configDb.js";
 import User from "../entity/user.entity.js";
@@ -12,6 +13,15 @@ import {
     handleErrorServer,
     handleSuccess,
 } from "../handlers/responseHandlers.js";
+import {
+    calcularCostoEnvio,
+    obtenerRegionesEnvio,
+} from "../helpers/shipping.helper.js";
+import { generarBoletaPDF } from "../services/boleta.service.js";
+import {
+    sendOrderConfirmationEmail,
+    sendOrderStatusEmail,
+} from "../helpers/email.helper.js";
 
 export const crearOrdenController = async (req, res) => {
     try {
@@ -40,6 +50,9 @@ export const crearOrdenController = async (req, res) => {
         }
 
         const ordenCreada = await crearOrdenService(req.body, usuarioId);
+
+        // Enviar email de confirmación (async, no bloquea la respuesta)
+        sendOrderConfirmationEmail(ordenCreada).catch(() => {});
 
         handleSuccess(res, 201, "Orden creada exitosamente.", ordenCreada);
     } catch (error) {
@@ -110,6 +123,9 @@ export const actualizarEstadoOrdenController = async (req, res) => {
 
         const ordenActualizada = await actualizarEstadoOrdenService(id, estado);
 
+        // Notificar al cliente por email (async, no bloquea)
+        sendOrderStatusEmail(ordenActualizada, estado).catch(() => {});
+
         handleSuccess(res, 200, "Estado de la orden actualizado correctamente.", ordenActualizada);
     } catch (error) {
         if (error.status) {
@@ -125,6 +141,67 @@ export const eliminarOrdenController = async (req, res) => {
         await eliminarOrdenService(id);
 
         handleSuccess(res, 200, "Orden eliminada correctamente.");
+    } catch (error) {
+        if (error.status) {
+            return handleErrorClient(res, error.status, error.message);
+        }
+        handleErrorServer(res, 500, error.message);
+    }
+};
+
+/** GET /ordenes/costo-envio?region=...&comuna=... */
+export const costoEnvioController = async (req, res) => {
+    try {
+        const { region, comuna } = req.query;
+        if (!region) {
+            return handleErrorClient(res, 400, "Se requiere el parámetro 'region'.");
+        }
+        const resultado = calcularCostoEnvio(region, comuna || "");
+        handleSuccess(res, 200, "Costo de envío calculado.", resultado);
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+};
+
+/** GET /ordenes/regiones-envio */
+export const regionesEnvioController = async (_req, res) => {
+    try {
+        const regiones = obtenerRegionesEnvio();
+        handleSuccess(res, 200, "Regiones disponibles.", regiones);
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+};
+
+/** GET /ordenes/mis-ordenes — órdenes del usuario autenticado */
+export const misOrdenesController = async (req, res) => {
+    try {
+        const usuarioId = req.user?.id;
+        if (!usuarioId) {
+            return handleErrorClient(res, 401, "Debes iniciar sesión.");
+        }
+        const ordenes = await obtenerMisOrdenesService(usuarioId);
+        handleSuccess(res, 200, "Mis órdenes obtenidas correctamente.", { ordenes });
+    } catch (error) {
+        if (error.status) {
+            return handleErrorClient(res, error.status, error.message);
+        }
+        handleErrorServer(res, 500, error.message);
+    }
+};
+
+/** GET /ordenes/:id/boleta — Descarga boleta PDF */
+export const boletaOrdenController = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const pdfBuffer = await generarBoletaPDF(id);
+
+        res.set({
+            "Content-Type": "application/pdf",
+            "Content-Disposition": `attachment; filename="boleta-orden-${id}.pdf"`,
+            "Content-Length": pdfBuffer.length,
+        });
+        res.send(pdfBuffer);
     } catch (error) {
         if (error.status) {
             return handleErrorClient(res, error.status, error.message);

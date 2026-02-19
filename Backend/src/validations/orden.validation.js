@@ -18,4 +18,28 @@ export const ordenSchema = Joi.object({
         )
         .min(1)
         .required(),
+
+    metodoEntrega: Joi.string()
+        .valid("envio", "retiro")
+        .default("envio"),
+
+    metodoPago: Joi.string()
+        .valid("webpay", "mercadopago")
+        .default("webpay"),
+
+    region: Joi.string().max(100).when("metodoEntrega", {
+        is: "envio",
+        then: Joi.required(),
+        otherwise: Joi.optional().allow(""),
+    }),
+
+    comuna: Joi.string().max(100).when("metodoEntrega", {
+        is: "envio",
+        then: Joi.required(),
+        otherwise: Joi.optional().allow(""),
+    }),
+
+    direccionId: Joi.number().integer().positive().optional().allow(null),
+
+    costoEnvio: Joi.number().min(0).default(0),
 });
