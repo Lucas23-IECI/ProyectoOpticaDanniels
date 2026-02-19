@@ -1,0 +1,372 @@
+/* ===================================================
+   ADMIN CITAS — Management Panel
+   =================================================== */
+
+.admin-citas .admin-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.admin-citas .admin-section-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  color: #1a1a2e;
+}
+
+.admin-citas .btn-refresh {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--primary-color, #2147A2);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.admin-citas .btn-refresh:disabled {
+  opacity: 0.6;
+}
+
+/* Filtros */
+.admin-citas-filtros {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-citas-filtros .filtro-grupo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.admin-citas-filtros .filtro-grupo svg {
+  color: #9ca3af;
+  margin-right: 0.3rem;
+}
+
+.admin-citas-filtros .filtro-btn {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #fff;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.admin-citas-filtros .filtro-btn.active {
+  background: var(--primary-color, #2147A2);
+  color: #fff;
+  border-color: var(--primary-color, #2147A2);
+}
+
+.admin-citas-filtros .filtro-busqueda {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  flex: 1;
+  max-width: 350px;
+}
+
+.admin-citas-filtros .filtro-busqueda svg {
+  color: #9ca3af;
+}
+
+.admin-citas-filtros .filtro-busqueda input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+/* Stats */
+.admin-citas-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-citas-stats .stat-card {
+  background: #f8f9fc;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.admin-citas-stats .stat-num {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color, #2147A2);
+}
+
+.admin-citas-stats .stat-label {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Loading & Empty */
+.admin-citas .admin-loading,
+.admin-citas .admin-empty {
+  text-align: center;
+  padding: 3rem;
+  color: #9ca3af;
+}
+
+.admin-citas .spinning {
+  animation: spin-citas 1s linear infinite;
+}
+
+@keyframes spin-citas {
+  to { transform: rotate(360deg); }
+}
+
+/* Table */
+.admin-citas .admin-table-wrapper {
+  overflow-x: auto;
+}
+
+.admin-citas .admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-citas .admin-table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-size: 0.8rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.admin-citas .admin-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.9rem;
+}
+
+.admin-citas .admin-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.cita-cliente {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cita-cliente svg {
+  color: #9ca3af;
+}
+
+.cita-cliente .nombre {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.cita-cliente .email {
+  display: block;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cita-acciones {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.btn-accion {
+  padding: 0.35rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.btn-ver { background: #e0e7ff; color: #4338ca; }
+.btn-confirmar { background: #dbeafe; color: #1e40af; }
+.btn-completar { background: #d1fae5; color: #059669; }
+.btn-cancelar { background: #fee2e2; color: #dc2626; }
+.btn-noasistio { background: #f3f4f6; color: #6b7280; }
+
+.btn-accion:hover { transform: scale(1.1); }
+
+/* Modal */
+.cita-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.cita-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.cita-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.cita-modal-header h3 {
+  font-size: 1.1rem;
+  color: #1a1a2e;
+}
+
+.cita-modal-header button {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 0.3rem;
+}
+
+.cita-modal-body {
+  padding: 1.5rem;
+}
+
+.cita-modal-body .detalle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #374151;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.cita-modal-body .detalle-row svg {
+  color: var(--primary-color, #2147A2);
+  flex-shrink: 0;
+}
+
+.detalle-notas-admin {
+  margin-top: 1rem;
+}
+
+.detalle-notas-admin label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: #374151;
+}
+
+.detalle-notas-admin textarea {
+  width: 100%;
+  padding: 0.6rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.detalle-notas-admin textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #2147A2);
+}
+
+.detalle-acciones {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.detalle-acciones .btn-primary,
+.detalle-acciones .btn-danger {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.detalle-acciones .btn-primary {
+  background: var(--primary-color, #2147A2);
+  color: #fff;
+}
+
+.detalle-acciones .btn-primary.btn-success {
+  background: var(--secondary-color, #29A937);
+}
+
+.detalle-acciones .btn-danger {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-citas-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-citas-filtros {
+    flex-direction: column;
+  }
+
+  .admin-citas-filtros .filtro-busqueda {
+    max-width: 100%;
+  }
+}
