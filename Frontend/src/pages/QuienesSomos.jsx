@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '@styles/quienes-somos.css';
 
 function QuienesSomos() {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -256,10 +258,10 @@ function QuienesSomos() {
                             de miles de clientes satisfechos.
                         </p>
                         <div className="cta-buttons">
-                            <button className="btn btn-primary">
+                            <button className="btn btn-primary" onClick={() => navigate('/agendar-cita')}>
                                 Agendar Cita
                             </button>
-                            <button className="btn btn-secondary">
+                            <button className="btn btn-secondary" onClick={() => navigate('/productos')}>
                                 Ver Productos
                             </button>
                         </div>
