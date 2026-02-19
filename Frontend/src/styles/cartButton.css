@@ -81,10 +81,6 @@
     border-color: var(--danger-color, #dc3545);
 }
 
-.cart-btn.in-cart:hover span::after {
-    content: " - Click para eliminar";
-}
-
 /* Agotado */
 .cart-btn.out-of-stock {
     background: var(--gray-500, #6c757d);
@@ -233,31 +229,41 @@
    =============================================== */
 
 .product-card-modern .cart-btn {
-    width: 100%;
     justify-content: center;
 }
 
 .product-overlay .cart-btn {
-    background: rgba(255, 255, 255, 0.95);
-    color: var(--primary-color, #007bff);
-    border: 2px solid var(--primary-color, #007bff);
+    background: rgba(255, 255, 255, 0.9);
+    color: #495057;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 8px;
+    box-sizing: border-box;
+    min-height: 36px;
 }
 
 .product-overlay .cart-btn:hover {
-    background: var(--primary-color, #007bff);
-    color: white;
+    background: rgba(255, 255, 255, 1);
+    color: var(--primary-color, #2147A2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .product-overlay .cart-btn.in-cart {
-    background: var(--success-color, #28a745);
+    background: rgba(41, 169, 55, 0.95);
     color: white;
-    border-color: var(--success-color, #28a745);
+    border: 1px solid rgba(41, 169, 55, 0.3);
 }
 
 .product-overlay .cart-btn.in-cart:hover {
-    background: var(--danger-color, #dc3545);
-    border-color: var(--danger-color, #dc3545);
+    background: rgba(220, 53, 69, 0.95);
+    border-color: rgba(220, 53, 69, 0.3);
 }
 
 /* ===============================================

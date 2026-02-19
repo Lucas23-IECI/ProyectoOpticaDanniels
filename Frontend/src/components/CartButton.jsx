@@ -8,7 +8,8 @@ const CartButton = ({
     size = 'medium',
     showQuantity = false,
     className = '',
-    disabled = false
+    disabled = false,
+    initialQuantity = 1
 }) => {
     const {
         addToCart,
@@ -32,7 +33,7 @@ const CartButton = ({
 
         if (isOutOfStock || disabled) return;
 
-        addToCart(producto, 1);
+        addToCart(producto, initialQuantity);
 
         // Mostrar feedback visual
         setShowAddedFeedback(true);
@@ -42,6 +43,7 @@ const CartButton = ({
     const handleRemoveFromCart = (e) => {
         e.stopPropagation();
         e.preventDefault();
+        setShowAddedFeedback(false);
         removeFromCart(producto.id);
     };
 
@@ -129,11 +131,11 @@ const CartButton = ({
             <button
                 className={`cart-btn cart-btn-${size} in-cart ${className}`}
                 onClick={handleRemoveFromCart}
-                title={`En carrito (${currentQuantity}) - Click para eliminar`}
+                title="Click para eliminar del carrito"
                 key={`btn-${producto.id}-v${cartVersion}-${currentQuantity}`} // Key dinámica
             >
                 <FaCheck />
-                <span>En carrito ({currentQuantity})</span>
+                <span>En carrito</span>
             </button>
         );
     }
