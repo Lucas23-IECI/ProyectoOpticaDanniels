@@ -153,10 +153,9 @@ const AdminProductos = () => {
     }, [cargarMarcas]);
 
     useEffect(() => {
-        if (currentPage !== 1) {
-            setCurrentPage(1);
-        }
-    }, [searchTerm, filters, currentPage]);
+        setCurrentPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchTerm, filters]);
 
     const productosProcessados = useMemo(() => {
         let resultado = [...productos];
@@ -314,6 +313,7 @@ const AdminProductos = () => {
         setSearchTerm('');
         setFilters({
             categoria: '',
+            subcategoria: '',
             marca: '',
             activo: '',
             oferta: '',

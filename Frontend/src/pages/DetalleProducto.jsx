@@ -42,7 +42,7 @@ function DetalleProducto() {
             try {
                 setLoading(true);
                 const nombreBuscado = formatearNombreParaURL(decodeURIComponent(nombreProducto));
-                const productos = await getProductos();
+                const { productos } = await getProductos();
                 const productoEncontrado = productos.find(
                     (p) => formatearNombreParaURL(p.nombre) === nombreBuscado
                 );
@@ -328,6 +328,7 @@ function DetalleProducto() {
                                     producto={producto}
                                     size="large"
                                     showQuantity={false}
+                                    initialQuantity={cantidad}
                                     className="btn-add-cart"
                                 />
                                 {isAuthenticated && (

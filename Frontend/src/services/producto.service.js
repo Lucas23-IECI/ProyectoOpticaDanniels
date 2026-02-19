@@ -139,12 +139,9 @@ export const deleteProducto = async (id) => {
     try {
         const response = await api.delete(`${PRODUCTOS_ENDPOINT}/${id}`);
 
-        const cacheKeys = Object.keys(localStorage).filter(key =>
-            key.includes('productos') || key.includes('all_productos')
-        );
-        cacheKeys.forEach(key => cacheService.delete(key));
+        cacheService.clear();
 
-        return response.data;
+        return response.data.data || response.data;
     } catch (error) {
         console.error("Error en deleteProducto:", error);
         throw error;
