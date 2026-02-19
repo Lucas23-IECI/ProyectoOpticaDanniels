@@ -23,7 +23,8 @@ export default defineConfig(({ mode }) => ({
       '@styles': path.resolve(__dirname, './src/styles'),
       '@assets': path.resolve(__dirname, './src/assets'),
       '@helpers': path.resolve(__dirname, './src/helpers'),
-      '@middlewares': path.resolve(__dirname, './src/middlewares')
+      '@middlewares': path.resolve(__dirname, './src/middlewares'),
+      '@constants': path.resolve(__dirname, './src/constants')
     }
   }
 }));
