@@ -8,6 +8,8 @@ import direccionRoutes from "./direccion.routes.js";
 import reporteRoutes from "./reporte.routes.js";
 import wishlistRoutes from "./wishlist.routes.js";
 import reviewRoutes from "./review.routes.js";
+import pagoRoutes from "./pago.routes.js";
+import citaRoutes from "./cita.routes.js";
 
 const router = Router();
 
@@ -19,6 +21,8 @@ router
     .use("/direcciones", direccionRoutes)
     .use("/reportes", reporteRoutes)
     .use("/wishlist", wishlistRoutes)
-    .use("/reviews", reviewRoutes);
+    .use("/reviews", reviewRoutes)
+    .use("/pagos", pagoRoutes)
+    .use("/citas", citaRoutes);
 
 export default router;

@@ -21,6 +21,9 @@ import Terminos from "@pages/Terminos";
 import Admin from "@pages/Admin";
 import RecuperarPassword from "@pages/RecuperarPassword";
 import Checkout from "@pages/Checkout";
+import MisCompras from "@pages/MisCompras";
+import CheckoutResultado from "@pages/CheckoutResultado";
+import AgendarCita from "@pages/AgendarCita";
 
 
 function AppContent() {
@@ -45,7 +48,23 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/checkout/resultado"
+            element={
+              <ProtectedRoute>
+                <CheckoutResultado />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/contacto" element={<Contacto />} />
+          <Route
+            path="/agendar-cita"
+            element={
+              <ProtectedRoute>
+                <AgendarCita />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/quienes-somos" element={<QuienesSomos />} />
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/terminos" element={<Terminos />} />
@@ -80,7 +99,7 @@ function AppContent() {
             path="/mis-compras"
             element={
               <ProtectedRoute>
-                <div>Mis Compras - Página en desarrollo</div>
+                <MisCompras />
               </ProtectedRoute>
             }
           />
