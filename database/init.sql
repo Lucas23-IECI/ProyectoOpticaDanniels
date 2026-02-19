@@ -183,6 +183,22 @@ CREATE INDEX IF NOT EXISTS idx_citas_usuario ON citas ("userId");
 CREATE INDEX IF NOT EXISTS idx_citas_fecha ON citas (fecha);
 CREATE INDEX IF NOT EXISTS idx_citas_estado ON citas (estado);
 
+-- Tabla mensajes_contacto (formulario de contacto)
+CREATE TABLE IF NOT EXISTS mensajes_contacto (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    telefono VARCHAR(20),
+    asunto VARCHAR(200),
+    mensaje TEXT NOT NULL,
+    leido BOOLEAN NOT NULL DEFAULT false,
+    respondido BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_mensajes_leido ON mensajes_contacto (leido);
+CREATE INDEX IF NOT EXISTS idx_mensajes_email ON mensajes_contacto (email);
+
 -- =========================
 -- SEED: USUARIOS (coinciden con tu initialSetup.js)
 -- =========================

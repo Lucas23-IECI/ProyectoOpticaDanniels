@@ -7,7 +7,8 @@ import AdminOrdenes from "@components/AdminOrdenes";
 import AdminReportes from "@components/AdminReportes";
 import AdminReviews from "@components/AdminReviews";
 import AdminCitas from "@components/AdminCitas";
-import { FaBox, FaUsers, FaShoppingCart, FaChartBar, FaStar, FaCalendarAlt } from "react-icons/fa";
+import AdminMensajes from "@components/AdminMensajes";
+import { FaBox, FaUsers, FaShoppingCart, FaChartBar, FaStar, FaCalendarAlt, FaEnvelope } from "react-icons/fa";
 import "@styles/admin.css";
 
 const Admin = () => {
@@ -28,6 +29,8 @@ const Admin = () => {
                 return <AdminReviews />;
             case 'citas':
                 return <AdminCitas />;
+            case 'mensajes':
+                return <AdminMensajes />;
             default:
                 return <AdminProductos />;
         }
@@ -77,6 +80,12 @@ const Admin = () => {
                     onClick={() => setActiveTab('citas')}
                 >
                     <FaCalendarAlt /> Citas
+                </button>
+                <button 
+                    className={`admin-tab ${activeTab === 'mensajes' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('mensajes')}
+                >
+                    <FaEnvelope /> Mensajes
                 </button>
             </div>
 
