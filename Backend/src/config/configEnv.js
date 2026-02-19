@@ -23,3 +23,21 @@ export const SMTP_PORT = parseInt(process.env.SMTP_PORT, 10) || 587;
 export const SMTP_USER = process.env.SMTP_USER || "";
 export const SMTP_PASS = process.env.SMTP_PASS || "";
 export const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
+// WebPay — Transbank (sandbox por defecto)
+export const WEBPAY_COMMERCE_CODE = process.env.WEBPAY_COMMERCE_CODE
+  || "597055555532";
+export const WEBPAY_API_KEY = process.env.WEBPAY_API_KEY
+  || "579B532A7440BB0C9079DED94D31EA1615BACEB56610332264630D42D0A36B1C";
+export const WEBPAY_ENVIRONMENT = process.env.WEBPAY_ENVIRONMENT
+  || "Integration";
+
+// MercadoPago — Sandbox
+export const MERCADOPAGO_ACCESS_TOKEN = process.env.MERCADOPAGO_ACCESS_TOKEN
+  || "";
+export const MERCADOPAGO_PUBLIC_KEY = process.env.MERCADOPAGO_PUBLIC_KEY
+  || "";
+
+// URL pública del backend (para callbacks de pasarelas)
+export const APP_URL = process.env.APP_URL
+  || `http://localhost:${process.env.PORT || 3000}`;
