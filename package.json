@@ -1,0 +1,16 @@
+{
+  "name": "proyecto-optica-danniels",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Óptica Danniels — Backend + Frontend monorepo",
+  "scripts": {
+    "dev": "npm --prefix Backend run dev",
+    "dev:frontend": "npm --prefix Frontend run dev",
+    "dev:all": "concurrently -n BE,FE -c blue,green \"npm run dev\" \"npm run dev:frontend\"",
+    "build": "npm --prefix Frontend run build",
+    "start": "npm --prefix Backend run start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

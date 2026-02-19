@@ -70,9 +70,19 @@ CREATE TABLE IF NOT EXISTS ordenes (
     direccion VARCHAR(200) NOT NULL,
     observaciones TEXT,
     estado VARCHAR(50) DEFAULT 'pendiente',
-    total INTEGER NOT NULL DEFAULT 0,
+    "estadoPago" VARCHAR(50) DEFAULT 'pendiente',
+    "metodoPago" VARCHAR(50),
+    "metodoEntrega" VARCHAR(50) DEFAULT 'envio',
+    subtotal NUMERIC(10,2) NOT NULL DEFAULT 0,
+    iva NUMERIC(10,2) NOT NULL DEFAULT 0,
+    "costoEnvio" NUMERIC(10,2) NOT NULL DEFAULT 0,
+    total NUMERIC(10,2) NOT NULL DEFAULT 0,
+    "transactionId" VARCHAR(255),
+    "tokenWs" VARCHAR(255),
+    "numeroBoleta" VARCHAR(50) UNIQUE,
     fecha TIMESTAMPTZ DEFAULT NOW(),
     "anonId" VARCHAR(100),
+    "direccionId" INTEGER REFERENCES direcciones(id) ON DELETE SET NULL,
     "usuarioId" INTEGER REFERENCES users(id) ON DELETE SET NULL,
     "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     "updatedAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
@@ -85,6 +95,36 @@ CREATE TABLE IF NOT EXISTS ordenes_productos (
     "productoId" INTEGER REFERENCES productos(id) ON DELETE SET NULL,
     cantidad INTEGER NOT NULL DEFAULT 1,
     precio NUMERIC(10,2) NOT NULL,
+    descuento INTEGER NOT NULL DEFAULT 0,
+    subtotal NUMERIC(10,2) NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- Tabla pagos (registro de transacciones de pago)
+CREATE TABLE IF NOT EXISTS pagos (
+    id SERIAL PRIMARY KEY,
+    "ordenId" INTEGER NOT NULL REFERENCES ordenes(id) ON DELETE CASCADE,
+    monto NUMERIC(10,2) NOT NULL,
+    metodo VARCHAR(50) NOT NULL,
+    estado VARCHAR(50) DEFAULT 'iniciado',
+    "transactionId" VARCHAR(255),
+    "authorizationCode" VARCHAR(100),
+    "responseCode" VARCHAR(50),
+    "rawResponse" JSONB,
+    "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    "updatedAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+-- Tabla stock_movimientos (trazabilidad de inventario)
+CREATE TABLE IF NOT EXISTS stock_movimientos (
+    id SERIAL PRIMARY KEY,
+    "productoId" INTEGER NOT NULL REFERENCES productos(id) ON DELETE CASCADE,
+    "ordenId" INTEGER REFERENCES ordenes(id) ON DELETE SET NULL,
+    tipo VARCHAR(50) NOT NULL,
+    cantidad INTEGER NOT NULL,
+    "stockAnterior" INTEGER NOT NULL,
+    "stockNuevo" INTEGER NOT NULL,
+    motivo TEXT,
     "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
 
@@ -122,6 +162,26 @@ CREATE TABLE IF NOT EXISTS reviews (
 CREATE INDEX IF NOT EXISTS idx_review_producto ON reviews ("productoId");
 CREATE INDEX IF NOT EXISTS idx_review_usuario ON reviews ("userId");
 CREATE INDEX IF NOT EXISTS idx_review_estado ON reviews (estado);
+
+-- Tabla citas (agendar citas genéricas)
+CREATE TABLE IF NOT EXISTS citas (
+    id SERIAL PRIMARY KEY,
+    "userId" INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    "tipoServicio" VARCHAR(50) NOT NULL,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    estado VARCHAR(20) NOT NULL DEFAULT 'pendiente',
+    notas TEXT,
+    "notasAdmin" TEXT,
+    telefono VARCHAR(20) NOT NULL,
+    "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    "updatedAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    UNIQUE(fecha, hora)
+);
+
+CREATE INDEX IF NOT EXISTS idx_citas_usuario ON citas ("userId");
+CREATE INDEX IF NOT EXISTS idx_citas_fecha ON citas (fecha);
+CREATE INDEX IF NOT EXISTS idx_citas_estado ON citas (estado);
 
 -- =========================
 -- SEED: USUARIOS (coinciden con tu initialSetup.js)
@@ -193,6 +253,14 @@ CREATE INDEX IF NOT EXISTS idx_ordenes_correo    ON ordenes(correo);
 CREATE INDEX IF NOT EXISTS idx_ordenes_usuario   ON ordenes("usuarioId");
 CREATE INDEX IF NOT EXISTS idx_ordprod_orden     ON ordenes_productos("ordenId");
 CREATE INDEX IF NOT EXISTS idx_ordprod_producto  ON ordenes_productos("productoId");
+CREATE INDEX IF NOT EXISTS idx_pagos_orden       ON pagos("ordenId");
+CREATE INDEX IF NOT EXISTS idx_pagos_transaction ON pagos("transactionId");
+CREATE INDEX IF NOT EXISTS idx_pagos_estado      ON pagos(estado);
+CREATE INDEX IF NOT EXISTS idx_stockmov_producto ON stock_movimientos("productoId");
+CREATE INDEX IF NOT EXISTS idx_stockmov_orden    ON stock_movimientos("ordenId");
+CREATE INDEX IF NOT EXISTS idx_stockmov_tipo     ON stock_movimientos(tipo);
+CREATE INDEX IF NOT EXISTS idx_ordenes_estadopago ON ordenes("estadoPago");
+CREATE INDEX IF NOT EXISTS idx_ordenes_boleta    ON ordenes("numeroBoleta");
 CREATE INDEX IF NOT EXISTS idx_pwreset_token     ON password_resets(token);
 CREATE INDEX IF NOT EXISTS idx_pwreset_email     ON password_resets(email);
 
@@ -232,15 +300,34 @@ BEGIN
         CREATE TRIGGER tg_ordenes_updated BEFORE UPDATE ON ordenes
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
     END IF;
+
+    PERFORM 1 FROM pg_trigger WHERE tgname = 'tg_pagos_updated';
+    IF NOT FOUND THEN
+        CREATE TRIGGER tg_pagos_updated BEFORE UPDATE ON pagos
+        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+
+    PERFORM 1 FROM pg_trigger WHERE tgname = 'tg_reviews_updated';
+    IF NOT FOUND THEN
+        CREATE TRIGGER tg_reviews_updated BEFORE UPDATE ON reviews
+        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+
+    PERFORM 1 FROM pg_trigger WHERE tgname = 'tg_citas_updated';
+    IF NOT FOUND THEN
+        CREATE TRIGGER tg_citas_updated BEFORE UPDATE ON citas
+        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    END IF;
 END $$;
 
 -- Resumen
 DO $$
-DECLARE u INT; p INT; d INT; o INT;
+DECLARE u INT; p INT; d INT; o INT; c INT;
 BEGIN
     SELECT COUNT(*) INTO u FROM users;
     SELECT COUNT(*) INTO p FROM productos;
     SELECT COUNT(*) INTO d FROM direcciones;
     SELECT COUNT(*) INTO o FROM ordenes;
-    RAISE NOTICE '✅ Users: %, Productos: %, Direcciones: %, Ordenes: %', u, p, d, o;
+    SELECT COUNT(*) INTO c FROM citas;
+    RAISE NOTICE '✅ Users: %, Productos: %, Direcciones: %, Ordenes: %, Citas: %', u, p, d, o, c;
 END $$;
