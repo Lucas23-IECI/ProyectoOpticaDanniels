@@ -54,7 +54,7 @@ export async function actualizarEstadoOrden(id, estado) {
  */
 export async function eliminarOrden(id) {
     const response = await axios.delete(`/ordenes/${id}`);
-    return response.data;
+    return response.data.data;
 }
 
 /**
@@ -62,5 +62,31 @@ export async function eliminarOrden(id) {
  */
 export async function getEstadisticasOrdenes() {
     const response = await axios.get('/reportes/ordenes');
+    return response.data.data;
+}
+
+/**
+ * Calcular costo de envío por región y comuna.
+ */
+export async function getCostoEnvio(region, comuna) {
+    const params = new URLSearchParams({ region });
+    if (comuna) params.append('comuna', comuna);
+    const response = await axios.get(`/ordenes/costo-envio?${params}`);
+    return response.data.data;
+}
+
+/**
+ * Obtener regiones disponibles para envío.
+ */
+export async function getRegionesEnvio() {
+    const response = await axios.get('/ordenes/regiones-envio');
+    return response.data.data;
+}
+
+/**
+ * Obtener las órdenes del usuario autenticado.
+ */
+export async function getMisOrdenes() {
+    const response = await axios.get('/ordenes/mis-ordenes');
     return response.data.data;
 }
