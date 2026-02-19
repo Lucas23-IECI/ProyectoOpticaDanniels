@@ -1,0 +1,437 @@
+/* ===================================================
+   ADMIN MENSAJES — Contact Messages Panel
+   =================================================== */
+
+.admin-mensajes .admin-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.admin-mensajes .admin-section-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  color: #1a1a2e;
+}
+
+.badge-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #dc2626;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  padding: 0 6px;
+  margin-left: 0.4rem;
+}
+
+.admin-mensajes .btn-refresh {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--primary-color, #2147A2);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.admin-mensajes .btn-refresh:disabled {
+  opacity: 0.6;
+}
+
+/* Filtros */
+.admin-mensajes-filtros {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-mensajes-filtros .filtro-grupo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.admin-mensajes-filtros .filtro-grupo svg {
+  color: #9ca3af;
+  margin-right: 0.3rem;
+}
+
+.admin-mensajes-filtros .filtro-btn {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #fff;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.admin-mensajes-filtros .filtro-btn.active {
+  background: var(--primary-color, #2147A2);
+  color: #fff;
+  border-color: var(--primary-color, #2147A2);
+}
+
+.admin-mensajes-filtros .filtro-busqueda {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0.4rem 0.75rem;
+  flex: 1;
+  max-width: 350px;
+}
+
+.admin-mensajes-filtros .filtro-busqueda svg {
+  color: #9ca3af;
+}
+
+.admin-mensajes-filtros .filtro-busqueda input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+/* Loading & Empty */
+.admin-mensajes .admin-loading,
+.admin-mensajes .admin-empty {
+  text-align: center;
+  padding: 3rem;
+  color: #9ca3af;
+}
+
+.admin-mensajes .spinning {
+  animation: spin-msg 1s linear infinite;
+}
+
+@keyframes spin-msg {
+  to { transform: rotate(360deg); }
+}
+
+/* Lista de mensajes */
+.mensajes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mensaje-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mensaje-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border-color: var(--primary-color, #2147A2);
+}
+
+.mensaje-card.no-leido {
+  background: #f0f4ff;
+  border-left: 4px solid var(--primary-color, #2147A2);
+}
+
+.mensaje-card.respondido {
+  opacity: 0.7;
+}
+
+.mensaje-indicadores {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding-top: 0.2rem;
+}
+
+.punto-nuevo {
+  width: 10px;
+  height: 10px;
+  background: var(--primary-color, #2147A2);
+  border-radius: 50%;
+}
+
+.icono-respondido {
+  color: var(--secondary-color, #29A937);
+  font-size: 0.8rem;
+}
+
+.mensaje-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mensaje-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.2rem;
+}
+
+.mensaje-nombre {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+  color: #1a1a2e;
+  font-size: 0.9rem;
+}
+
+.mensaje-nombre svg {
+  color: #9ca3af;
+  font-size: 0.75rem;
+}
+
+.mensaje-fecha {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.mensaje-fecha svg {
+  font-size: 0.65rem;
+}
+
+.mensaje-email {
+  display: block;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.mensaje-asunto {
+  display: block;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #374151;
+  margin-top: 0.2rem;
+}
+
+.mensaje-preview {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.mensaje-acciones {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.mensaje-acciones .btn-accion {
+  padding: 0.35rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+}
+
+.btn-eliminar {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.btn-eliminar:hover {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* Modal */
+.mensaje-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.mensaje-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.mensaje-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mensaje-modal-header h3 {
+  font-size: 1.1rem;
+  color: #1a1a2e;
+}
+
+.mensaje-modal-header button {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 0.3rem;
+}
+
+.mensaje-modal-body {
+  padding: 1.5rem;
+}
+
+.mensaje-modal-body .detalle-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.mensaje-modal-body .detalle-row svg {
+  color: var(--primary-color, #2147A2);
+  flex-shrink: 0;
+}
+
+.mensaje-modal-body .detalle-row a {
+  color: var(--primary-color, #2147A2);
+  text-decoration: none;
+}
+
+.mensaje-modal-body .detalle-row a:hover {
+  text-decoration: underline;
+}
+
+.mensaje-contenido {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f8f9fc;
+  border-radius: 10px;
+  border-left: 4px solid var(--primary-color, #2147A2);
+}
+
+.mensaje-contenido p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #374151;
+  white-space: pre-wrap;
+}
+
+.detalle-estados {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.estado-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.estado-tag.leido { background: #dbeafe; color: #1e40af; }
+.estado-tag.no-leido { background: #fef3c7; color: #92400e; }
+.estado-tag.respondido { background: #d1fae5; color: #065f46; }
+
+.mensaje-modal-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.mensaje-modal-footer .btn-primary,
+.mensaje-modal-footer .btn-secondary,
+.mensaje-modal-footer .btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.mensaje-modal-footer .btn-primary {
+  background: var(--primary-color, #2147A2);
+  color: #fff;
+}
+
+.mensaje-modal-footer .btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.mensaje-modal-footer .btn-danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.mensaje-modal-footer .btn-primary:hover { opacity: 0.9; }
+.mensaje-modal-footer .btn-secondary:hover { background: #e5e7eb; }
+.mensaje-modal-footer .btn-danger:hover { background: #dc2626; color: #fff; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-mensajes-filtros {
+    flex-direction: column;
+  }
+
+  .admin-mensajes-filtros .filtro-busqueda {
+    max-width: 100%;
+  }
+
+  .mensaje-modal-footer {
+    flex-direction: column;
+  }
+}

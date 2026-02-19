@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaWhatsapp, FaEye, FaEnvelope, FaPhone, FaCheckCircle, FaInfoCircle } from 'react-icons/fa';
+import { FaWhatsapp, FaEye, FaEnvelope, FaPhone, FaCheckCircle, FaInfoCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { enviarMensajeContacto } from '@services/contacto.service';
 
 const CallToActionFinal = () => {
     const [formData, setFormData] = useState({
         nombre: '',
         email: '',
         telefono: '',
+        asunto: 'Cotización de receta',
         mensaje: ''
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleInputChange = (e) => {
         setFormData({
@@ -22,15 +25,20 @@ const CallToActionFinal = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        
-        setTimeout(() => {
-            setIsSubmitting(false);
+        setError(null);
+
+        try {
+            await enviarMensajeContacto(formData);
             setIsSubmitted(true);
             setTimeout(() => {
                 setIsSubmitted(false);
-                setFormData({ nombre: '', email: '', telefono: '', mensaje: '' });
-            }, 3000);
-        }, 1000);
+                setFormData({ nombre: '', email: '', telefono: '', asunto: 'Cotización de receta', mensaje: '' });
+            }, 4000);
+        } catch (err) {
+            setError(err?.response?.data?.message || 'Error al enviar el mensaje. Intenta nuevamente.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const whatsappMessage = `Hola! Quisiera cotizar mi receta oftalmológica con ustedes. 
@@ -65,6 +73,13 @@ Mensaje: ${formData.mensaje || 'Solicito cotización'}`;
                                     <p>Nos contactaremos contigo pronto</p>
                                 </div>
                             ) : (
+                                <>
+                                {error && (
+                                    <div className="form-error">
+                                        <FaExclamationTriangle />
+                                        <span>{error}</span>
+                                    </div>
+                                )}
                                 <form onSubmit={handleSubmit} className="contact-form">
                                     <div className="contacto-field">
                                         <input
@@ -74,6 +89,8 @@ Mensaje: ${formData.mensaje || 'Solicito cotización'}`;
                                             value={formData.nombre}
                                             onChange={handleInputChange}
                                             required
+                                            minLength={2}
+                                            maxLength={100}
                                         />
                                     </div>
                                     
@@ -92,10 +109,9 @@ Mensaje: ${formData.mensaje || 'Solicito cotización'}`;
                                         <input
                                             type="tel"
                                             name="telefono"
-                                            placeholder="Tu número de teléfono"
+                                            placeholder="Tu número de teléfono (ej: +56912345678)"
                                             value={formData.telefono}
                                             onChange={handleInputChange}
-                                            required
                                         />
                                     </div>
                                     
@@ -107,6 +123,8 @@ Mensaje: ${formData.mensaje || 'Solicito cotización'}`;
                                             onChange={handleInputChange}
                                             rows="4"
                                             required
+                                            minLength={10}
+                                            maxLength={2000}
                                         />
                                     </div>
                                     
@@ -128,6 +146,7 @@ Mensaje: ${formData.mensaje || 'Solicito cotización'}`;
                                         )}
                                     </button>
                                 </form>
+                                </>
                             )}
                         </div>
 

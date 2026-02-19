@@ -1,7 +1,41 @@
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaWhatsapp, FaClock, FaFacebook, FaInstagram } from 'react-icons/fa';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaWhatsapp, FaClock, FaFacebook, FaInstagram, FaCheckCircle, FaExclamationTriangle, FaCalendarAlt, FaPaperPlane } from 'react-icons/fa';
+import { enviarMensajeContacto } from '@services/contacto.service';
 import '@styles/contacto.css';
 
 function Contacto() {
+    const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        nombre: '', email: '', telefono: '', asunto: '', mensaje: ''
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [formError, setFormError] = useState(null);
+
+    const handleInputChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setFormError(null);
+        try {
+            await enviarMensajeContacto(formData);
+            setIsSubmitted(true);
+            setTimeout(() => {
+                setIsSubmitted(false);
+                setFormData({ nombre: '', email: '', telefono: '', asunto: '', mensaje: '' });
+            }, 4000);
+        } catch (err) {
+            setFormError(err?.response?.data?.message || 'Error al enviar el mensaje. Intenta nuevamente.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const horarios = [
         { dia: 'Lunes a Viernes', horario: '9:00 - 19:00' },
         { dia: 'Sábados', horario: '9:00 - 14:00' },
@@ -141,6 +175,57 @@ function Contacto() {
                 </div>
             </section>
 
+            <section className="contacto-formulario-section">
+                <div className="container">
+                    <h3>Envíanos un Mensaje</h3>
+                    <p className="form-intro">Completa el formulario y te responderemos a la brevedad.</p>
+
+                    {isSubmitted ? (
+                        <div className="contacto-form-success">
+                            <FaCheckCircle className="success-icon" />
+                            <h4>¡Mensaje enviado exitosamente!</h4>
+                            <p>Nos contactaremos contigo pronto.</p>
+                        </div>
+                    ) : (
+                        <form onSubmit={handleSubmit} className="contacto-form-grid">
+                            {formError && (
+                                <div className="contacto-form-error">
+                                    <FaExclamationTriangle />
+                                    <span>{formError}</span>
+                                </div>
+                            )}
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="ct-nombre">Nombre *</label>
+                                    <input id="ct-nombre" type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} required minLength={2} maxLength={100} placeholder="Tu nombre completo" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="ct-email">Email *</label>
+                                    <input id="ct-email" type="email" name="email" value={formData.email} onChange={handleInputChange} required placeholder="correo@ejemplo.com" />
+                                </div>
+                            </div>
+                            <div className="form-row">
+                                <div className="form-group">
+                                    <label htmlFor="ct-telefono">Teléfono</label>
+                                    <input id="ct-telefono" type="tel" name="telefono" value={formData.telefono} onChange={handleInputChange} placeholder="+56 9 1234 5678" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="ct-asunto">Asunto *</label>
+                                    <input id="ct-asunto" type="text" name="asunto" value={formData.asunto} onChange={handleInputChange} required maxLength={200} placeholder="Motivo de tu consulta" />
+                                </div>
+                            </div>
+                            <div className="form-group full-width">
+                                <label htmlFor="ct-mensaje">Mensaje *</label>
+                                <textarea id="ct-mensaje" name="mensaje" value={formData.mensaje} onChange={handleInputChange} required minLength={10} maxLength={2000} rows="5" placeholder="Cuéntanos en qué podemos ayudarte..." />
+                            </div>
+                            <button type="submit" className="btn btn-primary form-submit-btn" disabled={isSubmitting}>
+                                {isSubmitting ? (<><div className="spinner"></div>Enviando...</>) : (<><FaPaperPlane /> Enviar Mensaje</>)}
+                            </button>
+                        </form>
+                    )}
+                </div>
+            </section>
+
             <section className="mapa-section">
                 <div className="container">
                     <h3>¿Cómo llegar?</h3>
@@ -182,15 +267,13 @@ function Contacto() {
                             Contáctanos hoy mismo y descubre cómo podemos ayudarte a ver mejor
                         </p>
                         <div className="cta-buttons">
-                            <a 
-                                href="https://api.whatsapp.com/send?phone=56937692691&text=Hola!%20Quisiera%20agendar%20una%20cita"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                            <button 
+                                onClick={() => navigate('/agendar-cita')}
                                 className="btn btn-primary"
                             >
-                                <FaWhatsapp />
+                                <FaCalendarAlt />
                                 Agendar Cita
-                            </a>
+                            </button>
                             <a 
                                 href="tel:+56937692691"
                                 className="btn btn-secondary"
