@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import { useAuth } from '@context/AuthContext';
 import CartContext from './CartContext';
 
@@ -106,6 +106,7 @@ export const CartProvider = ({ children }) => {
         items: [],
         version: 0
     });
+    const [cartLoaded, setCartLoaded] = useState(false);
 
     // Función para obtener la clave del carrito
     const getCartKey = useCallback(() => {
@@ -130,6 +131,7 @@ export const CartProvider = ({ children }) => {
                 localStorage.setItem(cartKey, JSON.stringify([]));
             }
         }
+        setCartLoaded(true);
     }, [user?.rut, isAuthenticated, getCartKey]);
 
     // Funciones del carrito
@@ -187,6 +189,7 @@ export const CartProvider = ({ children }) => {
     const value = {
         // Estado
         cart: state.items,
+        cartLoaded,
         cartVersion: state.version, // Para forzar re-renders
 
         // Funciones

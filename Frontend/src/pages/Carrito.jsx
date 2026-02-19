@@ -1,224 +1,251 @@
-import { useNavigate } from 'react-router-dom';
-import { FaShoppingCart, FaTrash, FaPlus, FaMinus, FaArrowLeft, FaCreditCard } from 'react-icons/fa';
-import { useCart } from '@context/CartContext';
-import { useAuth } from '@context/AuthContext';
-import LazyImage from '@components/LazyImage';
-import '@styles/carrito.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+    FaShoppingCart, FaTrash, FaArrowLeft, FaCreditCard,
+    FaShieldAlt, FaTruck, FaUndo, FaTag, FaStore,
+} from "react-icons/fa";
+import { useCart } from "@context/CartContext";
+import { useAuth } from "@context/AuthContext";
+import LazyImage from "@components/LazyImage";
+import "@styles/carrito.css";
 
+/* ── helpers ── */
+const fmt = (p) =>
+    `$${Number(p).toLocaleString("es-CL", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    })}`;
+
+const unitPrice = (item) =>
+    item.oferta && item.descuento > 0
+        ? Math.round(item.precio * (1 - item.descuento / 100))
+        : item.precio;
+
+/* ═══════════════════════════════════════════════ */
 const Carrito = () => {
-    const { 
-        cart, 
-        getTotalItems, 
-        getTotalPrice, 
-        removeFromCart, 
-        updateQuantity, 
-        clearCart 
+    const {
+        cart, getTotalItems, getTotalPrice,
+        removeFromCart, updateQuantity, clearCart,
     } = useCart();
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
-    
+    const [removing, setRemoving] = useState(null);
+
     const totalItems = getTotalItems();
     const totalPrice = getTotalPrice();
-    
-    const formatPrice = (price) => {
-        return `$${price.toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-    };
-    
-    const handleQuantityChange = (productId, newQuantity) => {
-        if (newQuantity <= 0) {
-            removeFromCart(productId);
+
+    const handleQty = (id, qty) => {
+        if (qty <= 0) {
+            animateRemove(id);
         } else {
-            updateQuantity(productId, newQuantity);
+            updateQuantity(id, qty);
         }
     };
-    
-    const handleCheckout = () => {
-        navigate('/checkout');
+
+    const animateRemove = (id) => {
+        setRemoving(id);
+        setTimeout(() => {
+            removeFromCart(id);
+            setRemoving(null);
+        }, 300);
     };
-    
-    // Si no está autenticado, redirigir
+
+    /* ── Not authenticated ── */
     if (!isAuthenticated) {
         return (
-            <div className="carrito-container">
-                <div className="carrito-not-authenticated">
-                    <FaShoppingCart className="cart-icon-large" />
-                    <h2>Inicia sesión para ver tu carrito</h2>
-                    <p>Necesitas estar autenticado para gestionar tu carrito de compras</p>
-                    <button 
-                        className="btn-login"
-                        onClick={() => navigate('/login')}
-                    >
-                        Iniciar sesión
-                    </button>
+            <div className="ct">
+                <div className="ct-empty-wrap">
+                    <div className="ct-empty-card">
+                        <div className="ct-empty-ico">
+                            <FaShoppingCart />
+                        </div>
+                        <h2>Inicia sesión para ver tu carrito</h2>
+                        <p>Necesitas estar autenticado para gestionar tu carrito de compras</p>
+                        <button className="ct-btn ct-btn--primary" onClick={() => navigate("/login")}>
+                            Iniciar sesión
+                        </button>
+                    </div>
                 </div>
             </div>
         );
     }
-    
-    return (
-        <div className="carrito-container">
-            <div className="carrito-header">
-                <button 
-                    className="btn-back"
-                    onClick={() => navigate(-1)}
-                >
-                    <FaArrowLeft />
-                    Volver
-                </button>
-                
-                <div className="carrito-title">
-                    <h1>
-                        <FaShoppingCart />
-                        Mi Carrito
-                    </h1>
-                    <p>{totalItems} {totalItems === 1 ? 'producto' : 'productos'}</p>
+
+    /* ── Empty cart ── */
+    if (cart.length === 0) {
+        return (
+            <div className="ct">
+                <div className="ct-empty-wrap">
+                    <div className="ct-empty-card">
+                        <div className="ct-empty-ico">
+                            <FaShoppingCart />
+                        </div>
+                        <h2>Tu carrito está vacío</h2>
+                        <p>Agrega productos para comenzar tu compra</p>
+                        <button className="ct-btn ct-btn--primary" onClick={() => navigate("/productos")}>
+                            <FaStore /> Explorar productos
+                        </button>
+                    </div>
                 </div>
-                
-                {cart.length > 0 && (
-                    <button 
-                        className="btn-clear-cart"
-                        onClick={clearCart}
-                    >
-                        <FaTrash />
-                        Vaciar carrito
-                    </button>
-                )}
             </div>
-            
-            {cart.length === 0 ? (
-                <div className="carrito-empty">
-                    <FaShoppingCart className="empty-icon" />
-                    <h2>Tu carrito está vacío</h2>
-                    <p>Agrega algunos productos para comenzar tu compra</p>
-                    <button 
-                        className="btn-browse-products"
-                        onClick={() => navigate('/productos')}
-                    >
-                        Ver productos
-                    </button>
+        );
+    }
+
+    /* ── Cart with items ── */
+    return (
+        <div className="ct">
+            {/* Header */}
+            <div className="ct-header">
+                <button className="ct-back" onClick={() => navigate(-1)}>
+                    <FaArrowLeft /> Volver
+                </button>
+                <div className="ct-heading">
+                    <h1><FaShoppingCart /> Mi Carrito</h1>
+                    <span className="ct-count">{totalItems} {totalItems === 1 ? "producto" : "productos"}</span>
                 </div>
-            ) : (
-                <div className="carrito-content">
-                    <div className="carrito-items">
-                        {cart.map((item) => (
-                            <div key={item.id} className="carrito-item">
-                                <div className="item-image">
-                                    <LazyImage 
-                                        src={item.imagen_url} 
-                                        alt={item.nombre}
-                                    />
+                <button className="ct-clear" onClick={clearCart}>
+                    <FaTrash /> Vaciar
+                </button>
+            </div>
+
+            {/* Grid */}
+            <div className="ct-grid">
+                {/* Items */}
+                <div className="ct-items">
+                    {cart.map((item) => {
+                        const up = unitPrice(item);
+                        const sub = up * item.cantidad;
+                        const isRemoving = removing === item.id;
+
+                        return (
+                            <div
+                                key={item.id}
+                                className={`ct-card ${isRemoving ? "ct-card--removing" : ""}`}
+                            >
+                                {/* Product image */}
+                                <div className="ct-card__img">
+                                    <LazyImage src={item.imagen_url} alt={item.nombre} />
+                                    {item.oferta && item.descuento > 0 && (
+                                        <span className="ct-card__discount">
+                                            <FaTag /> -{item.descuento}%
+                                        </span>
+                                    )}
                                 </div>
-                                
-                                <div className="item-info">
-                                    <h3 className="item-name">{item.nombre}</h3>
-                                    <p className="item-brand">{item.marca}</p>
-                                    <p className="item-category">{item.categoria}</p>
-                                    
-                                    <div className="item-price-info">
-                                        {item.oferta ? (
-                                            <div className="price-with-offer">
-                                                <span className="original-price">
-                                                    {formatPrice(item.precio)}
-                                                </span>
-                                                <span className="offer-price">
-                                                    {formatPrice(item.precio * (1 - item.descuento / 100))}
-                                                </span>
-                                                <span className="discount-badge">
-                                                    -{item.descuento}%
-                                                </span>
-                                            </div>
-                                        ) : (
-                                            <span className="regular-price">
-                                                {formatPrice(item.precio)}
-                                            </span>
-                                        )}
+
+                                {/* Main info */}
+                                <div className="ct-card__body">
+                                    <div className="ct-card__top">
+                                        <h3 className="ct-card__name">{item.nombre}</h3>
+                                        <button
+                                            className="ct-card__remove"
+                                            onClick={() => animateRemove(item.id)}
+                                            title="Eliminar"
+                                        >
+                                            <FaTrash />
+                                        </button>
                                     </div>
-                                </div>
-                                
-                                <div className="item-controls">
-                                    <div className="quantity-section">
-                                        <label>Cantidad:</label>
-                                        <div className="quantity-controls">
-                                            <button 
-                                                className="qty-btn decrease"
-                                                onClick={() => handleQuantityChange(item.id, item.cantidad - 1)}
+
+                                    <div className="ct-card__meta">
+                                        {item.marca && <span className="ct-card__brand">{item.marca}</span>}
+                                        {item.categoria && <span className="ct-card__cat">{item.categoria}</span>}
+                                    </div>
+
+                                    {/* Price row */}
+                                    <div className="ct-card__pricing">
+                                        <div className="ct-card__prices">
+                                            <span className="ct-card__price">{fmt(up)}</span>
+                                            {item.oferta && item.descuento > 0 && (
+                                                <span className="ct-card__original">{fmt(item.precio)}</span>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Bottom row: qty + subtotal */}
+                                    <div className="ct-card__bottom">
+                                        <div className="ct-qty">
+                                            <button
+                                                className="ct-qty__btn"
+                                                onClick={() => handleQty(item.id, item.cantidad - 1)}
                                             >
                                                 −
                                             </button>
-                                            <span className="quantity">{item.cantidad}</span>
-                                            <button 
-                                                className="qty-btn increase"
-                                                onClick={() => handleQuantityChange(item.id, item.cantidad + 1)}
+                                            <span className="ct-qty__val">{item.cantidad}</span>
+                                            <button
+                                                className="ct-qty__btn"
+                                                onClick={() => handleQty(item.id, item.cantidad + 1)}
                                                 disabled={item.cantidad >= item.stock}
                                             >
                                                 +
                                             </button>
+                                            <span className="ct-qty__stock">
+                                                {item.stock} disponible{item.stock !== 1 ? "s" : ""}
+                                            </span>
                                         </div>
-                                        <p className="stock-info">
-                                            Stock disponible: {item.stock}
-                                        </p>
+                                        <div className="ct-card__subtotal">
+                                            <span className="ct-card__sub-label">Subtotal</span>
+                                            <span className="ct-card__sub-val">{fmt(sub)}</span>
+                                        </div>
                                     </div>
-                                    
-                                    <div className="item-total">
-                                        <label>Subtotal:</label>
-                                        <span className="subtotal-price">
-                                            {item.oferta && item.descuento > 0
-                                                ? formatPrice(Math.round(item.precio * (1 - item.descuento / 100)) * item.cantidad)
-                                                : formatPrice(item.precio * item.cantidad)
-                                            }
-                                        </span>
-                                    </div>
-                                    
-                                    <button 
-                                        className="btn-remove-item"
-                                        onClick={() => removeFromCart(item.id)}
-                                    >
-                                        <FaTrash />
-                                        Eliminar
-                                    </button>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                    
-                    <div className="carrito-summary">
-                        <div className="summary-card">
-                            <h3>Resumen del pedido</h3>
-                            
-                            <div className="summary-details">
-                                <div className="summary-row">
-                                    <span>Productos ({totalItems})</span>
-                                    <span>{formatPrice(totalPrice)}</span>
-                                </div>
-                                <div className="summary-row">
-                                    <span>Envío</span>
-                                    <span>Por calcular</span>
-                                </div>
-                                <div className="summary-divider"></div>
-                                <div className="summary-row total">
-                                    <span>Total</span>
-                                    <span>{formatPrice(totalPrice)}</span>
-                                </div>
+                        );
+                    })}
+                </div>
+
+                {/* Summary sidebar */}
+                <aside className="ct-aside">
+                    <div className="ct-summary">
+                        <h3 className="ct-summary__title">Resumen del pedido</h3>
+
+                        <div className="ct-summary__rows">
+                            <div className="ct-summary__row">
+                                <span>Productos ({totalItems})</span>
+                                <span>{fmt(totalPrice)}</span>
                             </div>
-                            
-                            <button 
-                                className="btn-checkout"
-                                onClick={handleCheckout}
-                            >
-                                <FaCreditCard />
-                                Proceder al pago
-                            </button>
-                            
-                            <button 
-                                className="btn-continue-shopping"
-                                onClick={() => navigate('/productos')}
-                            >
-                                Continuar comprando
-                            </button>
+                            <div className="ct-summary__row ct-summary__row--muted">
+                                <span>Envío</span>
+                                <span>Se calcula en checkout</span>
+                            </div>
+                        </div>
+
+                        <div className="ct-summary__sep" />
+
+                        <div className="ct-summary__total">
+                            <span>Total estimado</span>
+                            <span className="ct-summary__total-val">{fmt(totalPrice)}</span>
+                        </div>
+
+                        <button
+                            className="ct-btn ct-btn--pay"
+                            onClick={() => navigate("/checkout")}
+                        >
+                            <FaCreditCard /> Proceder al pago
+                        </button>
+
+                        <button
+                            className="ct-btn ct-btn--ghost"
+                            onClick={() => navigate("/productos")}
+                        >
+                            Continuar comprando
+                        </button>
+
+                        {/* Trust badges */}
+                        <div className="ct-trust">
+                            <div className="ct-trust__item">
+                                <FaTruck />
+                                <span>Envío seguro</span>
+                            </div>
+                            <div className="ct-trust__item">
+                                <FaShieldAlt />
+                                <span>Pago protegido</span>
+                            </div>
+                            <div className="ct-trust__item">
+                                <FaUndo />
+                                <span>Devoluciones</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
+                </aside>
+            </div>
         </div>
     );
 };
