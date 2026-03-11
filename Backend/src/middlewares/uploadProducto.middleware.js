@@ -1,22 +1,34 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { CLOUDINARY_CLOUD_NAME } from "../config/configEnv.js";
 
-const dir = "uploads/productos";
-if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+const useCloudinary = Boolean(CLOUDINARY_CLOUD_NAME);
+
+let storage;
+
+if (useCloudinary) {
+    // Modo nube: Cloudinary (producción)
+    const { cloudinaryStorage } = await import("../helpers/cloudinary.helper.js");
+    storage = cloudinaryStorage;
+} else {
+    // Modo local: disco (desarrollo / Docker)
+    const dir = "uploads/productos";
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+
+    storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, dir);
+        },
+        filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+            const ext = path.extname(file.originalname);
+            cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+        },
+    });
 }
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, dir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        const ext = path.extname(file.originalname);
-        cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-    },
-});
 
 const fileFilter = (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|webp/;

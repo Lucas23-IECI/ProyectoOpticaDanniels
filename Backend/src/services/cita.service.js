@@ -153,13 +153,18 @@ export async function actualizarEstadoCitaService(id, body) {
   try {
     const citaRepo = AppDataSource.getRepository(Cita);
 
-    const cita = await citaRepo.findOne({ where: { id: parseInt(id) } });
+    const cita = await citaRepo.findOne({
+      where: { id: parseInt(id) },
+      relations: ["usuario"],
+    });
     if (!cita) return [null, "Cita no encontrada."];
 
     cita.estado = body.estado;
     if (body.notasAdmin !== undefined) cita.notasAdmin = body.notasAdmin;
 
     const citaActualizada = await citaRepo.save(cita);
+    // Re-attach usuario para notificación email
+    citaActualizada.usuario = cita.usuario;
     return [citaActualizada, null];
   } catch (error) {
     logger.error("Error en actualizarEstadoCitaService:", error);

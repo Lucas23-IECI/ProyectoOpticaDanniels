@@ -13,6 +13,8 @@ import {
   handleErrorServer,
   handleSuccess,
 } from "../handlers/responseHandlers.js";
+import { sendCitaStatusEmail } from "../helpers/email.helper.js";
+import logger from "../config/logger.js";
 
 /**
  * POST /api/citas — usuario autenticado crea cita
@@ -84,6 +86,11 @@ export const actualizarEstadoCita = async (req, res) => {
     const [cita, error] = await actualizarEstadoCitaService(req.params.id, req.body);
 
     if (error) return handleErrorClient(res, 400, error);
+
+    // Notificar al usuario por email (async, no bloquea)
+    sendCitaStatusEmail(cita).catch((err) =>
+      logger.error("Error enviando email estado cita:", err)
+    );
 
     handleSuccess(res, 200, "Estado de cita actualizado.", cita);
   } catch (error) {

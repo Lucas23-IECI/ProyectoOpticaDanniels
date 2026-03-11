@@ -251,6 +251,7 @@ export const obtenerOrdenPorIdService = async (id) => {
             productos: {
                 producto: true,
             },
+            usuario: true,
         },
     });
 

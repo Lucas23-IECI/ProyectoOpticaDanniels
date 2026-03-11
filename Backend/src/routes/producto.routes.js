@@ -5,7 +5,9 @@ import {
     crearProductoController,
     eliminarProductoController,
     obtenerSugerenciasBusquedaController,
-    subirImagenProductoController
+    subirImagenProductoController,
+    getProductosStockBajoController,
+    enviarAlertaStockController
 } from "../controllers/producto.controller.js";
 import { validateSchema } from "../middlewares/validateSchema.js";
 import { validateProductoMultipart } from "../middlewares/validateProductoMultipart.js";
@@ -26,6 +28,8 @@ router
         validateProductoMultipart,
         crearProductoController
     )
+    .get("/stock-bajo", authenticateJwt, isAdmin, getProductosStockBajoController)
+    .post("/stock-bajo/alerta", authenticateJwt, isAdmin, enviarAlertaStockController)
     .get("/", buscarProductosController)
     .get("/sugerencias", obtenerSugerenciasBusquedaController)
     .put("/:id",

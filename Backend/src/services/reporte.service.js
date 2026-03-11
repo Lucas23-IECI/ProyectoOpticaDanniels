@@ -48,10 +48,10 @@ export async function getEstadisticasGeneralesService() {
             .groupBy("producto.categoria")
             .getRawMany();
 
-        // Productos con stock bajo (menos de 5 unidades para test)
+        // Productos con stock bajo (menos de 10 unidades)
         const productosStockBajo = await productoRepository
             .createQueryBuilder("producto")
-            .where("producto.stock < :stock AND producto.activo = :activo", { stock: 5, activo: true })
+            .where("producto.stock < :stock AND producto.activo = :activo", { stock: 10, activo: true })
             .getCount();
 
         // Valor total del inventario (solo productos activos con stock > 0)

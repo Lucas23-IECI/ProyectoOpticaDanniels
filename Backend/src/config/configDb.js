@@ -1,23 +1,35 @@
 "use strict";
 import { DataSource } from "typeorm";
-import { DATABASE, DB_USERNAME, HOST, PASSWORD } from "./configEnv.js";
+import { DATABASE, DB_USERNAME, HOST, PASSWORD, DATABASE_URL } from "./configEnv.js";
 import logger from "./logger.js";
 
 // Nota: DB_HOST viene del .env. Si no estuviera, caemos a HOST.
 const DB_HOST = process.env.DB_HOST || HOST;
 
-export const AppDataSource = new DataSource({
-    type: "postgres",
-    host: DB_HOST,
-    port: 5432,
-    username: `${DB_USERNAME}`,
-    password: `${PASSWORD}`,
-    database: `${DATABASE}`,
-    entities: ["src/entity/**/*.js"],
-    // IMPORTANTE: no dejar que TypeORM toque el esquema creado por init.sql
-    synchronize: false,
-    logging: false,
-});
+// Si DATABASE_URL existe (Neon, Render, etc.), usar conexión directa con SSL.
+// Si no, usar variables individuales (desarrollo local / Docker).
+const dataSourceOptions = DATABASE_URL
+    ? {
+        type: "postgres",
+        url: DATABASE_URL,
+        entities: ["src/entity/**/*.js"],
+        synchronize: false,
+        logging: false,
+        ssl: { rejectUnauthorized: false },
+    }
+    : {
+        type: "postgres",
+        host: DB_HOST,
+        port: 5432,
+        username: `${DB_USERNAME}`,
+        password: `${PASSWORD}`,
+        database: `${DATABASE}`,
+        entities: ["src/entity/**/*.js"],
+        synchronize: false,
+        logging: false,
+    };
+
+export const AppDataSource = new DataSource(dataSourceOptions);
 
 export async function connectDB() {
     const MAX_RETRIES = 10;

@@ -13,7 +13,7 @@ export const actualizarImagenProductoService = async (id, imagenUrl) => {
         throw { status: 404, message: "Producto no encontrado" };
     }
 
-    if (producto.imagen_url) {
+    if (producto.imagen_url && !producto.imagen_url.startsWith("http")) {
         const rutaImagenAnterior = path.join("uploads", "productos", producto.imagen_url);
         if (fs.existsSync(rutaImagenAnterior)) {
             fs.unlinkSync(rutaImagenAnterior);
@@ -296,17 +296,17 @@ export const actualizarProductoService = async (id, datos) => {
             }
         }
 
-        // Si se está actualizando la imagen, eliminar la anterior
+        // Si se está actualizando la imagen, eliminar la anterior (solo si es archivo local)
         if (datos.imagen_url && productoExistente.imagen_url && datos.imagen_url !== productoExistente.imagen_url) {
-            const rutaImagenAnterior = path.join("uploads", "productos", productoExistente.imagen_url);
-
-            try {
-                if (fs.existsSync(rutaImagenAnterior)) {
-                    fs.unlinkSync(rutaImagenAnterior);
+            if (!productoExistente.imagen_url.startsWith("http")) {
+                const rutaImagenAnterior = path.join("uploads", "productos", productoExistente.imagen_url);
+                try {
+                    if (fs.existsSync(rutaImagenAnterior)) {
+                        fs.unlinkSync(rutaImagenAnterior);
+                    }
+                } catch (errorImagen) {
+                    logger.error(`Error al eliminar imagen anterior: ${rutaImagenAnterior}`, errorImagen);
                 }
-            } catch (errorImagen) {
-                logger.error(`Error al eliminar imagen anterior: ${rutaImagenAnterior}`, errorImagen);
-                // No lanzamos error aquí para que continue la actualización
             }
         }
 
@@ -475,6 +475,41 @@ export const generarSugerenciasBusqueda = async (terminoBusqueda) => {
     } catch (error) {
         logger.error("Error generando sugerencias:", error);
         return [];
+    }
+};
+
+/**
+ * Obtener productos con stock bajo.
+ * @param {number} umbral — Umbral de stock (default 10)
+ * @returns {Promise<[Array, null] | [null, string]>}
+ */
+export const getProductosStockBajoService = async (umbral = 10) => {
+    try {
+        const productoRepository = AppDataSource.getRepository(Producto);
+
+        const productos = await productoRepository
+            .createQueryBuilder("producto")
+            .select([
+                "producto.id",
+                "producto.nombre",
+                "producto.marca",
+                "producto.categoria",
+                "producto.stock",
+                "producto.precio",
+                "producto.imagen_url",
+                "producto.activo",
+            ])
+            .where("producto.stock < :umbral AND producto.activo = :activo", {
+                umbral,
+                activo: true,
+            })
+            .orderBy("producto.stock", "ASC")
+            .getMany();
+
+        return [productos, null];
+    } catch (error) {
+        logger.error("Error obteniendo productos stock bajo:", error);
+        return [null, "Error al obtener productos con stock bajo."];
     }
 };
 

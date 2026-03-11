@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig(({ mode }) => ({
-  base: process.env.VITE_BASE_PATH || (mode === 'production' ? '/OpticaDanniels/' : '/'),
+  base: process.env.VITE_BASE_PATH || '/',
   plugins: [react()],
   preview: {
     port: 443,

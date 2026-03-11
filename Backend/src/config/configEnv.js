@@ -41,3 +41,17 @@ export const MERCADOPAGO_PUBLIC_KEY = process.env.MERCADOPAGO_PUBLIC_KEY
 // URL pública del backend (para callbacks de pasarelas)
 export const APP_URL = process.env.APP_URL
   || `http://localhost:${process.env.PORT || 3000}`;
+
+// Conexión directa a BD (Neon, Render, etc.)
+export const DATABASE_URL = process.env.DATABASE_URL || "";
+
+// CORS — Orígenes permitidos (separados por coma)
+export const CORS_ORIGINS = process.env.CORS_ORIGINS || "";
+
+// Cloudinary — Almacenamiento de imágenes en la nube
+export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME || "";
+export const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY || "";
+export const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || "";
+
+// Entorno
+export const NODE_ENV = process.env.NODE_ENV || "development";

@@ -3,14 +3,20 @@ import {
     FaChartBar, FaUsers, FaBox, FaSpinner, FaSync, FaCalendar,
     FaUserShield, FaUser, FaEye, FaEyeSlash, FaPercent, FaDollarSign,
     FaChartPie, FaChartLine, FaEquals, FaShoppingCart, FaMoneyBillWave,
-    FaTruck, FaCheck, FaBan, FaClipboardList, FaBoxOpen
+    FaTruck, FaCheck, FaBan, FaClipboardList, FaBoxOpen,
+    FaFilePdf, FaFileExcel, FaFileCsv, FaDownload
 } from 'react-icons/fa';
 import { 
     getEstadisticasGenerales, 
     getEstadisticasUsuarios, 
-    getEstadisticasProductos 
+    getEstadisticasProductos,
+    exportarReporte 
 } from '@services/reporte.service';
 import { getEstadisticasOrdenes } from '@services/orden.service';
+import {
+    SimplePieChart, HorizontalBarChart, TrendAreaChart,
+    OrdersTrendChart, StatusBarChart,
+} from '@components/charts/ReportCharts';
 import '@styles/adminReportes.css';
 
 const AdminReportes = () => {
@@ -22,10 +28,23 @@ const AdminReportes = () => {
     const [estadisticasUsuarios, setEstadisticasUsuarios] = useState(null);
     const [estadisticasProductos, setEstadisticasProductos] = useState(null);
     const [estadisticasOrdenes, setEstadisticasOrdenes] = useState(null);
+    const [exportando, setExportando] = useState(null);
 
     useEffect(() => {
         cargarDatos();
     }, []);
+
+    const handleExportar = async (formato) => {
+        try {
+            setExportando(formato);
+            await exportarReporte(activeTab, formato);
+        } catch (err) {
+            console.error('Error al exportar reporte:', err);
+            alert('Error al exportar el reporte. Intente nuevamente.');
+        } finally {
+            setExportando(null);
+        }
+    };
 
     const cargarDatos = async () => {
         try {
@@ -163,17 +182,7 @@ const AdminReportes = () => {
                         </h3>
                         <div className="chart-content">
                             {usuarios.porGenero && usuarios.porGenero.length > 0 ? (
-                                <div className="pie-chart-simple">
-                                    {usuarios.porGenero.map((item, index) => (
-                                        <div key={index} className="pie-item">
-                                            <div className={`pie-color pie-color-${index}`}></div>
-                                            <span className="pie-label">
-                                                {item.genero}: {item.cantidad} 
-                                                ({formatearPorcentaje(item.cantidad, usuarios.total)})
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
+                                <SimplePieChart data={usuarios.porGenero} nameKey="genero" valueKey="cantidad" />
                             ) : (
                                 <p className="no-data">No hay datos de género disponibles</p>
                             )}
@@ -188,22 +197,7 @@ const AdminReportes = () => {
                         </h3>
                         <div className="chart-content">
                             {productos.porCategoria && productos.porCategoria.length > 0 ? (
-                                <div className="bar-chart-simple">
-                                    {productos.porCategoria.map((item, index) => (
-                                        <div key={index} className="bar-item">
-                                            <div className="bar-label">{item.categoria}</div>
-                                            <div className="bar-container">
-                                                <div 
-                                                    className="bar-fill"
-                                                    style={{ 
-                                                        width: `${(item.cantidad / Math.max(...productos.porCategoria.map(p => p.cantidad))) * 100}%` 
-                                                    }}
-                                                ></div>
-                                                <span className="bar-value">{item.cantidad}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                <HorizontalBarChart data={productos.porCategoria} nameKey="categoria" valueKey="cantidad" barColor="#2147A2" />
                             ) : (
                                 <p className="no-data">No hay datos de categorías disponibles</p>
                             )}
@@ -218,16 +212,14 @@ const AdminReportes = () => {
                         </h3>
                         <div className="chart-content">
                             {tendencias.registrosPorMes && tendencias.registrosPorMes.length > 0 ? (
-                                <div className="line-chart-simple">
-                                    {tendencias.registrosPorMes.map((item, index) => (
-                                        <div key={index} className="line-item">
-                                            <div className="line-label">
-                                                {obtenerMesNombre(item.mes)} {item.año}
-                                            </div>
-                                            <div className="line-value">{item.cantidad}</div>
-                                        </div>
-                                    ))}
-                                </div>
+                                <TrendAreaChart
+                                    data={tendencias.registrosPorMes.map(t => ({
+                                        ...t,
+                                        label: `${obtenerMesNombre(t.mes)} ${t.año}`,
+                                    }))}
+                                    nameKey="label"
+                                    valueKey="cantidad"
+                                />
                             ) : (
                                 <p className="no-data">No hay datos de tendencias disponibles</p>
                             )}
@@ -251,16 +243,7 @@ const AdminReportes = () => {
                             Distribución por Rol
                         </h3>
                         <div className="chart-content">
-                            <div className="pie-chart-simple">
-                                {estadisticasUsuarios.porRol.map((item, index) => (
-                                    <div key={index} className="pie-item">
-                                        <div className={`pie-color pie-color-${index}`}></div>
-                                        <span className="pie-label">
-                                            {item.rol}: {item.cantidad}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
+                            <SimplePieChart data={estadisticasUsuarios.porRol} nameKey="rol" valueKey="cantidad" />
                         </div>
                     </div>
 
@@ -271,22 +254,7 @@ const AdminReportes = () => {
                             Distribución por Edad
                         </h3>
                         <div className="chart-content">
-                            <div className="bar-chart-simple">
-                                {estadisticasUsuarios.distribucionPorEdad.map((item, index) => (
-                                    <div key={index} className="bar-item">
-                                        <div className="bar-label">{item.rango}</div>
-                                        <div className="bar-container">
-                                            <div 
-                                                className="bar-fill"
-                                                style={{ 
-                                                    width: `${(item.cantidad / Math.max(...estadisticasUsuarios.distribucionPorEdad.map(p => p.cantidad))) * 100}%` 
-                                                }}
-                                            ></div>
-                                            <span className="bar-value">{item.cantidad}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                            <HorizontalBarChart data={estadisticasUsuarios.distribucionPorEdad} nameKey="rango" valueKey="cantidad" barColor="#9b59b6" />
                         </div>
                     </div>
 
@@ -347,22 +315,7 @@ const AdminReportes = () => {
                             Top 10 Marcas
                         </h3>
                         <div className="chart-content">
-                            <div className="bar-chart-simple">
-                                {estadisticasProductos.porMarca.map((item, index) => (
-                                    <div key={index} className="bar-item">
-                                        <div className="bar-label">{item.marca}</div>
-                                        <div className="bar-container">
-                                            <div 
-                                                className="bar-fill"
-                                                style={{ 
-                                                    width: `${(item.cantidad / Math.max(...estadisticasProductos.porMarca.map(p => p.cantidad))) * 100}%` 
-                                                }}
-                                            ></div>
-                                            <span className="bar-value">{item.cantidad}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                            <HorizontalBarChart data={estadisticasProductos.porMarca} nameKey="marca" valueKey="cantidad" barColor="#29A937" />
                         </div>
                     </div>
 
@@ -373,16 +326,7 @@ const AdminReportes = () => {
                             Distribución de Precios
                         </h3>
                         <div className="chart-content">
-                            <div className="pie-chart-simple">
-                                {estadisticasProductos.distribucionPrecios.map((item, index) => (
-                                    <div key={index} className="pie-item">
-                                        <div className={`pie-color pie-color-${index}`}></div>
-                                        <span className="pie-label">
-                                            ${item.rango}: {item.cantidad}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
+                            <SimplePieChart data={estadisticasProductos.distribucionPrecios} nameKey="rango" valueKey="cantidad" />
                         </div>
                     </div>
 
@@ -504,32 +448,12 @@ const AdminReportes = () => {
                         <h3><FaChartPie className="chart-icon" /> Órdenes por Estado</h3>
                         <div className="chart-content">
                             {porEstado && porEstado.length > 0 ? (
-                                <div className="estado-chart">
-                                    {porEstado.map((item, index) => {
-                                        const Icon = ESTADO_ICONS[item.estado] || FaClipboardList;
-                                        const color = ESTADO_COLORS[item.estado] || '#666';
-                                        return (
-                                            <div key={index} className="estado-chart-item">
-                                                <div className="estado-chart-icon" style={{ color }}>
-                                                    <Icon />
-                                                </div>
-                                                <div className="estado-chart-bar">
-                                                    <div className="bar-label">{item.estado}</div>
-                                                    <div className="bar-container">
-                                                        <div
-                                                            className="bar-fill"
-                                                            style={{
-                                                                width: `${(item.cantidad / Math.max(...porEstado.map(e => e.cantidad))) * 100}%`,
-                                                                backgroundColor: color,
-                                                            }}
-                                                        ></div>
-                                                        <span className="bar-value">{item.cantidad}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                                <StatusBarChart
+                                    data={porEstado}
+                                    nameKey="estado"
+                                    valueKey="cantidad"
+                                    colorMap={ESTADO_COLORS}
+                                />
                             ) : (
                                 <p className="no-data">No hay datos de estados disponibles</p>
                             )}
@@ -541,24 +465,7 @@ const AdminReportes = () => {
                         <h3><FaChartBar className="chart-icon" /> Top Productos Vendidos</h3>
                         <div className="chart-content">
                             {topProductos && topProductos.length > 0 ? (
-                                <div className="bar-chart-simple">
-                                    {topProductos.map((item, index) => (
-                                        <div key={index} className="bar-item">
-                                            <div className="bar-label" title={`${item.nombre} (${item.marca})`}>
-                                                {item.nombre}
-                                            </div>
-                                            <div className="bar-container">
-                                                <div
-                                                    className="bar-fill"
-                                                    style={{
-                                                        width: `${(item.cantidadVendida / Math.max(...topProductos.map(p => p.cantidadVendida))) * 100}%`,
-                                                    }}
-                                                ></div>
-                                                <span className="bar-value">{item.cantidadVendida} uds</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                <HorizontalBarChart data={topProductos} nameKey="nombre" valueKey="cantidadVendida" barColor="#e67e22" />
                             ) : (
                                 <p className="no-data">No hay datos de ventas disponibles</p>
                             )}
@@ -570,23 +477,12 @@ const AdminReportes = () => {
                         <h3><FaChartLine className="chart-icon" /> Tendencia de Órdenes (Últimos 6 meses)</h3>
                         <div className="chart-content">
                             {tendencias && tendencias.length > 0 ? (
-                                <div className="tendencia-ordenes">
-                                    <div className="line-chart-simple">
-                                        {tendencias.map((item, index) => (
-                                            <div key={index} className="line-item">
-                                                <div className="line-label">
-                                                    {obtenerMesNombre(item.mes)} {item.año}
-                                                </div>
-                                                <div className="line-value">
-                                                    {item.cantidad} órdenes
-                                                </div>
-                                                <div className="line-ingresos">
-                                                    {formatearPrecio(item.ingresos)}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                <OrdersTrendChart
+                                    data={tendencias.map(t => ({
+                                        ...t,
+                                        label: `${obtenerMesNombre(t.mes)} ${t.año}`,
+                                    }))}
+                                />
                             ) : (
                                 <p className="no-data">No hay datos de tendencias disponibles</p>
                             )}
@@ -699,6 +595,36 @@ const AdminReportes = () => {
                 </div>
                 
                 <div className="header-actions">
+                    <div className="export-buttons">
+                        <span className="export-label"><FaDownload /> Exportar:</span>
+                        <button 
+                            className="btn btn-export btn-export-pdf"
+                            onClick={() => handleExportar('pdf')}
+                            disabled={loading || exportando}
+                            title="Exportar a PDF"
+                        >
+                            {exportando === 'pdf' ? <FaSpinner className="spinning" /> : <FaFilePdf />}
+                            PDF
+                        </button>
+                        <button 
+                            className="btn btn-export btn-export-excel"
+                            onClick={() => handleExportar('excel')}
+                            disabled={loading || exportando}
+                            title="Exportar a Excel"
+                        >
+                            {exportando === 'excel' ? <FaSpinner className="spinning" /> : <FaFileExcel />}
+                            Excel
+                        </button>
+                        <button 
+                            className="btn btn-export btn-export-csv"
+                            onClick={() => handleExportar('csv')}
+                            disabled={loading || exportando}
+                            title="Exportar a CSV"
+                        >
+                            {exportando === 'csv' ? <FaSpinner className="spinning" /> : <FaFileCsv />}
+                            CSV
+                        </button>
+                    </div>
                     <button 
                         className="btn btn-refresh"
                         onClick={cargarDatos}

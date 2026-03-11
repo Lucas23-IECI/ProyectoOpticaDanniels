@@ -177,5 +177,29 @@ export const obtenerSugerenciasBusqueda = async (termino) => {
     }
 };
 
+export const getProductosStockBajo = async (umbral = 10) => {
+    try {
+        const response = await api.get(`${PRODUCTOS_ENDPOINT}/stock-bajo`, {
+            params: { umbral }
+        });
+        return response.data.data || { productos: [], total: 0, umbral };
+    } catch (error) {
+        console.error('Error obteniendo stock bajo:', error);
+        return { productos: [], total: 0, umbral };
+    }
+};
+
+export const enviarAlertaStock = async (umbral = 10) => {
+    try {
+        const response = await api.post(`${PRODUCTOS_ENDPOINT}/stock-bajo/alerta`, null, {
+            params: { umbral }
+        });
+        return response.data.data || { enviado: false };
+    } catch (error) {
+        console.error('Error enviando alerta stock:', error);
+        throw error;
+    }
+};
+
 
 

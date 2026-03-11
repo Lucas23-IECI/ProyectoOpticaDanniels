@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@context/AuthContext";
 import { getNombreCompleto } from "@helpers/nameHelpers";
 import AdminProductos from "@components/AdminProductos";
@@ -8,12 +8,24 @@ import AdminReportes from "@components/AdminReportes";
 import AdminReviews from "@components/AdminReviews";
 import AdminCitas from "@components/AdminCitas";
 import AdminMensajes from "@components/AdminMensajes";
+import { getProductosStockBajo } from "@services/producto.service";
 import { FaBox, FaUsers, FaShoppingCart, FaChartBar, FaStar, FaCalendarAlt, FaEnvelope } from "react-icons/fa";
 import "@styles/admin.css";
 
 const Admin = () => {
     const { user } = useAuth();
     const [activeTab, setActiveTab] = useState('productos');
+    const [stockBajoCount, setStockBajoCount] = useState(0);
+
+    useEffect(() => {
+        const cargarAlerts = async () => {
+            try {
+                const data = await getProductosStockBajo(10);
+                setStockBajoCount(data.total || 0);
+            } catch { /* silent */ }
+        };
+        cargarAlerts();
+    }, []);
 
     const renderContent = () => {
         switch (activeTab) {
@@ -50,6 +62,9 @@ const Admin = () => {
                     onClick={() => setActiveTab('productos')}
                 >
                     <FaBox /> Productos
+                    {stockBajoCount > 0 && (
+                        <span className="tab-badge tab-badge-danger">{stockBajoCount}</span>
+                    )}
                 </button>
                 <button 
                     className={`admin-tab ${activeTab === 'usuarios' ? 'active' : ''}`}

@@ -107,6 +107,15 @@ export const obtenerOrdenPorIdController = async (req, res) => {
             return handleErrorClient(res, 404, "Orden no encontrada.");
         }
 
+        // Ownership check: si la orden tiene usuario, verificar que sea el dueño o admin
+        const esAdmin = req.user?.rol === "administrador";
+        const esDueno = orden.usuario && orden.usuario.id === req.user?.id;
+        const esAnonima = !orden.usuario;
+
+        if (!esAdmin && !esDueno && !esAnonima) {
+            return handleErrorClient(res, 403, "No tienes permiso para ver esta orden.");
+        }
+
         handleSuccess(res, 200, "Orden obtenida correctamente.", orden);
     } catch (error) {
         if (error.status) {

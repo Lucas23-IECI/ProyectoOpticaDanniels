@@ -339,7 +339,13 @@ export const generarBoletaPDF = async (ordenId) => {
         return pdfBuffer;
     } catch (error) {
         logger.error("Error generando boleta PDF:", error);
-        throw { status: 500, message: "Error al generar la boleta PDF." };
+        throw {
+            status: 500,
+            message: "No se pudo generar la boleta PDF. "
+                + "Esto puede ocurrir si el servidor no tiene suficiente memoria "
+                + "para ejecutar el navegador interno (Puppeteer). "
+                + "Intente nuevamente o contacte al administrador.",
+        };
     } finally {
         if (browser) await browser.close();
     }

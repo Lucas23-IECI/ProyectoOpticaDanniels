@@ -40,6 +40,72 @@
     display: flex;
     gap: 1rem;
     align-items: center;
+    flex-wrap: wrap;
+}
+
+.admin-reportes .export-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-reportes .export-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-weight: 500;
+}
+
+.admin-reportes .btn-export {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #fff;
+}
+
+.admin-reportes .btn-export:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.admin-reportes .btn-export-pdf {
+    background: #e74c3c;
+}
+.admin-reportes .btn-export-pdf:hover:not(:disabled) {
+    background: #c0392b;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(231, 76, 60, 0.35);
+}
+
+.admin-reportes .btn-export-excel {
+    background: #27ae60;
+}
+.admin-reportes .btn-export-excel:hover:not(:disabled) {
+    background: #219a52;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(39, 174, 96, 0.35);
+}
+
+.admin-reportes .btn-export-csv {
+    background: #2980b9;
+}
+.admin-reportes .btn-export-csv:hover:not(:disabled) {
+    background: #2471a3;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(41, 128, 185, 0.35);
+}
+
+.admin-reportes .btn-export .spinning {
+    animation: spin 1s linear infinite;
 }
 
 .admin-reportes .btn-refresh {

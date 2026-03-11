@@ -285,6 +285,132 @@ export async function sendOrderStatusEmail(orden, nuevoEstado) {
 }
 
 /**
+ * Envía un email al usuario cuando el estado de su cita cambia.
+ * @param {Object} cita — cita con relación usuario cargada
+ */
+export async function sendCitaStatusEmail(cita) {
+    const transporter = crearTransporter();
+    if (!transporter) {
+        logger.warn("[EMAIL] SMTP no configurado — omitiendo notificación estado cita");
+        return [true, null];
+    }
+
+    try {
+        const email = cita.usuario?.email;
+        if (!email) {
+            logger.warn(`[EMAIL] Cita #${cita.id} sin email de usuario — omitiendo`);
+            return [true, null];
+        }
+
+        const nombreUsuario = cita.usuario?.nombreCompleto
+            || cita.usuario?.nombre
+            || "Cliente";
+
+        const ESTADO_CITA_LABEL = {
+            pendiente: { emoji: "⏳", label: "Pendiente", color: "#e67e22",
+                desc: "Tu cita está pendiente de confirmación. Te avisaremos cuando sea confirmada." },
+            confirmada: { emoji: "✅", label: "Confirmada", color: "#27ae60",
+                desc: "¡Tu cita ha sido confirmada! Te esperamos en la fecha y hora indicadas." },
+            completada: { emoji: "🎉", label: "Completada", color: "#2980b9",
+                desc: "Tu cita ha sido marcada como completada. ¡Gracias por visitarnos!" },
+            cancelada: { emoji: "❌", label: "Cancelada", color: "#e74c3c",
+                desc: "Tu cita ha sido cancelada. Si necesitas reagendar, puedes hacerlo desde nuestra web." },
+            no_asistio: { emoji: "⚠️", label: "No Asistió", color: "#95a5a6",
+                desc: "Se registró tu inasistencia. Si necesitas reagendar, contáctanos." },
+        };
+
+        const TIPO_SERVICIO_LABEL = {
+            examen_visual: "Examen Visual",
+            asesoria_lentes: "Asesoría de Lentes",
+            reparacion_marcos: "Reparación de Marcos",
+            adaptacion_contacto: "Adaptación de Lentes de Contacto",
+            control_oftalmologico: "Control Oftalmológico",
+            consulta_general: "Consulta General",
+        };
+
+        const estadoInfo = ESTADO_CITA_LABEL[cita.estado] || {
+            emoji: "ℹ️", label: cita.estado, color: "#555",
+            desc: `El estado de tu cita ha cambiado a: ${cita.estado}`,
+        };
+
+        const tipoLabel = TIPO_SERVICIO_LABEL[cita.tipoServicio] || cita.tipoServicio;
+
+        const fechaFormateada = cita.fecha
+            ? new Date(cita.fecha).toLocaleDateString("es-CL", {
+                weekday: "long", year: "numeric", month: "long", day: "numeric",
+            })
+            : "N/A";
+
+        const misCitasUrl = `${FRONTEND_URL}/agendar-cita`;
+
+        const notasSection = cita.notasAdmin
+            ? `<tr><td style="padding-bottom:16px;">
+                <p style="background:#f8f9fa;padding:12px;border-radius:8px;
+                  border-left:4px solid ${estadoInfo.color};font-size:14px;color:#555;">
+                  <strong>Nota del administrador:</strong><br/>${cita.notasAdmin}
+                </p>
+              </td></tr>`
+            : "";
+
+        const htmlContent = wrapEmail(`
+            <tr><td style="padding-bottom:16px;">
+              <h2 style="margin:0;color:#333;font-size:20px;">
+                ${estadoInfo.emoji} Cita #${cita.id} — ${estadoInfo.label}</h2>
+            </td></tr>
+            <tr><td style="padding-bottom:16px;color:#555;font-size:15px;line-height:1.6;">
+              <p>Hola <strong>${nombreUsuario}</strong>,</p>
+              <p>${estadoInfo.desc}</p>
+            </td></tr>
+            <tr><td style="padding-bottom:16px;">
+              <table width="100%" cellpadding="0" cellspacing="0"
+                style="border:1px solid #eee;border-radius:8px;overflow:hidden;">
+                <tr style="background:${estadoInfo.color};">
+                  <td colspan="2" style="padding:10px 16px;color:#fff;font-size:14px;font-weight:600;">
+                    Detalles de la cita
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px;font-size:14px;color:#555;border-bottom:1px solid #eee;width:40%;">
+                    <strong>Servicio</strong></td>
+                  <td style="padding:10px 16px;font-size:14px;border-bottom:1px solid #eee;">
+                    ${tipoLabel}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px;font-size:14px;color:#555;border-bottom:1px solid #eee;">
+                    <strong>Fecha</strong></td>
+                  <td style="padding:10px 16px;font-size:14px;border-bottom:1px solid #eee;">
+                    ${fechaFormateada}</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px;font-size:14px;color:#555;">
+                    <strong>Hora</strong></td>
+                  <td style="padding:10px 16px;font-size:14px;">
+                    ${cita.hora || "N/A"}</td>
+                </tr>
+              </table>
+            </td></tr>
+            ${notasSection}
+            <tr><td align="center" style="padding-bottom:24px;">
+              <a href="${misCitasUrl}" style="${btnStyle}">Ver mis citas</a>
+            </td></tr>
+        `);
+
+        await transporter.sendMail({
+            from: `"Óptica Danniels" <${SMTP_USER}>`,
+            to: email,
+            subject: `Cita #${cita.id} — ${estadoInfo.label} — Óptica Danniels`,
+            html: htmlContent,
+        });
+
+        logger.info(`[EMAIL] Notificación estado "${cita.estado}" cita #${cita.id} a ${email}`);
+        return [true, null];
+    } catch (error) {
+        logger.error(`[EMAIL] Error notificación estado cita #${cita.id}:`, error.message);
+        return [null, error.message];
+    }
+}
+
+/**
  * Envía notificación al admin cuando llega un mensaje de contacto.
  */
 export async function sendContactNotificationEmail(mensaje) {
@@ -325,7 +451,98 @@ export async function sendContactNotificationEmail(mensaje) {
         logger.info(`[EMAIL] Notificación de contacto enviada (de ${mensaje.email})`);
         return [true, null];
     } catch (error) {
-        logger.error(`[EMAIL] Error notificación contacto:`, error.message);
+        logger.error("[EMAIL] Error notificación contacto:", error.message);
+        return [null, error.message];
+    }
+}
+
+/**
+ * Envía alerta de stock bajo al administrador.
+ * @param {Array} productos — productos con stock bajo
+ * @param {number} umbral — umbral de stock utilizado
+ */
+export async function sendStockAlertEmail(productos, umbral = 10) {
+    const transporter = crearTransporter();
+    if (!transporter) {
+        logger.warn("[EMAIL] SMTP no configurado — omitiendo alerta de stock");
+        return [true, null];
+    }
+
+    try {
+      const tdBase = "padding:8px 12px;" +
+        "border-bottom:1px solid #eee;font-size:14px;";
+      const productosRows = productos.map((p) => {
+        const sc = p.stock <= 3
+          ? "#e74c3c" : p.stock <= 5
+            ? "#e67e22" : "#f39c12";
+        const badge = `background:${sc};color:#fff;` +
+          "padding:2px 8px;border-radius:12px;" +
+          "font-weight:600;";
+        return `<tr>
+          <td style="${tdBase}">${p.nombre}</td>
+          <td style="${tdBase}">${p.marca || "N/A"}</td>
+          <td style="${tdBase}">${p.categoria || "N/A"}</td>
+          <td style="${tdBase}text-align:center;">
+            <span style="${badge}">
+              ${p.stock}
+            </span>
+          </td>
+        </tr>`;
+      }).join("");
+
+        const criticos = productos.filter((p) => p.stock <= 3).length;
+        const advertencia = productos.filter((p) => p.stock > 3 && p.stock <= 5).length;
+
+        const htmlContent = wrapEmail(`
+            <tr><td style="padding-bottom:16px;">
+              <h2 style="margin:0;color:#e74c3c;font-size:20px;">
+                ⚠️ Alerta de Stock Bajo</h2>
+            </td></tr>
+            <tr><td style="padding-bottom:16px;color:#555;font-size:15px;line-height:1.6;">
+              <p>Se detectaron <strong>
+                ${productos.length} productos</strong>
+                con stock menor a
+                <strong>${umbral} unidades</strong>.
+              </p>
+              ${criticos > 0
+        ? `<p style="color:#e74c3c;">🔴 <strong>
+            ${criticos} productos críticos</strong>
+            (stock ≤ 3)</p>` : ""}
+              ${advertencia > 0
+        ? `<p style="color:#e67e22;">🟠 <strong>
+            ${advertencia} productos en advertencia
+            </strong> (stock 4-5)</p>` : ""}
+            </td></tr>
+            <tr><td style="padding-bottom:16px;">
+              <table width="100%" cellpadding="0" cellspacing="0"
+                style="border:1px solid #eee;border-radius:8px;overflow:hidden;">
+                <thead>
+                  <tr style="background:${BRAND_COLOR};">
+                    <th style="padding:10px 12px;color:#fff;font-size:13px;text-align:left;">Producto</th>
+                    <th style="padding:10px 12px;color:#fff;font-size:13px;text-align:left;">Marca</th>
+                    <th style="padding:10px 12px;color:#fff;font-size:13px;text-align:left;">Categoría</th>
+                    <th style="padding:10px 12px;color:#fff;font-size:13px;text-align:center;">Stock</th>
+                  </tr>
+                </thead>
+                <tbody>${productosRows}</tbody>
+              </table>
+            </td></tr>
+            <tr><td align="center" style="padding-bottom:24px;">
+              <a href="${FRONTEND_URL}/admin" style="${btnStyle}">Ver en panel admin</a>
+            </td></tr>
+        `);
+
+        await transporter.sendMail({
+            from: `"Óptica Danniels" <${SMTP_USER}>`,
+            to: SMTP_USER,
+            subject: `⚠️ Alerta: ${productos.length} productos con stock bajo — Óptica Danniels`,
+            html: htmlContent,
+        });
+
+        logger.info(`[EMAIL] Alerta de stock bajo enviada (${productos.length} productos)`);
+        return [true, null];
+    } catch (error) {
+        logger.error("[EMAIL] Error enviando alerta de stock:", error.message);
         return [null, error.message];
     }
 }

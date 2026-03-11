@@ -7,6 +7,98 @@
     overflow-y: auto;
 }
 
+/* Stock Alert Banner */
+.stock-alert-banner {
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%);
+    border: 1px solid #ffc107;
+    border-left: 5px solid #e74c3c;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.1);
+}
+
+.stock-alert-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.stock-alert-icon {
+    font-size: 1.5rem;
+    color: #e74c3c;
+    flex-shrink: 0;
+}
+
+.stock-alert-text {
+    flex: 1;
+    font-size: 0.95rem;
+    color: #333;
+    min-width: 200px;
+}
+
+.stock-alert-text .stock-critical {
+    color: #e74c3c;
+    font-weight: 700;
+}
+
+.stock-alert-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-stock-filter {
+    background: #2147A2;
+    color: #fff;
+}
+
+.btn-stock-filter:hover {
+    background: #1a3a8a;
+}
+
+.btn-stock-email {
+    background: #e74c3c;
+    color: #fff;
+}
+
+.btn-stock-email:hover {
+    background: #c0392b;
+}
+
+.btn-stock-email:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .stock-alert-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .stock-alert-actions {
+        width: 100%;
+    }
+    .stock-alert-actions .btn-sm {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
 .admin-header {
     display: flex;
     justify-content: space-between;

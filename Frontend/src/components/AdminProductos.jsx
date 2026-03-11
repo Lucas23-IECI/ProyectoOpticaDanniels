@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
     FaPlus, FaSearch, FaFilter, FaEye, FaEdit, FaTrash, FaTh, FaList, FaTable,
     FaArrowLeft, FaArrowRight, FaSort, FaSortUp, FaSortDown, FaSpinner,
-    FaBox, FaDollarSign, FaPercent, FaEyeSlash, FaImage, FaTimes, FaSync
+    FaBox, FaDollarSign, FaPercent, FaEyeSlash, FaImage, FaTimes, FaSync,
+    FaExclamationTriangle, FaEnvelope
 } from 'react-icons/fa';
-import { getAllProductos } from '@services/producto.service';
+import { getAllProductos, getProductosStockBajo, enviarAlertaStock } from '@services/producto.service';
 import CrearProductoPopup from './CrearProductoPopup';
 import EditarProductoPopup from './EditarProductoPopup';
 import ProductoDetalle from './ProductoDetalle';
@@ -71,6 +72,21 @@ const AdminProductos = () => {
     
     const [marcas, setMarcas] = useState([]);
     const [dropdownActivo, setDropdownActivo] = useState(null);
+    
+    const [stockBajoCount, setStockBajoCount] = useState(0);
+    const [stockBajoProductos, setStockBajoProductos] = useState([]);
+    const [enviandoAlerta, setEnviandoAlerta] = useState(false);
+    const [alertaEnviada, setAlertaEnviada] = useState(false);
+
+    // Cargar conteo de stock bajo al montar
+    useEffect(() => {
+        const cargarStockBajo = async () => {
+            const data = await getProductosStockBajo(10);
+            setStockBajoCount(data.total || 0);
+            setStockBajoProductos(data.productos || []);
+        };
+        cargarStockBajo();
+    }, []);
 
     useEffect(() => {
         if (showDetalleModal) {
@@ -349,6 +365,49 @@ const AdminProductos = () => {
             
             {!modoEdicion && (
                 <>
+                    {stockBajoCount > 0 && (
+                        <div className="stock-alert-banner">
+                            <div className="stock-alert-content">
+                                <FaExclamationTriangle className="stock-alert-icon" />
+                                <div className="stock-alert-text">
+                                    <strong>⚠️ {stockBajoCount} producto{stockBajoCount !== 1 ? 's' : ''} con stock bajo</strong>
+                                    <span> (&lt; 10 unidades) — {stockBajoProductos.filter(p => p.stock <= 3).length > 0 && 
+                                        <span className="stock-critical">{stockBajoProductos.filter(p => p.stock <= 3).length} crítico{stockBajoProductos.filter(p => p.stock <= 3).length !== 1 ? 's' : ''}</span>
+                                    }</span>
+                                </div>
+                                <div className="stock-alert-actions">
+                                    <button 
+                                        className="btn btn-sm btn-stock-filter"
+                                        onClick={() => {
+                                            setFilters(prev => ({ ...prev, stock_max: '9' }));
+                                            setCurrentPage(1);
+                                        }}
+                                    >
+                                        Ver productos
+                                    </button>
+                                    <button 
+                                        className="btn btn-sm btn-stock-email"
+                                        onClick={async () => {
+                                            setEnviandoAlerta(true);
+                                            try {
+                                                await enviarAlertaStock(10);
+                                                setAlertaEnviada(true);
+                                                setTimeout(() => setAlertaEnviada(false), 3000);
+                                            } catch {
+                                                // silently fail
+                                            } finally {
+                                                setEnviandoAlerta(false);
+                                            }
+                                        }}
+                                        disabled={enviandoAlerta || alertaEnviada}
+                                    >
+                                        <FaEnvelope /> {alertaEnviada ? 'Enviada ✓' : enviandoAlerta ? 'Enviando...' : 'Enviar alerta'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="admin-header">
                         <div className="header-title">
                             <h1>Administración de Productos</h1>

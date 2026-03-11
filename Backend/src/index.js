@@ -6,7 +6,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import passport from "passport";
 
-import { HOST, PORT } from "./config/configEnv.js";
+import { HOST, PORT, CORS_ORIGINS } from "./config/configEnv.js";
 import { connectDB } from "./config/configDb.js";
 import indexRoutes from "./routes/index.routes.js";
 import { passportJwtSetup } from "./auth/passport.auth.js";
@@ -26,11 +26,13 @@ async function setupServer() {
 
         app.use("/uploads", express.static("uploads"));
 
-        const allowedOrigins = [
-            "http://localhost:5173",
-            "http://localhost:4173",
-            "http://146.83.198.35",
-        ];
+        const allowedOrigins = CORS_ORIGINS
+            ? CORS_ORIGINS.split(",").map((o) => o.trim())
+            : [
+                "http://localhost:5173",
+                "http://localhost:4173",
+                "http://146.83.198.35",
+            ];
 
         app.use(cors({
             origin: (origin, callback) => {
@@ -68,7 +70,7 @@ async function setupServer() {
             res.send("API Óptica Danniels corriendo correctamente.");
         });
 
-        app.listen(PORT, () => {
+        app.listen(PORT, "0.0.0.0", () => {
             logger.info(`✅ Servidor corriendo en ${HOST}:${PORT}/api`);
         });
     } catch (error) {
