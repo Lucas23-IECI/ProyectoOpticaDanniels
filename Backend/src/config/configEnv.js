@@ -7,7 +7,7 @@ const _filename = fileURLToPath(import.meta.url);
 const _dirname = path.dirname(_filename);
 const envFilePath = path.resolve(_dirname, ".env");
 
-dotenv.config({ path: envFilePath });
+dotenv.config({ path: envFilePath, override: false });
 
 export const PORT = process.env.PORT;
 export const HOST = process.env.HOST;
