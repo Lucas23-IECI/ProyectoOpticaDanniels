@@ -589,6 +589,18 @@ nav a:hover {
         box-shadow: none;
     }
 
+    /* Override nav ul/a desktop styles inside mobile menu */
+    .mobile-menu ul {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+
+    .mobile-menu a {
+        color: #333;
+        font-size: 1rem;
+    }
+
     .mobile-menu-user {
         padding: 15px 20px;
         background: linear-gradient(135deg, #2147A2, #1a3b8a);
@@ -609,10 +621,15 @@ nav a:hover {
         margin: 0;
         padding: 10px 0;
         flex: 1;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        width: 100%;
     }
 
     .mobile-menu-links li {
         border-bottom: 1px solid #f0f0f0;
+        width: 100%;
     }
 
     .mobile-menu-links li a {
@@ -620,22 +637,23 @@ nav a:hover {
         align-items: center;
         gap: 12px;
         padding: 15px 20px;
-        color: #333;
+        color: #333 !important;
         font-size: 1rem;
         font-weight: 500;
         text-decoration: none;
         transition: all 0.2s ease;
+        width: 100%;
     }
 
     .mobile-menu-links li a:hover {
         background: #f5f5f5;
-        color: #2147A2;
+        color: #2147A2 !important;
         text-decoration: none;
     }
 
     .mobile-menu-links li a.active {
         background: #e8f4fd;
-        color: #2147A2;
+        color: #2147A2 !important;
         font-weight: 700;
         border-left: 3px solid #2147A2;
     }
