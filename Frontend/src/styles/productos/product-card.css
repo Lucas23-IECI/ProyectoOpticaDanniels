@@ -706,7 +706,7 @@
 
 @media (max-width: 576px) {
     .product-card-modern.grid-mode {
-        max-width: 280px;
+        max-width: 100%;
     }
 
     .product-card-modern.admin-mode.grid-mode .grid-admin-actions {
