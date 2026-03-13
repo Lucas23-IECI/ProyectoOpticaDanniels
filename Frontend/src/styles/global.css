@@ -22,7 +22,7 @@
 }
 
 html {
-    zoom: 0.9;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {

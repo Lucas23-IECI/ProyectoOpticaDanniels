@@ -302,15 +302,45 @@
     text-decoration: underline;
 }
 
+@media (max-width: 768px) {
+    .login-container {
+        margin: 40px 20px;
+        padding: 24px;
+    }
+
+    .login-title {
+        font-size: 22px;
+    }
+}
+
 @media (max-width: 480px) {
     .login-container {
-        margin: 30px 16px;
+        margin: 24px 16px;
         padding: 20px;
+        border-radius: 12px;
     }
-    
+
+    .login-title {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+
+    .login-form input {
+        padding: 10px 12px;
+        font-size: 16px;
+    }
+
     .form-options {
         flex-direction: column;
         gap: var(--spacing-sm);
         align-items: flex-start;
+    }
+
+    .login-button {
+        padding: 12px;
+    }
+
+    .password-toggle {
+        font-size: 16px;
     }
 }
