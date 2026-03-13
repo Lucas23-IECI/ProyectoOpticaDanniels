@@ -297,46 +297,152 @@ body:has(.navbar-fixed) .hero-section {
 }
 
 @media (max-width: 768px) {
+    .hero-section {
+        height: 75vh;
+        min-height: 450px;
+    }
+
+    body:has(.navbar-fixed) .hero-section {
+        height: calc(75vh - 90px);
+        min-height: calc(450px - 90px);
+    }
+
+    .hero-title {
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        margin-bottom: 12px;
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1rem, 3vw, 1.4rem);
+        margin-bottom: 12px;
+    }
+
+    .hero-description {
+        font-size: clamp(0.85rem, 2.5vw, 1rem);
+        margin-bottom: 25px;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .hero-actions {
+        gap: 12px;
+    }
+
+    .hero-btn-primary,
+    .hero-btn-secondary {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+    }
+
+    .hero-nav {
+        width: 38px;
+        height: 38px;
+        font-size: 18px;
+    }
+
+    .hero-nav-prev {
+        left: 10px;
+    }
+
+    .hero-nav-next {
+        right: 10px;
+    }
+
+    .hero-indicators {
+        bottom: 80px;
+    }
+
+    .hero-indicator {
+        width: 10px;
+        height: 10px;
+    }
+
     .hero-contact-content {
         flex-direction: column;
         align-items: center;
-        gap: 15px;
-        padding: 15px 20px;
+        gap: 10px;
+        padding: 10px 15px;
     }
 
     .contact-info-wrapper {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
         text-align: center;
     }
 
     .contact-item {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         justify-content: center;
     }
 
     .whatsapp-contact {
         margin-left: 0;
-        padding: 12px 24px;
-        font-size: 0.9rem;
-        min-width: 180px;
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        min-width: 160px;
+    }
+
+    .hero-contact-bar {
+        padding: 8px 0;
     }
 }
 
 @media (max-width: 480px) {
-    .hero-contact-content {
-        padding: 12px 15px;
+    .hero-section {
+        height: 70vh;
+        min-height: 400px;
     }
 
-    .contact-item {
+    body:has(.navbar-fixed) .hero-section {
+        height: calc(70vh - 80px);
+        min-height: calc(400px - 80px);
+    }
+
+    .hero-content {
+        padding: 0 15px;
+    }
+
+    .hero-text {
+        max-width: 100%;
+    }
+
+    .hero-title {
+        font-size: 1.4rem;
+    }
+
+    .hero-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .hero-description {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 2;
+    }
+
+    .hero-btn-primary,
+    .hero-btn-secondary {
+        padding: 8px 16px;
         font-size: 0.8rem;
     }
 
+    .hero-contact-content {
+        padding: 8px 10px;
+        gap: 6px;
+    }
+
+    .contact-item {
+        font-size: 0.7rem;
+    }
+
     .whatsapp-contact {
-        padding: 10px 20px;
-        font-size: 0.85rem;
-        min-width: 160px;
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        min-width: 140px;
     }
 }
 
