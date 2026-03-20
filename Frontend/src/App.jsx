@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 import { CartProvider } from "@context/CartProvider";
 import { useTokenExpiration } from "@hooks/useTokenExpiration";
@@ -24,13 +25,21 @@ import Checkout from "@pages/Checkout";
 import MisCompras from "@pages/MisCompras";
 import CheckoutResultado from "@pages/CheckoutResultado";
 import AgendarCita from "@pages/AgendarCita";
+import FAQ from "@pages/FAQ";
 
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 
 function AppContent() {
   useTokenExpiration();
 
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <div className="contenedor-principal">
         <Routes>
@@ -66,6 +75,7 @@ function AppContent() {
             }
           />
           <Route path="/quienes-somos" element={<QuienesSomos />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/terminos" element={<Terminos />} />
 

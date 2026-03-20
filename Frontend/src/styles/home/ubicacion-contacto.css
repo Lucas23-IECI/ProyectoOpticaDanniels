@@ -1,18 +1,18 @@
 .ubicacion-contacto {
-    padding: 100px 0;
+    padding: 70px 0 60px;
     background: white;
 }
 
 .ubicacion-header {
     text-align: center;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
 }
 
 .ubicacion-title {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: bold;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
     color: var(--primary-color);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .title-link {
@@ -27,7 +27,7 @@
 }
 
 .ubicacion-subtitle {
-    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    font-size: clamp(1rem, 2vw, 1.3rem);
     color: var(--text-secondary);
     font-weight: 600;
 }
@@ -35,8 +35,8 @@
 .ubicacion-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    margin-bottom: 60px;
+    gap: 40px;
+    margin-bottom: 40px;
 }
 
 .ubicacion-info {

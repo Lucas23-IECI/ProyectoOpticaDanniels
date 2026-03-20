@@ -107,11 +107,8 @@ function Navbar() {
                     <ul>
                         <li><NavLink to="/quienes-somos">Quienes Somos</NavLink></li>
                         <li><NavLink to="/productos">Productos</NavLink></li>
-                        {isAuthenticated && (
-                            <li><NavLink to="/favoritos">Favoritos</NavLink></li>
-                        )}
-                        <li><NavLink to="/carrito">Carrito</NavLink></li>
                         <li><NavLink to="/contacto">Contacto</NavLink></li>
+                        <li><NavLink to="/faq">FAQ</NavLink></li>
                     </ul>
 
                     <BarraBusqueda />
@@ -154,11 +151,8 @@ function Navbar() {
                         <li><NavLink to="/" onClick={cerrarMenu}><i className="fa-solid fa-house"></i> Inicio</NavLink></li>
                         <li><NavLink to="/quienes-somos" onClick={cerrarMenu}><i className="fa-solid fa-users"></i> Quiénes Somos</NavLink></li>
                         <li><NavLink to="/productos" onClick={cerrarMenu}><i className="fa-solid fa-glasses"></i> Productos</NavLink></li>
-                        {isAuthenticated && (
-                            <li><NavLink to="/favoritos" onClick={cerrarMenu}><i className="fa-solid fa-heart"></i> Favoritos</NavLink></li>
-                        )}
-                        <li><NavLink to="/carrito" onClick={cerrarMenu}><i className="fa-solid fa-cart-shopping"></i> Carrito</NavLink></li>
                         <li><NavLink to="/contacto" onClick={cerrarMenu}><i className="fa-solid fa-envelope"></i> Contacto</NavLink></li>
+                        <li><NavLink to="/faq" onClick={cerrarMenu}><i className="fa-solid fa-circle-question"></i> FAQ</NavLink></li>
                         <li><NavLink to="/agendar-cita" onClick={cerrarMenu}><i className="fa-solid fa-calendar-check"></i> Agendar Cita</NavLink></li>
                     </ul>
                     {!isAuthenticated && (

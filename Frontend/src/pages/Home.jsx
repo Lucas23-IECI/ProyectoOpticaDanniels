@@ -9,7 +9,6 @@ import '@styles/home.css';
 
 const ProductosDestacados = lazy(() => import('@components/home/ProductosDestacados'));
 const ServiciosEspecializados = lazy(() => import('@components/home/ServiciosEspecializados'));
-const TestimoniosClientes = lazy(() => import('@components/home/TestimoniosClientes'));
 const UbicacionContacto = lazy(() => import('@components/home/UbicacionContacto'));
 const CallToActionFinal = lazy(() => import('@components/home/CallToActionFinal'));
 
@@ -66,10 +65,6 @@ function Home() {
                 </Suspense>
 
 
-
-                <Suspense fallback={<LoadingComponent />}>
-                    <TestimoniosClientes />
-                </Suspense>
 
                 <Suspense fallback={<LoadingComponent />}>
                     <UbicacionContacto />

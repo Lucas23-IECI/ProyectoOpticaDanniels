@@ -1,23 +1,23 @@
 
 .productos-destacados {
-    padding: 100px 0;
+    padding: 70px 0 60px;
     background: white;
 }
 
 .productos-header {
     text-align: center;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
 }
 
 .productos-title {
-    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
     font-weight: bold;
     color: var(--primary-color);
-    margin-bottom: 20px;
+    margin-bottom: 14px;
 }
 
 .productos-subtitle {
-    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
     color: var(--text-secondary);
     max-width: 600px;
     margin: 0 auto;
@@ -25,7 +25,7 @@
 }
 
 .productos-carousel {
-    margin-bottom: 80px;
+    margin-bottom: 50px;
 }
 
 .carousel-header {
@@ -36,7 +36,7 @@
 }
 
 .carousel-header h3 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     color: var(--text-primary);
     margin: 0;
 }
@@ -110,13 +110,13 @@
 }
 
 .categorias-productos {
-    margin-bottom: 80px;
+    margin-bottom: 50px;
 }
 
 .categorias-productos h3 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     color: var(--text-primary);
 }
 
@@ -230,13 +230,13 @@
 
 .productos-ver-todo {
     text-align: center;
-    margin-top: 60px;
+    margin-top: 40px;
 }
 
 .productos-ver-todo .btn {
-    padding: 15px 40px;
-    font-size: 1.1rem;
-    border-radius: 15px;
+    padding: 12px 32px;
+    font-size: 1rem;
+    border-radius: 12px;
     display: inline-flex;
     align-items: center;
     gap: 10px;

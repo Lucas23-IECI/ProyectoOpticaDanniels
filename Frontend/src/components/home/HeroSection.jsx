@@ -84,7 +84,7 @@ const HeroSection = () => {
                         <div 
                             className="hero-background"
                             style={{
-                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(${slide.image})`
+                                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)), url(${slide.image})`
                             }}
                         >
                             <div className="hero-content">
