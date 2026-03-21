@@ -4,7 +4,9 @@
 @import './home/home-base.css';
 @import './home/hero/index.css';
 @import './home/valores-principales.css';
+@import './home/categorias-destacadas.css';
 @import './home/productos-destacados.css';
+@import './home/promo-banners.css';
 @import './home/servicios-especializados.css';
 @import './home/historia-empresa.css';
 @import './home/testimonios-clientes.css';

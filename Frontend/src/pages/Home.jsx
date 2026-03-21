@@ -1,15 +1,15 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Link } from 'react-router-dom';
 import { getProductos } from '@services/producto.service';
 import { WishlistProvider } from '@context/WishlistProvider';
 import SocialFloat from '@components/SocialFloat';
 import HeroSection from '@components/home/HeroSection';
 import ValoresPrincipales from '@components/home/ValoresPrincipales';
+import CategoriasDestacadas from '@components/home/CategoriasDestacadas';
 import '@styles/home.css';
 
 const ProductosDestacados = lazy(() => import('@components/home/ProductosDestacados'));
+const PromoBanners = lazy(() => import('@components/home/PromoBanners'));
 const ServiciosEspecializados = lazy(() => import('@components/home/ServiciosEspecializados'));
-const TestimoniosClientes = lazy(() => import('@components/home/TestimoniosClientes'));
 const UbicacionContacto = lazy(() => import('@components/home/UbicacionContacto'));
 const CallToActionFinal = lazy(() => import('@components/home/CallToActionFinal'));
 
@@ -57,18 +57,18 @@ function Home() {
 
                 <ValoresPrincipales />
 
+                <CategoriasDestacadas />
+
                 <Suspense fallback={<LoadingComponent />}>
                     <ProductosDestacados productos={productosDestacados} />
                 </Suspense>
 
                 <Suspense fallback={<LoadingComponent />}>
-                    <ServiciosEspecializados />
+                    <PromoBanners />
                 </Suspense>
 
-
-
                 <Suspense fallback={<LoadingComponent />}>
-                    <TestimoniosClientes />
+                    <ServiciosEspecializados />
                 </Suspense>
 
                 <Suspense fallback={<LoadingComponent />}>
