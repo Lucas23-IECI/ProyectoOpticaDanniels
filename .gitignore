@@ -49,6 +49,8 @@ backup/
 # Skills - todo el sistema de skills local
 .skills-repos/
 .claude/
+.agents/
+skills-lock.json
 install-skills.bat
 
 # Documentación de contexto (generada por Claude)
