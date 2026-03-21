@@ -1,69 +1,111 @@
 @import './variables.css';
 
+/* ===================================================
+   AUTH POPUP — Professional Floating Panel
+   =================================================== */
+
 .popup-auth {
     position: absolute;
-    top: 100%;
-    right: 50%;
-    transform: translateX(50%);
-    background-color: var(--bg-card);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-lg);
-    padding: 12px;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.12),
+        0 4px 20px rgba(0, 0, 0, 0.06);
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 8px;
     z-index: 999;
-    animation: fadeIn var(--transition-normal) ease;
-    border: 1px solid var(--border-color);
-    margin-top: 8px;
-    width: 140px;
-    white-space: nowrap;
+    animation: authPopupSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    min-width: 240px;
 }
 
-.popup-auth button {
-    padding: 8px 12px;
+.popup-auth-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 4px 2px;
+}
+
+.popup-auth-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 16px;
     border: none;
-    border-radius: var(--border-radius);
-    background-color: var(--btn-primary-bg);
-    color: var(--btn-primary-color);
+    border-radius: 10px;
     cursor: pointer;
-    transition: var(--transition-normal);
-    font-weight: bold;
-    font-size: 0.9rem;
-    text-align: center;
+    font-weight: 600;
+    font-size: 0.88rem;
+    transition: all 0.2s ease;
+    line-height: 1;
 }
 
-.popup-auth button:hover {
-    background-color: var(--btn-primary-hover);
-    box-shadow: var(--shadow-primary);
+.popup-auth-btn svg {
+    font-size: 0.85rem;
+    flex-shrink: 0;
 }
 
-.popup-auth button.secondary {
-    background-color: var(--btn-secondary-bg);
-    color: var(--btn-secondary-color);
+/* Primary — Login */
+.popup-auth-btn.primary {
+    background: var(--primary-color, #2147A2);
+    color: #fff;
 }
 
-.popup-auth button.secondary:hover {
-    background-color: var(--btn-secondary-hover);
+.popup-auth-btn.primary:hover {
+    background: #1a3b8a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(33, 71, 162, 0.3);
 }
 
-@keyframes fadeIn {
+/* Secondary — Register */
+.popup-auth-btn.secondary {
+    background: var(--secondary-color, #29A937);
+    color: #fff;
+}
+
+.popup-auth-btn.secondary:hover {
+    background: #1e8a2c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(41, 169, 55, 0.3);
+}
+
+/* Ghost — Guest */
+.popup-auth-btn.ghost {
+    background: transparent;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+}
+
+.popup-auth-btn.ghost:hover {
+    background: #f9fafb;
+    color: #374151;
+    border-color: #d1d5db;
+}
+
+@keyframes authPopupSlide {
     from {
         opacity: 0;
-        transform: translateX(50%) translateY(-10px) scale(0.95);
+        transform: translateY(-10px) scale(0.96);
     }
-
     to {
         opacity: 1;
-        transform: translateX(50%) translateY(0) scale(1);
+        transform: translateY(0) scale(1);
     }
 }
 
 @media (max-width: 768px) {
     .popup-auth {
         right: 0;
-        transform: none;
-        min-width: 200px;
+        min-width: 220px;
         max-width: 90vw;
+        border-radius: 12px;
     }
 }

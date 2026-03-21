@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 import { CartProvider } from "@context/CartProvider";
 import { useTokenExpiration } from "@hooks/useTokenExpiration";
@@ -24,15 +25,26 @@ import Checkout from "@pages/Checkout";
 import MisCompras from "@pages/MisCompras";
 import CheckoutResultado from "@pages/CheckoutResultado";
 import AgendarCita from "@pages/AgendarCita";
+import FAQ from "@pages/FAQ";
+import NotFound from "@pages/NotFound";
 
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 
 function AppContent() {
   useTokenExpiration();
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
 
   return (
     <>
-      <Navbar />
-      <div className="contenedor-principal">
+      <ScrollToTop />
+      {!isAdmin && <Navbar />}
+      <div className={isAdmin ? '' : 'contenedor-principal'}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/productos" element={<Productos />} />
@@ -66,6 +78,7 @@ function AppContent() {
             }
           />
           <Route path="/quienes-somos" element={<QuienesSomos />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/terminos" element={<Terminos />} />
 
@@ -121,9 +134,12 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+
+          {/* 404 catch-all */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-      <Footer />
+      {!isAdmin && <Footer />}
     </>
   );
 }

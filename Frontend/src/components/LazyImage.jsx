@@ -59,13 +59,11 @@ const LazyImage = memo(({ src, alt, className = '', placeholder = null, onLoad =
         return `${origin}/uploads/productos/${src}`;
     };
 
-    if (!src && !placeholder) {
+    if (!src) {
         return (
             <div className={`lazy-image-container ${className}`}>
-                <div className="image-placeholder">
-                    <div className="placeholder-skeleton">
-                        <div className="skeleton-shimmer"></div>
-                    </div>
+                <div className="image-placeholder image-placeholder-logo">
+                    <img src="/LogoOficial.png" alt="Óptica Danniels" className="placeholder-logo" />
                 </div>
             </div>
         );
@@ -92,9 +90,8 @@ const LazyImage = memo(({ src, alt, className = '', placeholder = null, onLoad =
                     )}
                     
                     {hasError ? (
-                        <div className="image-error">
-                            <div className="error-icon">📷</div>
-                            <span>Error al cargar imagen</span>
+                        <div className="image-placeholder image-placeholder-logo">
+                            <img src="/LogoOficial.png" alt="Óptica Danniels" className="placeholder-logo" />
                         </div>
                     ) : (
                         <img

@@ -11,20 +11,20 @@
     position: relative;
     background: none;
     border: none;
-    color: var(--text-primary, #333);
+    color: #4b5563;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.45rem;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
 }
 
 .cart-icon-btn:hover {
-    background: var(--bg-secondary, #f8f9fa);
-    color: var(--primary-color, #007bff);
+    background: #f3f4f6;
+    color: var(--primary-color, #2147A2);
 }
 
 .cart-badge {
