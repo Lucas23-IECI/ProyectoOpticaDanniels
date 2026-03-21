@@ -42,6 +42,13 @@ CREATE TABLE IF NOT EXISTS productos (
     "codigoSKU" VARCHAR(100) UNIQUE NOT NULL,
     oferta BOOLEAN NOT NULL DEFAULT false,
     descuento INTEGER NOT NULL DEFAULT 0,
+    genero VARCHAR(50),
+    material VARCHAR(100),
+    forma VARCHAR(100),
+    color_armazon VARCHAR(100),
+    color_cristal VARCHAR(100),
+    polarizado BOOLEAN DEFAULT false,
+    tipo_cristal VARCHAR(100),
     "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
     "updatedAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
 );
