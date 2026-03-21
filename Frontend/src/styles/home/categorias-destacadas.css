@@ -1,0 +1,142 @@
+/* ===== Categorías Destacadas (Econópticas-style) ===== */
+
+.eco-categorias {
+    padding: 60px 0;
+    background: var(--bg-primary);
+}
+
+.eco-categorias-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.eco-categorias-title {
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 700;
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.eco-categorias-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.eco-cat-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background: #fff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.eco-cat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(33, 71, 162, 0.12);
+}
+
+.eco-cat-img-wrap {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.eco-cat-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.eco-cat-card:hover .eco-cat-img-wrap img {
+    transform: scale(1.05);
+}
+
+.eco-cat-info {
+    padding: 20px;
+}
+
+.eco-cat-info h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.eco-cat-info p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.eco-cat-link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    transition: color 0.2s ease;
+}
+
+.eco-cat-card:hover .eco-cat-link {
+    color: var(--primary-color);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .eco-categorias {
+        padding: 40px 0;
+    }
+
+    .eco-categorias-title {
+        margin-bottom: 24px;
+    }
+
+    .eco-categorias-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .eco-cat-card {
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    .eco-cat-img-wrap {
+        width: 140px;
+        flex-shrink: 0;
+        aspect-ratio: auto;
+    }
+
+    .eco-cat-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 16px;
+    }
+
+    .eco-cat-info p {
+        margin-bottom: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .eco-cat-img-wrap {
+        width: 110px;
+    }
+
+    .eco-cat-info {
+        padding: 12px;
+    }
+
+    .eco-cat-info h3 {
+        font-size: 1rem;
+    }
+}

@@ -95,6 +95,10 @@ const ServiciosEspecializados = () => {
                 <div className="servicios-grid">
                     {servicios.map((servicio) => (
                         <div key={servicio.id} className="servicio-card">
+                            <div 
+                                className="servicio-background"
+                                style={{ backgroundImage: `url(${servicio.imagen})` }}
+                            />
                             <div className="servicio-header">
                                 <div className="servicio-icon">
                                     {servicio.icono}
@@ -111,11 +115,6 @@ const ServiciosEspecializados = () => {
                                     ))}
                                 </ul>
                             </div>
-
-                            <div 
-                                className="servicio-background"
-                                style={{ backgroundImage: `url(${servicio.imagen})` }}
-                            />
                         </div>
                     ))}
                 </div>

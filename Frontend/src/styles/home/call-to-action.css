@@ -1,36 +1,39 @@
 
 .call-to-action-final {
     position: relative;
-    padding: 100px 0;
+    padding: 70px 0 60px;
     background: var(--primary-color);
+    background-image: linear-gradient(rgba(33, 71, 162, 0.92), rgba(33, 71, 162, 0.95)), url('/images/FotosGenerales/MujerLentesDeSol.png');
+    background-size: cover;
+    background-position: center;
     color: white;
     overflow: hidden;
 }
 
 .cta-header {
     text-align: center;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
 }
 
 .cta-title {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: bold;
-    margin-bottom: 20px;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    margin-bottom: 10px;
 }
 
 .cta-subtitle {
-    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
     opacity: 0.9;
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 .cta-main {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    margin-bottom: 80px;
+    gap: 30px;
+    margin-bottom: 50px;
 }
 
 .formulario-contacto,
@@ -38,14 +41,14 @@
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 25px;
-    padding: 50px;
+    border-radius: 14px;
+    padding: 32px;
 }
 
 .formulario-contacto h3,
 .contacto-directo h3 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
+    font-size: 1.3rem;
+    margin-bottom: 10px;
 }
 
 .formulario-contacto p,
@@ -251,38 +254,38 @@
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 25px;
-    padding: 60px 50px;
+    border-radius: 14px;
+    padding: 40px 32px;
 }
 
 .cta-final h3 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
+    font-size: 1.6rem;
+    margin-bottom: 12px;
 }
 
 .cta-final p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     opacity: 0.9;
-    margin-bottom: 40px;
-    line-height: 1.8;
+    margin-bottom: 28px;
+    line-height: 1.6;
 }
 
 .cta-final-buttons {
     display: flex;
-    gap: 20px;
+    gap: 16px;
     justify-content: center;
     flex-wrap: wrap;
 }
 
 .cta-final-buttons .btn {
-    padding: 15px 35px;
-    font-size: 1.1rem;
-    border-radius: 15px;
+    padding: 12px 28px;
+    font-size: 0.95rem;
+    border-radius: 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     font-weight: 600;
 }
 

@@ -1,137 +1,112 @@
+/* ===== Benefits Strip (Econópticas-style) ===== */
 
-.valores-principales {
-    padding: 100px 0;
-    background: #f8faff;
+.eco-benefits {
+    background: var(--primary-color);
+    padding: 0;
 }
 
-.valores-header {
-    text-align: center;
-    margin-bottom: 80px;
-}
-
-.valores-title {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 20px;
-}
-
-.valores-subtitle {
-    font-size: clamp(1rem, 2vw, 1.3rem);
-    color: var(--text-secondary);
-    max-width: 600px;
+.eco-benefits-inner {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    max-width: 1200px;
     margin: 0 auto;
-    line-height: 1.6;
 }
 
-.valores-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    margin-bottom: 80px;
-}
-
-.valor-card {
+.eco-benefit-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
     position: relative;
-    background: white;
-    border-radius: 20px;
-    padding: 40px 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    overflow: hidden;
-    min-height: 250px;
+    transition: background 0.2s ease;
+}
+
+.eco-benefit-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.eco-benefit-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.eco-benefit-icon {
+    font-size: 1.4rem;
+    color: var(--accent-color);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.eco-benefit-text {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    gap: 1px;
+    line-height: 1.3;
 }
 
-.valor-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+.eco-benefit-text strong {
+    font-size: 0.82rem;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 0.3px;
 }
 
-.valor-card.destacado {
-    background: var(--primary-color);
-    color: white;
+.eco-benefit-text span {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 400;
 }
 
-.valor-card.destacado .valor-descripcion {
-    color: rgba(255, 255, 255, 0.9);
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .eco-benefits-inner {
+        flex-wrap: wrap;
+    }
+
+    .eco-benefit-item {
+        flex: 1 1 50%;
+        padding: 12px 16px;
+    }
+
+    .eco-benefit-item:nth-child(2)::after {
+        display: none;
+    }
+
+    .eco-benefit-item:nth-child(-n+2) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .eco-benefit-item:nth-child(odd):not(:nth-last-child(-n+1))::after,
+    .eco-benefit-item:nth-child(3)::after {
+        display: block;
+    }
 }
 
-.valor-icon {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    color: var(--primary-color);
-}
+@media (max-width: 480px) {
+    .eco-benefits-inner {
+        flex-direction: column;
+    }
 
-.valor-card.destacado .valor-icon {
-    color: white;
-}
+    .eco-benefit-item {
+        flex: 1 1 100%;
+        padding: 10px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-.valor-titulo {
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: var(--text-primary);
-}
+    .eco-benefit-item::after {
+        display: none !important;
+    }
 
-.valor-card.destacado .valor-titulo {
-    color: white;
-}
-
-.valor-descripcion {
-    line-height: 1.6;
-    color: var(--text-secondary);
-}
-
-.valor-background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-size: cover;
-    background-position: center;
-    opacity: 0.05;
-    z-index: 0;
-}
-
-.valor-content {
-    position: relative;
-    z-index: 1;
-}
-
-.estadisticas {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    text-align: center;
-}
-
-.estadistica {
-    background: white;
-    padding: 30px 20px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-}
-
-.estadistica:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-.estadistica-numero {
-    font-size: 3rem;
-    font-weight: bold;
-    color: var(--primary-color);
-    margin-bottom: 10px;
-}
-
-.estadistica-texto {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    font-weight: 600;
+    .eco-benefit-item:last-child {
+        border-bottom: none;
+    }
 }

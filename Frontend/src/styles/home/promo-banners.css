@@ -1,0 +1,131 @@
+/* ===== Promo Banners (Econópticas-style) ===== */
+
+.eco-promo {
+    padding: 0 0 60px;
+    background: var(--bg-primary);
+}
+
+.eco-promo-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.eco-promo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.eco-promo-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    color: #fff;
+    min-height: 220px;
+    display: flex;
+    align-items: flex-end;
+    transition: transform 0.3s ease;
+}
+
+.eco-promo-card:hover {
+    transform: translateY(-3px);
+}
+
+.eco-promo-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.eco-promo-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.eco-promo-card:hover .eco-promo-bg img {
+    transform: scale(1.05);
+}
+
+.eco-promo-card--primary .eco-promo-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(33, 71, 162, 0.85) 0%, rgba(33, 71, 162, 0.4) 100%);
+}
+
+.eco-promo-card--secondary .eco-promo-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(41, 169, 55, 0.85) 0%, rgba(41, 169, 55, 0.3) 100%);
+}
+
+.eco-promo-content {
+    position: relative;
+    z-index: 1;
+    padding: 28px;
+}
+
+.eco-promo-content h3 {
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #fff;
+}
+
+.eco-promo-content p {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 14px;
+    line-height: 1.4;
+}
+
+.eco-promo-btn {
+    display: inline-block;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+    padding: 8px 20px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.eco-promo-card:hover .eco-promo-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #fff;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .eco-promo {
+        padding: 0 0 40px;
+    }
+
+    .eco-promo-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .eco-promo-card {
+        min-height: 180px;
+    }
+
+    .eco-promo-content {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .eco-promo-card {
+        min-height: 160px;
+    }
+
+    .eco-promo-content h3 {
+        font-size: 1.1rem;
+    }
+}
