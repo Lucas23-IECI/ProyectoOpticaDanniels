@@ -1,44 +1,44 @@
 
 .testimonios-clientes {
-    padding: 100px 0;
+    padding: 70px 0 60px;
     background: #f8faff;
 }
 
 .testimonios-header {
     text-align: center;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
 }
 
 .testimonios-title {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: bold;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
     color: var(--primary-color);
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .testimonios-subtitle {
-    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
     color: var(--text-secondary);
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
 .testimonios-carousel {
-    margin-bottom: 80px;
+    margin-bottom: 50px;
 }
 
 .testimonio-principal {
-    max-width: 800px;
+    max-width: 700px;
     margin: 0 auto;
     position: relative;
 }
 
 .testimonio-card {
     background: white;
-    border-radius: 25px;
-    padding: 50px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 14px;
+    padding: 36px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.07);
     position: relative;
     overflow: hidden;
 }
@@ -47,22 +47,25 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .cliente-info {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
 }
 
 .cliente-imagen {
-    width: 80px;
-    height: 80px;
+    width: 64px;
+    height: 64px;
     border-radius: 50%;
-    background-color: #f0f0f0;
+    background-color: #e8e8e8;
+    background-size: cover;
+    background-position: center;
     flex-shrink: 0;
     overflow: hidden;
+    border: 3px solid var(--primary-color);
 }
 
 .cliente-img {
@@ -77,15 +80,16 @@
 }
 
 .cliente-nombre {
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 5px;
+    margin-bottom: 3px;
 }
 
 .cliente-ubicacion {
     color: var(--text-secondary);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
 }
 
 .cliente-calificacion {
@@ -102,11 +106,11 @@
 }
 
 .servicio-badge {
-    background: var(--primary-color);
-    color: white;
-    padding: 8px 16px;
+    background: rgba(33, 71, 162, 0.08);
+    color: var(--primary-color);
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 600;
 }
 
@@ -116,135 +120,131 @@
 
 .quote-icon {
     position: absolute;
-    top: -10px;
-    left: -10px;
-    font-size: 3rem;
+    top: -8px;
+    left: -8px;
+    font-size: 2rem;
     color: var(--primary-color);
-    opacity: 0.3;
+    opacity: 0.2;
 }
 
 .testimonio-texto {
-    font-size: 1.2rem;
-    line-height: 1.8;
+    font-size: 1rem;
+    line-height: 1.7;
     color: var(--text-secondary);
     font-style: italic;
-    padding-left: 40px;
+    padding-left: 30px;
     margin: 0;
 }
 
 .testimonio-controls {
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-top: 40px;
+    gap: 16px;
+    margin-top: 28px;
 }
 
 .testimonio-nav {
-    width: 50px;
-    height: 50px;
+    width: 42px;
+    height: 42px;
     border: none;
     border-radius: 50%;
     background: var(--primary-color);
     color: white;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.25s ease;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .testimonio-nav:hover {
-    background: #0056b3;
-    transform: scale(1.1);
+    background: var(--btn-primary-hover);
 }
 
 .testimonio-indicators {
     display: flex;
     justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 8px;
+    margin-top: 16px;
 }
 
 .testimonio-indicator {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     border: none;
     background: #ddd;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.25s ease;
 }
 
 .testimonio-indicator.active {
     background: var(--primary-color);
-    transform: scale(1.2);
 }
 
 .satisfaccion-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 30px;
-    margin-bottom: 80px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 50px;
 }
 
 .stat {
     text-align: center;
     background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    padding: 24px 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.25s ease;
 }
 
 .stat:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
 }
 
 .stat-numero {
-    font-size: 3rem;
-    font-weight: bold;
+    font-size: 2rem;
+    font-weight: 800;
     color: var(--primary-color);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .stat-texto {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
     font-weight: 600;
 }
 
 .testimonios-grid {
-    margin-bottom: 60px;
+    margin-bottom: 40px;
 }
 
 .testimonios-grid h3 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     text-align: center;
     color: var(--text-primary);
-    margin-bottom: 40px;
+    margin-bottom: 24px;
 }
 
 .testimonios-mini-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
 }
 
 .testimonio-mini {
     background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.25s ease;
     border: 2px solid transparent;
 }
 
 .testimonio-mini:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
 }
 
 .testimonio-mini.active {
@@ -287,18 +287,18 @@
     text-align: center;
     background: var(--primary-color);
     color: white;
-    padding: 60px 40px;
-    border-radius: 20px;
+    padding: 40px 30px;
+    border-radius: 12px;
 }
 
 .testimonios-cta h3 {
-    font-size: 2rem;
-    margin-bottom: 15px;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
 }
 
 .testimonios-cta p {
-    font-size: 1.1rem;
-    margin-bottom: 30px;
+    font-size: 0.95rem;
+    margin-bottom: 24px;
     opacity: 0.9;
 }
 
@@ -311,4 +311,25 @@
 .testimonios-cta .btn:hover {
     background: #f0f0f0;
     transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .testimonios-clientes {
+        padding: 50px 0 40px;
+    }
+
+    .testimonio-card {
+        padding: 24px;
+    }
+
+    .testimonio-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .cliente-imagen {
+        width: 52px;
+        height: 52px;
+    }
 }
