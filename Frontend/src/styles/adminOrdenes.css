@@ -20,7 +20,7 @@
 }
 
 .ordenes-title h2 {
-    color: var(--primary-color);
+    color: #1e293b;
     font-size: 1.5rem;
     display: flex;
     align-items: center;
@@ -38,9 +38,9 @@
 }
 
 .btn-refresh {
-    background: none;
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
+    background: var(--white);
+    border: 1px solid #e2e8f0;
+    color: var(--text-secondary);
     padding: 8px 12px;
     border-radius: var(--border-radius);
     cursor: pointer;
@@ -48,8 +48,9 @@
 }
 
 .btn-refresh:hover {
-    background: var(--primary-color);
-    color: var(--white);
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: var(--primary-color);
 }
 
 /* --- Toolbar --- */
@@ -68,7 +69,7 @@
     display: flex;
     align-items: center;
     background: var(--white);
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
     padding: 0 var(--spacing-sm);
     flex: 1;
@@ -115,7 +116,7 @@
     align-items: center;
     gap: 6px;
     padding: 8px 14px;
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
     background: var(--white);
     cursor: pointer;
@@ -138,7 +139,7 @@
 
 .sort-controls select {
     padding: 8px 12px;
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
     font-size: 0.9rem;
     background: var(--white);
@@ -147,7 +148,7 @@
 
 .btn-sort-dir {
     background: var(--white);
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     padding: 8px 10px;
     border-radius: var(--border-radius);
     cursor: pointer;
@@ -161,7 +162,7 @@
 
 .view-modes {
     display: flex;
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
     overflow: hidden;
 }
@@ -186,7 +187,7 @@
 
 .items-per-page {
     padding: 8px 12px;
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
     font-size: 0.85rem;
     background: var(--white);
@@ -201,7 +202,7 @@
     align-items: flex-end;
     padding: var(--spacing-md);
     background: var(--white);
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
     margin-bottom: var(--spacing-md);
 }
@@ -224,7 +225,7 @@
 .filter-group select,
 .filter-group input {
     padding: 8px 12px;
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius-sm);
     font-size: 0.9rem;
 }
@@ -260,7 +261,7 @@
     align-items: center;
     gap: 6px;
     padding: 6px 14px;
-    border: 2px solid var(--pill-color);
+    border: 1px solid var(--pill-color);
     border-radius: 20px;
     background: transparent;
     color: var(--pill-color);
@@ -287,7 +288,7 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    border: 2px solid;
+    border: 1px solid;
     border-radius: 20px;
     cursor: pointer;
     font-size: 0.85rem;
@@ -320,7 +321,7 @@
     left: 0;
     z-index: 100;
     background: var(--white);
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-lg);
     min-width: 180px;
@@ -335,6 +336,7 @@
     padding: 10px 14px;
     border: none;
     background: transparent;
+    color: #334155;
     cursor: pointer;
     font-size: 0.9rem;
     text-align: left;
@@ -366,16 +368,15 @@
 
 .orden-card {
     background: var(--white);
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius-lg);
     overflow: hidden;
     transition: var(--transition-normal);
-    border-top: 4px solid var(--estado-color);
+    border-top: 3px solid var(--estado-color);
 }
 
 .orden-card:hover {
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
 }
 
 .orden-card-header {
@@ -467,9 +468,9 @@
     gap: var(--spacing-md);
     padding: var(--spacing-md);
     background: var(--white);
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
-    border-left: 4px solid var(--estado-color);
+    border-left: 3px solid var(--estado-color);
     transition: var(--transition-normal);
 }
 
@@ -524,7 +525,7 @@
 /* ===== TABLE VIEW ===== */
 .ordenes-table-wrapper {
     overflow-x: auto;
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
 }
 
@@ -535,8 +536,8 @@
 }
 
 .ordenes-table thead {
-    background: var(--primary-color);
-    color: var(--white);
+    background: #f8fafc;
+    color: #475569;
 }
 
 .ordenes-table th {
@@ -585,7 +586,7 @@
 /* ===== ACTION BUTTONS ===== */
 .btn-action {
     background: none;
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     padding: 6px 10px;
     border-radius: var(--border-radius-sm);
     cursor: pointer;
@@ -620,7 +621,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius-sm);
     background: var(--white);
     cursor: pointer;
@@ -679,14 +680,14 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--spacing-md) var(--spacing-lg);
-    border-bottom: 2px solid var(--bg-secondary);
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .modal-header h2 {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
-    color: var(--primary-color);
+    color: #1e293b;
     font-size: 1.3rem;
     margin: 0;
 }
@@ -721,7 +722,7 @@
     font-size: 1.05rem;
     margin: 0 0 var(--spacing-md) 0;
     padding-bottom: var(--spacing-sm);
-    border-bottom: 2px solid var(--bg-secondary);
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .detalle-grid {
@@ -795,7 +796,7 @@
 }
 
 .detalle-productos-table tfoot td {
-    border-top: 2px solid var(--primary-color);
+    border-top: 1px solid var(--primary-color);
     font-weight: 700;
 }
 
@@ -841,12 +842,12 @@
     justify-content: flex-end;
     gap: var(--spacing-md);
     padding: var(--spacing-md) var(--spacing-lg);
-    border-top: 2px solid var(--bg-secondary);
+    border-top: 1px solid #e2e8f0;
 }
 
 .btn-cancel {
     padding: 10px 20px;
-    border: 2px solid var(--border-color);
+    border: 1px solid #e2e8f0;
     border-radius: var(--border-radius);
     background: var(--white);
     cursor: pointer;

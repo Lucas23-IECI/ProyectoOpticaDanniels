@@ -62,7 +62,7 @@ const AdminOrdenes = () => {
             const data = await getOrdenes({
                 orden: `${sortBy}_${sortOrder.toUpperCase()}`,
             });
-            setOrdenes(Array.isArray(data) ? data : []);
+            setOrdenes(Array.isArray(data) ? data : (data?.ordenes || []));
         } catch (err) {
             console.error('Error al cargar órdenes:', err);
             setError('Error al cargar las órdenes');

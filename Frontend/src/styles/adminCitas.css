@@ -21,14 +21,21 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: var(--primary-color, #2147A2);
-  color: #fff;
-  border: none;
+  background: var(--white, #fff);
+  color: var(--text-secondary, #6b7280);
+  border: 1px solid #e2e8f0;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.admin-citas .btn-refresh:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: var(--primary-color, #2147A2);
 }
 
 .admin-citas .btn-refresh:disabled {
@@ -159,7 +166,7 @@
   color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .admin-citas .admin-table td {
@@ -227,7 +234,7 @@
 .btn-cancelar { background: #fee2e2; color: #dc2626; }
 .btn-noasistio { background: #f3f4f6; color: #6b7280; }
 
-.btn-accion:hover { transform: scale(1.1); }
+.btn-accion:hover { opacity: 0.85; }
 
 /* Modal */
 .cita-modal-overlay {
@@ -248,7 +255,7 @@
   max-width: 560px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 .cita-modal-header {
@@ -309,7 +316,7 @@
 .detalle-notas-admin textarea {
   width: 100%;
   padding: 0.6rem;
-  border: 2px solid #e5e7eb;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 0.9rem;
   font-family: inherit;
