@@ -1,9 +1,7 @@
 /* ===== ADMIN USUARIOS - ESTILOS PRINCIPALES ===== */
 
 .admin-usuarios {
-    padding: 2rem;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    min-height: 100vh;
+    padding: 1.5rem;
 }
 
 /* ===== HEADER ===== */
@@ -12,27 +10,24 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(33, 71, 162, 0.1);
-    border: 1px solid rgba(33, 71, 162, 0.1);
+    margin-bottom: 1.5rem;
+    padding: 0 0 1rem 0;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .admin-usuarios .header-title h1 {
-    color: #2147A2;
-    font-size: 2rem;
+    color: #1e293b;
+    font-size: 1.5rem;
     font-weight: 700;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.25rem 0;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .admin-usuarios .usuarios-count {
-    color: #64748b;
-    font-size: 1rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
     font-weight: 500;
 }
 
@@ -43,17 +38,16 @@
 }
 
 .admin-usuarios .btn-refresh {
-    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-    color: #475569;
-    border: 1px solid #94a3b8;
-    transition: all 0.3s ease;
+    background: white;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
 }
 
 .admin-usuarios .btn-refresh:hover {
-    background: #2147A2;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(33, 71, 162, 0.3);
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #334155;
 }
 
 .admin-usuarios .btn-refresh .spinning {
@@ -71,11 +65,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem;
     background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
     border: 1px solid #e2e8f0;
     flex-wrap: wrap;
     gap: 1rem;
@@ -166,8 +159,6 @@
     background: #2147A2;
     color: white;
     border-color: #2147A2;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(33, 71, 162, 0.3);
 }
 
 /* Clase específica para el botón de filtros de usuarios */
@@ -249,21 +240,22 @@
 
 .admin-usuarios .filters-panel {
     background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(33, 71, 162, 0.1);
-    border: 1px solid rgba(33, 71, 162, 0.1);
-    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 1.25rem;
     overflow: hidden;
 }
 
 .admin-usuarios .filters-header {
-    background: #2147A2;
-    color: white;
-    padding: 1rem 1.5rem;
+    background: #f8fafc;
+    color: #334155;
+    padding: 0.75rem 1.25rem;
     font-weight: 600;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .admin-usuarios .filters-grid {
@@ -378,9 +370,8 @@
 
 .admin-usuarios .usuarios-content {
     background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(33, 71, 162, 0.1);
-    border: 1px solid rgba(33, 71, 162, 0.1);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
     overflow: hidden;
 }
 
@@ -419,43 +410,31 @@
 
 .admin-usuarios .usuario-card {
     background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 20px rgba(33, 71, 162, 0.08);
-    transition: all 0.3s ease;
-    border: 1px solid rgba(33, 71, 162, 0.1);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: all 0.2s ease;
+    border: 1px solid #e2e8f0;
     position: relative;
-    overflow: hidden;
-}
-
-.admin-usuarios .usuario-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: #2147A2;
 }
 
 .admin-usuarios .usuario-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 32px rgba(33, 71, 162, 0.15);
+    border-color: #cbd5e1;
+    box-shadow: var(--shadow-sm);
 }
 
 .admin-usuarios .usuario-avatar {
-    width: 60px;
-    height: 60px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     background: #2147A2;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .admin-usuarios .avatar-icon {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     color: white;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
@@ -558,8 +537,8 @@
 }
 
 .admin-usuarios .usuario-list-item:hover {
-    transform: translateX(4px);
-    box-shadow: 0 4px 20px rgba(33, 71, 162, 0.12);
+    box-shadow: var(--shadow-sm);
+    border-color: #cbd5e1;
 }
 
 .admin-usuarios .usuario-list-item .usuario-avatar {
@@ -630,14 +609,15 @@
 }
 
 .admin-usuarios .usuarios-table th {
-    background: #2147A2;
-    color: white;
-    padding: 1rem;
+    background: #f8fafc;
+    color: #475569;
+    padding: 0.75rem 1rem;
     text-align: left;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .admin-usuarios .usuarios-table td {
@@ -691,9 +671,8 @@
     align-items: center;
     background: #ffffff;
     border-radius: 12px;
-    padding: 1rem 1.5rem;
-    box-shadow: 0 4px 20px rgba(33, 71, 162, 0.08);
-    border: 1px solid rgba(33, 71, 162, 0.1);
+    padding: 0.75rem 1.25rem;
+    border: 1px solid #e2e8f0;
 }
 
 .admin-usuarios .pagination-info {
@@ -723,10 +702,9 @@
 }
 
 .admin-usuarios .btn-pagination:hover:not(:disabled) {
-    background: #2147A2;
+    background: var(--primary-color);
     color: white;
-    border-color: #2147A2;
-    transform: translateY(-1px);
+    border-color: var(--primary-color);
 }
 
 .admin-usuarios .btn-pagination:disabled {
@@ -876,11 +854,11 @@
 }
 
 .confirmar-eliminar-popup .usuario-info-eliminar {
-    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    background: #fef2f2;
     border: 1px solid #fecaca;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
 }
 
 .confirmar-eliminar-popup .usuario-info-eliminar h3 {
@@ -901,11 +879,11 @@
 }
 
 .confirmar-eliminar-popup .warning-details {
-    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    background: #fffbeb;
     border: 1px solid #fde68a;
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
 }
 
 .confirmar-eliminar-popup .warning-list {

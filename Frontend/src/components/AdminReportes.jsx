@@ -17,6 +17,7 @@ import {
     SimplePieChart, HorizontalBarChart, TrendAreaChart,
     OrdersTrendChart, StatusBarChart,
 } from '@components/charts/ReportCharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import '@styles/adminReportes.css';
 
 const AdminReportes = () => {
@@ -98,76 +99,116 @@ const AdminReportes = () => {
 
         const { usuarios, productos, tendencias } = estadisticasGenerales;
 
+        const usuariosDonut = [
+            { name: 'Admins', value: Number(usuarios.administradores) || 0 },
+            { name: 'Usuarios', value: Number(usuarios.regulares) || 0 },
+        ];
+        const productosDonut = [
+            { name: 'Activos', value: Number(productos.activos) || 0 },
+            { name: 'Inactivos', value: Number(productos.inactivos) || 0 },
+        ];
+        const stockBajo = Number(productos.stockBajo) || 0;
+        const stockNormal = Math.max(0, (Number(productos.total) || 0) - stockBajo);
+        const inventarioDonut = [
+            { name: 'Stock bajo', value: stockBajo },
+            { name: 'Normal', value: stockNormal },
+        ];
+
         return (
             <div className="estadisticas-generales">
-                {/* Tarjetas de resumen */}
-                <div className="stats-cards">
-                    <div className="stat-card usuarios-card">
-                        <div className="stat-icon">
-                            <FaUsers />
+                {/* Overview Cards */}
+                <div className="overview-grid">
+                    {/* Usuarios */}
+                    <div className="overview-card">
+                        <div className="overview-top">
+                            <span className="overview-label"><FaUsers /> Usuarios</span>
+                            <span className="overview-badge positive">+{usuarios.ultimos30Dias} <small>últimos 30d</small></span>
                         </div>
-                        <div className="stat-content">
-                            <h3>{formatearNumero(usuarios.total)}</h3>
-                            <p>Total Usuarios</p>
-                            <div className="stat-breakdown">
-                                <span className="admin-count">
-                                    <FaUserShield /> {usuarios.administradores} admins
-                                </span>
-                                <span className="user-count">
-                                    <FaUser /> {usuarios.regulares} usuarios
-                                </span>
+                        <div className="overview-body">
+                            <div className="overview-info">
+                                <h2 className="overview-number">{formatearNumero(usuarios.total)}</h2>
+                                <div className="overview-tags">
+                                    <span className="tag blue"><FaUserShield /> {usuarios.administradores} admins</span>
+                                    <span className="tag green"><FaUser /> {usuarios.regulares} usuarios</span>
+                                </div>
+                            </div>
+                            <div className="overview-mini-chart">
+                                <ResponsiveContainer width={90} height={90}>
+                                    <PieChart>
+                                        <Pie data={usuariosDonut} dataKey="value" innerRadius={28} outerRadius={42} paddingAngle={4} strokeWidth={0}>
+                                            <Cell fill="#2147A2" />
+                                            <Cell fill="#29A937" />
+                                        </Pie>
+                                    </PieChart>
+                                </ResponsiveContainer>
                             </div>
                         </div>
-                        <div className="stat-trend">
-                            <span className="trend-value">+{usuarios.ultimos30Dias}</span>
-                            <span className="trend-label">últimos 30 días</span>
+                        <div className="overview-legend">
+                            <span><i style={{ background: '#2147A2' }} /> Admins</span>
+                            <span><i style={{ background: '#29A937' }} /> Usuarios</span>
                         </div>
                     </div>
 
-                    <div className="stat-card productos-card">
-                        <div className="stat-icon">
-                            <FaBox />
+                    {/* Productos */}
+                    <div className="overview-card">
+                        <div className="overview-top">
+                            <span className="overview-label"><FaBox /> Productos</span>
+                            <span className="overview-badge highlight">{productos.enOferta} en oferta</span>
                         </div>
-                        <div className="stat-content">
-                            <h3>{formatearNumero(productos.total)}</h3>
-                            <p>Total Productos</p>
-                            <div className="stat-breakdown">
-                                <span className="active-count">
-                                    <FaEye /> {productos.activos} activos
-                                </span>
-                                <span className="inactive-count">
-                                    <FaEyeSlash /> {productos.inactivos} inactivos
-                                </span>
+                        <div className="overview-body">
+                            <div className="overview-info">
+                                <h2 className="overview-number">{formatearNumero(productos.total)}</h2>
+                                <div className="overview-tags">
+                                    <span className="tag green"><FaEye /> {productos.activos} activos</span>
+                                    <span className="tag muted"><FaEyeSlash /> {productos.inactivos} inactivos</span>
+                                </div>
+                            </div>
+                            <div className="overview-mini-chart">
+                                <ResponsiveContainer width={90} height={90}>
+                                    <PieChart>
+                                        <Pie data={productosDonut} dataKey="value" innerRadius={28} outerRadius={42} paddingAngle={4} strokeWidth={0}>
+                                            <Cell fill="#29A937" />
+                                            <Cell fill="#94a3b8" />
+                                        </Pie>
+                                    </PieChart>
+                                </ResponsiveContainer>
                             </div>
                         </div>
-                        <div className="stat-trend">
-                            <span className="trend-value">{productos.enOferta}</span>
-                            <span className="trend-label">en oferta</span>
+                        <div className="overview-legend">
+                            <span><i style={{ background: '#29A937' }} /> Activos</span>
+                            <span><i style={{ background: '#94a3b8' }} /> Inactivos</span>
                         </div>
                     </div>
 
-                    <div className="stat-card inventario-card">
-                        <div className="stat-icon">
-                            <FaDollarSign />
+                    {/* Valor Inventario */}
+                    <div className="overview-card">
+                        <div className="overview-top">
+                            <span className="overview-label"><FaDollarSign /> Valor Inventario</span>
+                            <span className="overview-badge info">{formatearPorcentaje(productos.enOferta, productos.total)} promo</span>
                         </div>
-                        <div className="stat-content">
-                            <h3>{formatearPrecio(productos.valorInventario)}</h3>
-                            <p>Valor Inventario</p>
-                            <div className="stat-breakdown">
-                                {(() => {
-                                    const stockBajo = Number(productos.stockBajo) || 0;
-                                    const tieneStockBajo = stockBajo > 0;
-                                    return (
-                                        <span className={`stock-alert ${tieneStockBajo ? 'alert' : 'ok'}`}>
-                                            {tieneStockBajo ? '⚠️' : '✅'} {stockBajo} con stock bajo
-                                        </span>
-                                    );
-                                })()}
+                        <div className="overview-body">
+                            <div className="overview-info">
+                                <h2 className="overview-number money">{formatearPrecio(productos.valorInventario)}</h2>
+                                <div className="overview-tags">
+                                    <span className={`tag ${stockBajo > 0 ? 'red' : 'green'}`}>
+                                        {stockBajo > 0 ? '⚠️' : '✅'} {stockBajo} con stock bajo
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="overview-mini-chart">
+                                <ResponsiveContainer width={90} height={90}>
+                                    <PieChart>
+                                        <Pie data={inventarioDonut} dataKey="value" innerRadius={28} outerRadius={42} paddingAngle={4} strokeWidth={0}>
+                                            <Cell fill="#dc2626" />
+                                            <Cell fill="#29A937" />
+                                        </Pie>
+                                    </PieChart>
+                                </ResponsiveContainer>
                             </div>
                         </div>
-                        <div className="stat-trend">
-                            <span className="trend-value">{formatearPorcentaje(productos.enOferta, productos.total)}</span>
-                            <span className="trend-label">en promoción</span>
+                        <div className="overview-legend">
+                            <span><i style={{ background: '#dc2626' }} /> Stock bajo</span>
+                            <span><i style={{ background: '#29A937' }} /> Normal</span>
                         </div>
                     </div>
                 </div>
@@ -233,6 +274,10 @@ const AdminReportes = () => {
     const renderEstadisticasUsuarios = () => {
         if (!estadisticasUsuarios) return null;
 
+        const rolDonut = estadisticasUsuarios.porRol && estadisticasUsuarios.porRol.length > 0
+            ? estadisticasUsuarios.porRol.map(r => ({ name: r.rol, value: Number(r.cantidad) || 0 }))
+            : [];
+
         return (
             <div className="estadisticas-usuarios">
                 <div className="charts-grid">
@@ -265,35 +310,24 @@ const AdminReportes = () => {
                             Últimos Usuarios Registrados
                         </h3>
                         <div className="chart-content">
-                            <div className="usuarios-table">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Nombre</th>
-                                            <th>Email</th>
-                                            <th>Rol</th>
-                                            <th>Fecha Registro</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {estadisticasUsuarios.ultimosUsuarios.map((usuario, index) => (
-                                            <tr key={index}>
-                                                <td>
-                                                    {usuario.primerNombre} {usuario.apellidoPaterno}
-                                                </td>
-                                                <td>{usuario.email}</td>
-                                                <td>
-                                                    <span className={`badge badge-${usuario.rol}`}>
-                                                        {usuario.rol}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    {new Date(usuario.createdAt).toLocaleDateString('es-CL')}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+                            <div className="recent-users-list">
+                                {estadisticasUsuarios.ultimosUsuarios.map((usuario, index) => (
+                                    <div key={index} className="recent-user-row">
+                                        <div className="recent-user-avatar">
+                                            {(usuario.primerNombre || '?')[0].toUpperCase()}
+                                        </div>
+                                        <div className="recent-user-info">
+                                            <span className="recent-user-name">{usuario.primerNombre} {usuario.apellidoPaterno}</span>
+                                            <span className="recent-user-email">{usuario.email}</span>
+                                        </div>
+                                        <span className={`recent-user-badge ${usuario.rol === 'administrador' ? 'admin' : 'user'}`}>
+                                            {usuario.rol === 'administrador' ? <><FaUserShield /> Admin</> : <><FaUser /> Usuario</>}
+                                        </span>
+                                        <span className="recent-user-date">
+                                            <FaCalendar /> {new Date(usuario.createdAt).toLocaleDateString('es-CL')}
+                                        </span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -405,39 +439,76 @@ const AdminReportes = () => {
 
         const { resumen, porEstado, tendencias, topProductos, ultimasOrdenes } = estadisticasOrdenes;
 
+        const estadoDonut = porEstado && porEstado.length > 0
+            ? porEstado.map(e => ({ name: e.estado, value: Number(e.cantidad) || 0 }))
+            : [];
+        const estadoDonutColors = estadoDonut.map(e => ESTADO_COLORS[e.name] || '#94a3b8');
+
         return (
             <div className="estadisticas-ordenes">
-                {/* Summary Cards */}
-                <div className="stats-cards">
-                    <div className="stat-card ordenes-card">
-                        <div className="stat-icon"><FaShoppingCart /></div>
-                        <div className="stat-content">
-                            <h3>{formatearNumero(resumen.totalOrdenes)}</h3>
-                            <p>Total Órdenes</p>
+                {/* Overview Cards */}
+                <div className="overview-grid">
+                    <div className="overview-card">
+                        <div className="overview-top">
+                            <span className="overview-label"><FaShoppingCart /> Órdenes</span>
+                            <span className="overview-badge positive">+{resumen.ordenesUltimos30Dias} <small>últimos 30d</small></span>
                         </div>
-                        <div className="stat-trend">
-                            <span className="trend-value">+{resumen.ordenesUltimos30Dias}</span>
-                            <span className="trend-label">últimos 30 días</span>
+                        <div className="overview-body">
+                            <div className="overview-info">
+                                <h2 className="overview-number">{formatearNumero(resumen.totalOrdenes)}</h2>
+                                <div className="overview-tags">
+                                    <span className="tag blue"><FaClipboardList /> Total registradas</span>
+                                </div>
+                            </div>
+                            <div className="overview-mini-chart">
+                                {estadoDonut.length > 0 && (
+                                    <ResponsiveContainer width={90} height={90}>
+                                        <PieChart>
+                                            <Pie data={estadoDonut} dataKey="value" innerRadius={28} outerRadius={42} paddingAngle={3} strokeWidth={0}>
+                                                {estadoDonut.map((_, i) => (
+                                                    <Cell key={i} fill={estadoDonutColors[i]} />
+                                                ))}
+                                            </Pie>
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                )}
+                            </div>
+                        </div>
+                        {estadoDonut.length > 0 && (
+                            <div className="overview-legend">
+                                {estadoDonut.slice(0, 3).map((e, i) => (
+                                    <span key={i}><i style={{ background: estadoDonutColors[i] }} /> {e.name}</span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="overview-card">
+                        <div className="overview-top">
+                            <span className="overview-label"><FaMoneyBillWave /> Ingresos</span>
+                            <span className="overview-badge highlight">{formatearPrecio(resumen.ingresos30Dias)} <small>30d</small></span>
+                        </div>
+                        <div className="overview-body">
+                            <div className="overview-info">
+                                <h2 className="overview-number money">{formatearPrecio(resumen.ingresosTotales)}</h2>
+                                <div className="overview-tags">
+                                    <span className="tag green"><FaDollarSign /> Ingresos totales</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="stat-card ingresos-card">
-                        <div className="stat-icon"><FaMoneyBillWave /></div>
-                        <div className="stat-content">
-                            <h3>{formatearPrecio(resumen.ingresosTotales)}</h3>
-                            <p>Ingresos Totales</p>
+                    <div className="overview-card">
+                        <div className="overview-top">
+                            <span className="overview-label"><FaDollarSign /> Orden Promedio</span>
                         </div>
-                        <div className="stat-trend">
-                            <span className="trend-value">{formatearPrecio(resumen.ingresos30Dias)}</span>
-                            <span className="trend-label">últimos 30 días</span>
-                        </div>
-                    </div>
-
-                    <div className="stat-card promedio-card">
-                        <div className="stat-icon"><FaDollarSign /></div>
-                        <div className="stat-content">
-                            <h3>{formatearPrecio(resumen.promedioOrden)}</h3>
-                            <p>Orden Promedio</p>
+                        <div className="overview-body">
+                            <div className="overview-info">
+                                <h2 className="overview-number money">{formatearPrecio(resumen.promedioOrden)}</h2>
+                                <div className="overview-tags">
+                                    <span className="tag muted"><FaEquals /> Valor promedio por orden</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

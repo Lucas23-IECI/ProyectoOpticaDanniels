@@ -36,14 +36,21 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: var(--primary-color, #2147A2);
-  color: #fff;
-  border: none;
+  background: #fff;
+  color: #6b7280;
+  border: 1px solid #e2e8f0;
   padding: 0.5rem 1rem;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.admin-mensajes .btn-refresh:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: var(--primary-color, #2147A2);
 }
 
 .admin-mensajes .btn-refresh:disabled {
@@ -156,7 +163,7 @@
 
 .mensaje-card.no-leido {
   background: #f0f4ff;
-  border-left: 4px solid var(--primary-color, #2147A2);
+  border-left: 3px solid var(--primary-color, #2147A2);
 }
 
 .mensaje-card.respondido {
@@ -290,7 +297,7 @@
   max-width: 600px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 .mensaje-modal-header {
@@ -347,7 +354,7 @@
   padding: 1rem;
   background: #f8f9fc;
   border-radius: 10px;
-  border-left: 4px solid var(--primary-color, #2147A2);
+  border-left: 3px solid var(--primary-color, #2147A2);
 }
 
 .mensaje-contenido p {
