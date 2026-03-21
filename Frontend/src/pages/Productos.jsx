@@ -1,396 +1,259 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import useGetProductos from "@hooks/productos/useGetProductos";
+import useGetFacetas from "@hooks/productos/useGetFacetas";
 import { formatearNombreParaURL } from "@helpers/formatData";
-import DropdownFiltro from "@components/DropdownFiltro";
 import ProductCard from "@components/ProductCard";
-import DropdownCategorias from "@components/DropdownCategorias";
-import "@styles/productos.css";
-import { Link } from "react-router-dom";
-import { FaFilter, FaTimes, FaEye, FaHeart, FaShoppingCart, FaStar, FaSearch, FaTh, FaList, FaSort, FaTags, FaEyeSlash, FaCog, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import CatalogSidebar from "@components/CatalogSidebar";
+import ActiveFilterChips from "@components/ActiveFilterChips";
+import { ProductGridSkeleton } from "@components/ProductCardSkeleton";
+import QuickViewModal from "@components/QuickViewModal";
+import RecentlyViewed, { addToRecentlyViewed } from "@components/RecentlyViewed";
+import Breadcrumbs from "@components/Breadcrumbs";
 import SugerenciasBusqueda from "@components/SugerenciasBusqueda";
-import FiltrosAvanzados from "@components/FiltrosAvanzados";
+import "@styles/productos.css";
+import { FaFilter, FaTimes, FaSearch, FaSort, FaEyeSlash, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+
+const ITEMS_PER_PAGE = 16;
+
+const SORT_OPTIONS = [
+    { value: "", label: "Más relevantes" },
+    { value: "precio_ASC", label: "Precio: menor a mayor" },
+    { value: "precio_DESC", label: "Precio: mayor a menor" },
+    { value: "nombre_ASC", label: "Nombre: A-Z" },
+    { value: "nombre_DESC", label: "Nombre: Z-A" },
+    { value: "createdAt_DESC", label: "Novedades" },
+];
+
+// Keys for filtros that map directly to query params
+const FILTER_KEYS = [
+    "categoria", "subcategoria", "marca", "genero", "forma", "material",
+    "color_armazon", "color_cristal", "polarizado", "tipo_cristal",
+    "disponibilidad", "precio_min", "precio_max",
+];
+
+const readFiltersFromParams = (sp) => {
+    const f = {};
+    FILTER_KEYS.forEach((k) => {
+        const v = sp.get(k);
+        if (v) f[k] = v;
+    });
+    return f;
+};
 
 const Productos = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [loading, setLoading] = useState(false);
-    const [categoria, setCategoria] = useState(searchParams.get("categoria") || "");
-    const [subcategoria, setSubcategoria] = useState(searchParams.get("subcategoria") || "");
-    const [disponibilidad, setDisponibilidad] = useState(searchParams.get("disponibilidad") || "");
-    const [precioMin, setPrecioMin] = useState(searchParams.get("precioMin") || "");
-    const [precioMax, setPrecioMax] = useState(searchParams.get("precioMax") || "");
-    const [orden, setOrden] = useState(searchParams.get("orden") || "");
-    const [dropdownActivo, setDropdownActivo] = useState(null);
-    const [viewMode, setViewMode] = useState('grid');
-    const [showFilters, setShowFilters] = useState(false);
-    const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-    const [searchTerm, setSearchTerm] = useState(searchParams.get("busqueda") || "");
-    const [currentPage, setCurrentPage] = useState(parseInt(searchParams.get("page")) || 1);
-    const ITEMS_PER_PAGE = 12;
-    
-    const [isFilteringDebounced, setIsFilteringDebounced] = useState(false);
 
-    // Filtros avanzados
-    const [filtrosAvanzados, setFiltrosAvanzados] = useState({
-        forma: [],
-        marca: [],
-        genero: [],
-        material: [],
-        color: [],
-        tamaño: []
-    });
+    // URL is the single source of truth — derive all state from it
+    const filtros = useMemo(() => readFiltersFromParams(searchParams), [searchParams]);
+    const orden = searchParams.get("orden") || "";
+    const currentPage = parseInt(searchParams.get("page")) || 1;
+    const searchFromUrl = searchParams.get("busqueda") || "";
 
-    const { productos, paginacion, fetchProductos } = useGetProductos({ activo: true });
+    // Local search input (for responsive typing, debounced sync to URL)
+    const [searchInput, setSearchInput] = useState(searchFromUrl);
     const debounceRef = useRef(null);
 
-    const actualizarURL = useCallback((filtros) => {
-        const params = new URLSearchParams();
-        if (filtros.categoria) params.set("categoria", filtros.categoria);
-        if (filtros.subcategoria) params.set("subcategoria", filtros.subcategoria);
-        if (filtros.disponibilidad) params.set("disponibilidad", filtros.disponibilidad);
-        if (filtros.precioMin) params.set("precioMin", filtros.precioMin);
-        if (filtros.precioMax) params.set("precioMax", filtros.precioMax);
-        if (filtros.orden) params.set("orden", filtros.orden);
-        if (filtros.busqueda) params.set("busqueda", filtros.busqueda);
-        if (filtros.page && filtros.page > 1) params.set("page", String(filtros.page));
-        
-        setSearchParams(params);
-    }, [setSearchParams]);
-
-    const obtenerProductosConDebounce = useCallback((filtros) => {
-        if (debounceRef.current) {
-            clearTimeout(debounceRef.current);
-        }
-
-        debounceRef.current = setTimeout(async () => {
-            try {
-                setLoading(true);
-                setIsFilteringDebounced(true);
-                
-                const paramsFiltros = {};
-                // Siempre filtrar solo productos activos para clientes
-                paramsFiltros.activo = true;
-                
-                if (filtros.categoria && filtros.categoria.trim()) paramsFiltros.categoria = filtros.categoria.trim();
-                if (filtros.subcategoria && filtros.subcategoria.trim()) paramsFiltros.subcategoria = filtros.subcategoria.trim();
-                if (filtros.precioMin && filtros.precioMin.trim()) paramsFiltros.precio_min = filtros.precioMin.trim();
-                if (filtros.precioMax && filtros.precioMax.trim()) paramsFiltros.precio_max = filtros.precioMax.trim();
-                // Solo aplicar filtro de disponibilidad si el usuario lo selecciona explícitamente
-                if (filtros.disponibilidad && filtros.disponibilidad.trim()) {
-                    if (filtros.disponibilidad === "en_stock") {
-                        // Ya está filtrado por activo=true, no necesitamos hacer nada más
-                    } else if (filtros.disponibilidad === "agotado") {
-                        // Para productos agotados, quitamos el filtro de activo
-                        delete paramsFiltros.activo;
-                    }
-                }
-                if (filtros.orden && filtros.orden.trim()) paramsFiltros.orden = filtros.orden.trim();
-                
-                if (filtros.busqueda && filtros.busqueda.trim() !== '') {
-                    paramsFiltros.nombre = filtros.busqueda.trim();
-                }
-
-                paramsFiltros.page = filtros.page || 1;
-                paramsFiltros.limit = ITEMS_PER_PAGE;
-
-                await fetchProductos(paramsFiltros);
-                
-            } catch (error) {
-                console.error("Error al obtener productos:", error);
-            } finally {
-                setLoading(false);
-                setIsFilteringDebounced(false);
-            }
-        }, 750);
-    }, [fetchProductos]);
-
-    const displayedProducts = useMemo(() => {
-        return productos || [];
-    }, [productos]);
-
+    // Sync local input when URL changes externally (navbar, chips, etc.)
     useEffect(() => {
-        const filtros = {
-            categoria,
-            subcategoria,
-            disponibilidad,
-            precioMin,
-            precioMax,
-            orden,
-            busqueda: searchTerm,
-            page: currentPage
-        };
+        setSearchInput(searchFromUrl);
+    }, [searchFromUrl]);
 
-        const hayFiltrosActivos = categoria || subcategoria || disponibilidad || precioMin || precioMax || orden || searchTerm;
-        
-        if (hayFiltrosActivos) {
-            actualizarURL(filtros);
-            obtenerProductosConDebounce(filtros);
+    // UI state
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [quickViewProduct, setQuickViewProduct] = useState(null);
+
+    const { productos, paginacion, loading, fetchProductos } = useGetProductos();
+    const { facetas, fetchFacetas } = useGetFacetas();
+
+    // Fetch data whenever URL params change
+    useEffect(() => {
+        const params = { activo: true, page: currentPage, limit: ITEMS_PER_PAGE };
+        if (searchFromUrl.trim()) params.nombre = searchFromUrl.trim();
+        if (orden) params.orden = orden;
+        FILTER_KEYS.forEach((k) => { if (filtros[k]) params[k] = filtros[k]; });
+        fetchProductos(params);
+        fetchFacetas(params);
+    }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Filter handler — updates URL directly
+    const handleFiltroChange = useCallback((key, value) => {
+        const next = new URLSearchParams(searchParams);
+        if (value === "" || value === undefined || value === null) {
+            next.delete(key);
         } else {
-            const cargarTodosLosProductos = async () => {
-                try {
-                    setLoading(true);
-                    await fetchProductos({ activo: true, page: currentPage, limit: ITEMS_PER_PAGE });
-                } catch (error) {
-                    console.error("Error al cargar productos:", error);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            cargarTodosLosProductos();
+            next.set(key, value);
         }
-    }, [categoria, subcategoria, disponibilidad, precioMin, precioMax, orden, searchTerm, currentPage, actualizarURL, obtenerProductosConDebounce, fetchProductos]);
+        next.delete("page");
+        setSearchParams(next, { replace: true });
+    }, [searchParams, setSearchParams]);
 
-    const restablecerFiltros = useCallback(() => {
-        setCategoria("");
-        setSubcategoria("");
-        setDisponibilidad("");
-        setPrecioMin("");
-        setPrecioMax("");
-        setOrden("");
-        setSearchTerm("");
-        setCurrentPage(1);
-        setFiltrosAvanzados({
-            forma: [],
-            marca: [],
-            genero: [],
-            material: [],
-            color: [],
-            tamaño: []
-        });
-        setSearchParams({});
+    const clearAllFilters = useCallback(() => {
+        setSearchParams({}, { replace: true });
+        setSearchInput("");
     }, [setSearchParams]);
 
-    const handleFiltroAvanzadoChange = useCallback((campo, valores) => {
-        setFiltrosAvanzados(prev => ({
-            ...prev,
-            [campo]: valores
-        }));
+    const removeFilter = useCallback((key) => {
+        const next = new URLSearchParams(searchParams);
+        if (key === "nombre") {
+            next.delete("busqueda");
+            setSearchInput("");
+        } else {
+            next.delete(key);
+        }
+        next.delete("page");
+        setSearchParams(next, { replace: true });
+    }, [searchParams, setSearchParams]);
+
+    // Search input with debounce
+    const handleSearchChange = useCallback((value) => {
+        setSearchInput(value);
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+            const next = new URLSearchParams(searchParams);
+            if (value.trim()) next.set("busqueda", value.trim());
+            else next.delete("busqueda");
+            next.delete("page");
+            setSearchParams(next, { replace: true });
+        }, 400);
+    }, [searchParams, setSearchParams]);
+
+    // Sort handler
+    const handleOrdenChange = useCallback((value) => {
+        const next = new URLSearchParams(searchParams);
+        if (value) next.set("orden", value);
+        else next.delete("orden");
+        next.delete("page");
+        setSearchParams(next, { replace: true });
+    }, [searchParams, setSearchParams]);
+
+    // Page handler
+    const handlePageChange = useCallback((page) => {
+        const next = new URLSearchParams(searchParams);
+        if (page > 1) next.set("page", String(page));
+        else next.delete("page");
+        setSearchParams(next, { replace: true });
+    }, [searchParams, setSearchParams]);
+
+    // For chips display
+    const chipsData = useMemo(() => {
+        const data = { ...filtros };
+        if (searchFromUrl.trim()) data.nombre = searchFromUrl.trim();
+        return data;
+    }, [filtros, searchFromUrl]);
+
+    const activeFilterCount = Object.keys(chipsData).length;
+
+    // QuickView handler
+    const handleQuickView = useCallback((producto) => {
+        addToRecentlyViewed(producto);
+        setQuickViewProduct(producto);
     }, []);
 
-    const limpiarFiltrosAvanzados = useCallback(() => {
-        setFiltrosAvanzados({
-            forma: [],
-            marca: [],
-            genero: [],
-            material: [],
-            color: [],
-            tamaño: []
-        });
-    }, []);
+    // Breadcrumb trail
+    const breadcrumbTrail = useMemo(() => {
+        const trail = [{ label: "Productos", path: "/productos", isLast: !filtros.categoria }];
+        if (filtros.categoria) {
+            const catLabel = filtros.categoria === "opticos" ? "Ópticos" : filtros.categoria === "sol" ? "Sol" : "Accesorios";
+            trail.push({
+                label: catLabel,
+                path: `/productos?categoria=${filtros.categoria}`,
+                isLast: !filtros.subcategoria,
+            });
+        }
+        if (filtros.subcategoria) {
+            trail.push({ label: filtros.subcategoria, path: "#", isLast: true });
+        }
+        return trail;
+    }, [filtros.categoria, filtros.subcategoria]);
 
-    const activeFiltersCount = [categoria, subcategoria, disponibilidad, precioMin, precioMax, orden, searchTerm].filter(Boolean).length;
+    const displayedProducts = productos || [];
 
     return (
         <div className="catalog-container">
-            <div className="catalog-header">
-                <div className="catalog-hero">
-                    <h1>Catálogo de Productos</h1>
-                    <p>Encuentra los mejores productos para tu cuidado visual</p>
-                </div>
-            </div>
+            {/* Header: breadcrumbs + title + search + sort */}
+            <div className="catalog-topbar">
+                <Breadcrumbs customTrail={breadcrumbTrail} />
 
-            <div className="catalog-controls">
-                <div className="controls-left">
-                    <button 
-                        className={`filter-toggle ${showFilters ? 'active' : ''}`}
-                        onClick={() => setShowFilters(!showFilters)}
-                    >
-                        <FaFilter />
-                        Filtros
-                        {activeFiltersCount > 0 && (
-                            <span className="filter-count">{activeFiltersCount}</span>
-                        )}
-                    </button>
-                    
-                    {activeFiltersCount > 0 && (
-                        <button 
-                            onClick={() => restablecerFiltros()} 
-                            className="clear-filters"
-                            disabled={loading}
-                            title="Limpiar todos los filtros"
+                <div className="topbar-controls">
+                    <div className="topbar-left">
+                        <button
+                            className="mobile-filter-btn"
+                            onClick={() => setSidebarOpen(true)}
                         >
-                            <FaTimes />
-                            {loading ? 'Limpiando...' : 'Limpiar filtros'}
+                            <FaFilter />
+                            Filtrar
+                            {activeFilterCount > 0 && (
+                                <span className="mobile-filter-badge">{activeFilterCount}</span>
+                            )}
                         </button>
-                    )}
 
-                    <button 
-                        className={`advanced-filter-toggle ${showAdvancedFilters ? 'active' : ''}`}
-                        onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-                        title="Filtros avanzados"
-                    >
-                        <FaCog />
-                        Avanzados
-                    </button>
-                </div>
+                        <div className="search-container">
+                            <FaSearch className="search-icon" />
+                            <input
+                                type="text"
+                                placeholder="Buscar productos..."
+                                value={searchInput}
+                                onChange={(e) => handleSearchChange(e.target.value)}
+                                className="search-input"
+                            />
+                            {searchInput && (
+                                <button className="clear-search" onClick={() => handleSearchChange("")}>
+                                    <FaTimes />
+                                </button>
+                            )}
+                        </div>
+                    </div>
 
-                <div className="controls-center">
-                    <div className="search-container">
-                        <FaSearch className="search-icon" />
-                        <input
-                            type="text"
-                            placeholder="Buscar productos..."
-                            value={searchTerm}
-                            onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                            className="search-input"
-                        />
-                        {searchTerm && (
-                            <button
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    setSearchTerm("");
-                                }}
-                                className="clear-search"
-                                title="Limpiar búsqueda"
+                    <div className="topbar-right">
+                        {paginacion && (
+                            <span className="results-count">
+                                {paginacion.total} producto{paginacion.total !== 1 ? "s" : ""}
+                            </span>
+                        )}
+                        <div className="sort-control">
+                            <FaSort className="sort-icon" />
+                            <select
+                                value={orden}
+                                onChange={(e) => handleOrdenChange(e.target.value)}
+                                className="sort-select"
                             >
-                                <FaTimes />
-                            </button>
-                        )}
+                                {SORT_OPTIONS.map((opt) => (
+                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                <div className="controls-right">
-                    <div className="view-toggle">
-                        <button 
-                            className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
-                            onClick={() => setViewMode('grid')}
-                            title="Vista de cuadrícula"
-                        >
-                            <FaTh />
-                        </button>
-                        <button 
-                            className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
-                            onClick={() => setViewMode('list')}
-                            title="Vista de lista"
-                        >
-                            <FaList />
-                        </button>
-                    </div>
-
-                    <div className="sort-control">
-                        <FaSort className="sort-icon" />
-                        <select 
-                            value={orden} 
-                            onChange={(e) => { setOrden(e.target.value); setCurrentPage(1); }}
-                            className="sort-select"
-                        >
-                            <option value="">Más relevantes</option>
-                            <option value="precio_ASC">Precio: menor a mayor</option>
-                            <option value="precio_DESC">Precio: mayor a menor</option>
-                            <option value="nombre_ASC">Nombre: A-Z</option>
-                            <option value="nombre_DESC">Nombre: Z-A</option>
-                        </select>
-                    </div>
-                </div>
+                <ActiveFilterChips filtros={chipsData} onRemove={removeFilter} onClearAll={clearAllFilters} />
             </div>
 
-            <div className="catalog-content">
-                <div className={`filters-sidebar ${showFilters ? 'show' : ''}`}>
-                    <div className="filters-header">
-                        <h3>Filtros</h3>
-                        <button 
-                            onClick={() => setShowFilters(false)}
-                            className="close-filters"
-                        >
-                            <FaTimes />
-                        </button>
-                    </div>
+            {/* Main layout: sidebar + grid */}
+            <div className="catalog-layout">
+                <CatalogSidebar
+                    filtros={filtros}
+                    facetas={facetas}
+                    onFiltroChange={handleFiltroChange}
+                    onClearAll={clearAllFilters}
+                    onClose={() => setSidebarOpen(false)}
+                    isMobileOpen={sidebarOpen}
+                />
 
-                    <div className="filters-content">
-                        <div className="filter-section">
-                            <h4>Categorías</h4>
-                            <DropdownCategorias
-                                selectedCategoria={categoria}
-                                selectedSubcategoria={subcategoria}
-                                onCategoriaChange={(val) => { setCategoria(val); setCurrentPage(1); }}
-                                onSubcategoriaChange={(val) => { setSubcategoria(val); setCurrentPage(1); }}
-                                placeholder="Todas las categorías"
-                                dropdownActivo={dropdownActivo}
-                                setDropdownActivo={setDropdownActivo}
-                                id="productos"
-                            />
-                        </div>
-
-                        <div className="filter-section">
-                            <h4>Disponibilidad</h4>
-                            <DropdownFiltro
-                                titulo="Disponibilidad"
-                                tipo="checkbox"
-                                opciones={[
-                                    { valor: "en_stock", etiqueta: "En existencia" },
-                                    { valor: "agotado", etiqueta: "Agotado" },
-                                ]}
-                                seleccion={disponibilidad}
-                                onSeleccion={(valor) => { setDisponibilidad(valor); setCurrentPage(1); }}
-                                dropdownActivo={dropdownActivo}
-                                setDropdownActivo={setDropdownActivo}
-                                id="disponibilidad"
-                            />
-                        </div>
-
-                        <div className="filter-section">
-                            <h4>Rango de Precio</h4>
-                            <DropdownFiltro
-                                titulo="Precio"
-                                tipo="precio"
-                                precioMin={precioMin}
-                                precioMax={precioMax}
-                                setPrecioMin={setPrecioMin}
-                                setPrecioMax={setPrecioMax}
-                                dropdownActivo={dropdownActivo}
-                                setDropdownActivo={setDropdownActivo}
-                                id="precio"
-                            />
-                        </div>
-
-                        {showAdvancedFilters && (
-                            <div className="advanced-filters-section">
-                                <FiltrosAvanzados
-                                    filtros={filtrosAvanzados}
-                                    onFiltroChange={handleFiltroAvanzadoChange}
-                                    onLimpiarFiltros={limpiarFiltrosAvanzados}
-                                    productosData={productos || []}
-                                />
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="catalog-main">
+                <main className="catalog-main">
                     {loading ? (
-                        <div className="loading-state">
-                            <div className="loading-spinner"></div>
-                            <p>Cargando productos...</p>
-                        </div>
-                    ) : Array.isArray(displayedProducts) && displayedProducts.length > 0 ? (
+                        <ProductGridSkeleton count={ITEMS_PER_PAGE} />
+                    ) : displayedProducts.length > 0 ? (
                         <>
-                            <div className="results-info">
-                                <p>
-                                    Mostrando {displayedProducts.length} de {paginacion?.total || displayedProducts.length} producto{(paginacion?.total || displayedProducts.length) !== 1 ? 's' : ''}
-                                    {paginacion && paginacion.paginas > 1 && (
-                                        <span className="page-indicator"> — Página {paginacion.pagina} de {paginacion.paginas}</span>
-                                    )}
-                                </p>
-                                {isFilteringDebounced && (
-                                    <div className="filtering-indicator">
-                                        <div className="mini-spinner"></div>
-                                        <span>Filtrando...</span>
-                                    </div>
-                                )}
-                            </div>
-                            
-                            <div className={`products-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
+                            <div className="products-grid">
                                 {displayedProducts.map((producto) => (
                                     <Link
                                         key={producto.id}
                                         to={`/productos/${formatearNombreParaURL(producto.nombre)}`}
                                         className="product-link"
+                                        onClick={() => addToRecentlyViewed(producto)}
                                     >
-                                        <ProductCard 
-                                            producto={producto} 
-                                            viewMode={viewMode}
-                                        />
+                                        <ProductCard producto={producto} viewMode="grid" />
                                     </Link>
                                 ))}
                             </div>
@@ -399,9 +262,8 @@ const Productos = () => {
                                 <div className="pagination-controls">
                                     <button
                                         className="pagination-btn"
-                                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                        disabled={currentPage <= 1 || loading}
-                                        title="Página anterior"
+                                        onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+                                        disabled={currentPage <= 1}
                                     >
                                         <FaChevronLeft />
                                         <span>Anterior</span>
@@ -412,44 +274,33 @@ const Productos = () => {
                                             const pages = [];
                                             const total = paginacion.paginas;
                                             const current = paginacion.pagina;
-                                            
-                                            // Always show first page
                                             pages.push(1);
-                                            
-                                            if (current > 3) pages.push('...');
-                                            
-                                            // Pages around current
+                                            if (current > 3) pages.push("...");
                                             for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
                                                 pages.push(i);
                                             }
-                                            
-                                            if (current < total - 2) pages.push('...');
-                                            
-                                            // Always show last page
+                                            if (current < total - 2) pages.push("...");
                                             if (total > 1) pages.push(total);
-                                            
-                                            return pages.map((page, idx) => (
-                                                page === '...' ? (
-                                                    <span key={`ellipsis-${idx}`} className="pagination-ellipsis">...</span>
+                                            return pages.map((page, idx) =>
+                                                page === "..." ? (
+                                                    <span key={`e-${idx}`} className="pagination-ellipsis">...</span>
                                                 ) : (
                                                     <button
                                                         key={page}
-                                                        className={`pagination-page ${page === current ? 'active' : ''}`}
-                                                        onClick={() => setCurrentPage(page)}
-                                                        disabled={loading}
+                                                        className={`pagination-page ${page === current ? "active" : ""}`}
+                                                        onClick={() => handlePageChange(page)}
                                                     >
                                                         {page}
                                                     </button>
                                                 )
-                                            ));
+                                            );
                                         })()}
                                     </div>
 
                                     <button
                                         className="pagination-btn"
-                                        onClick={() => setCurrentPage(prev => Math.min(paginacion.paginas, prev + 1))}
-                                        disabled={currentPage >= paginacion.paginas || loading}
-                                        title="Página siguiente"
+                                        onClick={() => handlePageChange(Math.min(paginacion.paginas, currentPage + 1))}
+                                        disabled={currentPage >= paginacion.paginas}
                                     >
                                         <span>Siguiente</span>
                                         <FaChevronRight />
@@ -460,50 +311,41 @@ const Productos = () => {
                     ) : (
                         <div className="empty-state">
                             <FaEyeSlash className="empty-icon" />
-                            {activeFiltersCount > 0 ? (
+                            {activeFilterCount > 0 ? (
                                 <>
                                     <h3>No se encontraron productos</h3>
                                     <p>No hay productos que coincidan con los filtros aplicados</p>
-                                    {searchTerm && (
-                                        <SugerenciasBusqueda 
-                                            terminoBusqueda={searchTerm}
-                                            onSugerenciaClick={(sugerencia) => {
-                                                setSearchTerm(sugerencia);
-                                                // Limpiar otros filtros y buscar solo con la sugerencia
-                                                setCategoria("");
-                                                setSubcategoria("");
-                                                setDisponibilidad("");
-                                                setPrecioMin("");
-                                                setPrecioMax("");
-                                                setOrden("");
+                                    {searchFromUrl && (
+                                        <SugerenciasBusqueda
+                                            terminoBusqueda={searchFromUrl}
+                                            onSugerenciaClick={(sug) => {
+                                                const next = new URLSearchParams();
+                                                next.set("busqueda", sug);
+                                                setSearchParams(next, { replace: true });
+                                                setSearchInput(sug);
                                             }}
                                         />
                                     )}
-                                    <button 
-                                        onClick={() => restablecerFiltros()} 
-                                        className="empty-state-btn"
-                                        disabled={loading}
-                                    >
-                                        {loading ? 'Cargando...' : 'Limpiar filtros y ver todos'}
+                                    <button className="empty-state-btn" onClick={clearAllFilters}>
+                                        Limpiar filtros y ver todos
                                     </button>
                                 </>
                             ) : (
                                 <>
                                     <h3>Catálogo vacío</h3>
                                     <p>Aún no hay productos disponibles en el catálogo</p>
-                                    <button 
-                                        onClick={() => restablecerFiltros()} 
-                                        className="empty-state-btn"
-                                        disabled={loading}
-                                    >
-                                        {loading ? 'Cargando...' : 'Recargar productos'}
-                                    </button>
                                 </>
                             )}
                         </div>
                     )}
-                </div>
+
+                    <RecentlyViewed />
+                </main>
             </div>
+
+            {quickViewProduct && (
+                <QuickViewModal producto={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+            )}
         </div>
     );
 };
