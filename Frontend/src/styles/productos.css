@@ -1,7 +1,10 @@
 @import './variables.css';
 @import './productos/catalog.css';
-@import './productos/filters.css';
-@import './productos/controls.css';
+@import './productos/sidebar.css';
+@import './productos/chips.css';
+@import './productos/skeleton.css';
+@import './productos/quickview.css';
+@import './productos/recently-viewed.css';
 @import './productos/product-card.css';
 
 .resultados-container {
