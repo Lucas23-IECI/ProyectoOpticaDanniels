@@ -47,4 +47,10 @@ const uploadProducto = multer({
     fileFilter,
 });
 
+export const uploadProductoMultiple = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter,
+});
+
 export default uploadProducto;

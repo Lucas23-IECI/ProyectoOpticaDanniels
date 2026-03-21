@@ -1,11 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
 import useCreateProducto from '@hooks/productos/useCreateProducto';
-import { FaTimes, FaUpload, FaImage, FaSpinner } from 'react-icons/fa';
+import { agregarImagenesProducto } from '@services/producto.service';
+import { FaTimes, FaUpload, FaImage, FaSpinner, FaTrash } from 'react-icons/fa';
 import DropdownCategorias from './DropdownCategorias';
 import '@styles/crearProducto.css';
 
 const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
-    const { handleCreate, loading, errors, clearErrors, setErrors } = useCreateProducto((nuevoProducto) => {
+    const { handleCreate, loading, errors, clearErrors, setErrors } = useCreateProducto(async (nuevoProducto) => {
+        // Upload additional images (index 1+) after product creation
+        if (imagenes.length > 1) {
+            try {
+                await agregarImagenesProducto(nuevoProducto.id, imagenes.slice(1));
+            } catch (err) {
+                console.error('Error subiendo imágenes adicionales:', err);
+            }
+        }
         setShow(false);
         resetForm();
         if (onProductoCreated) onProductoCreated(nuevoProducto);
@@ -37,11 +46,13 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
         descuento: ''
     });
 
-    const [imagen, setImagen] = useState(null);
-    const [previewImagen, setPreviewImagen] = useState(null);
+    const [imagenes, setImagenes] = useState([]);
+    const [previews, setPreviews] = useState([]);
     const [alert, setAlert] = useState(null);
     const [dropdownActivo, setDropdownActivo] = useState(null);
     const fileInputRef = useRef(null);
+
+    const MAX_IMAGES = 5;
 
     const showAlert = (message) => {
         setAlert(message);
@@ -58,7 +69,7 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             formData.stock !== '' &&
             formData.marca.trim().length >= 2 &&
             formData.codigoSKU.trim().length >= 3 &&
-            imagen !== null
+            imagenes.length > 0
         );
     };
 
@@ -156,8 +167,8 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             oferta: false,
             descuento: ''
         });
-        setImagen(null);
-        setPreviewImagen(null);
+        setImagenes([]);
+        setPreviews([]);
         clearErrors();
     };
 
@@ -505,63 +516,50 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
     };
 
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        const files = Array.from(e.target.files || []);
+        if (!files.length) return;
+
+        const available = MAX_IMAGES - imagenes.length;
+        if (files.length > available) {
+            showAlert(`Solo puedes agregar ${available} imagen(es) más (máx. ${MAX_IMAGES})`);
+            e.target.value = '';
+            return;
+        }
+
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        const validFiles = [];
+        const newPreviews = [];
+
+        for (const file of files) {
             if (!validTypes.includes(file.type)) {
                 showAlert('Solo se permiten imágenes JPG, PNG o WebP');
                 e.target.value = '';
-                setImagen(null);
-                setPreviewImagen(null);
                 return;
             }
-
             if (file.size > 5 * 1024 * 1024) {
-                showAlert('La imagen no puede exceder 5MB');
+                showAlert('Cada imagen no puede exceder 5MB');
                 e.target.value = '';
-                setImagen(null);
-                setPreviewImagen(null);
                 return;
             }
-
-            const img = new Image();
-            img.onload = function () {
-                if (this.width < 200 || this.height < 200) {
-                    showAlert('La imagen debe tener al menos 200x200 píxeles');
-                    e.target.value = '';
-                    setImagen(null);
-                    setPreviewImagen(null);
-                    return;
-                }
-
-                if (this.width > 4000 || this.height > 4000) {
-                    showAlert('La imagen no puede exceder 4000x4000 píxeles');
-                    e.target.value = '';
-                    setImagen(null);
-                    setPreviewImagen(null);
-                    return;
-                }
-
-                setImagen(file);
-
-                if (errors.imagen) {
-                    setErrors(prev => ({ ...prev, imagen: null }));
-                }
-
-                const reader = new FileReader();
-                reader.onload = (e) => setPreviewImagen(e.target.result);
-                reader.readAsDataURL(file);
-            };
-
-            img.onerror = function () {
-                showAlert('Archivo de imagen corrupto o no válido');
-                e.target.value = '';
-                setImagen(null);
-                setPreviewImagen(null);
-            };
-
-            img.src = URL.createObjectURL(file);
+            validFiles.push(file);
+            newPreviews.push(URL.createObjectURL(file));
         }
+
+        setImagenes(prev => [...prev, ...validFiles]);
+        setPreviews(prev => [...prev, ...newPreviews]);
+
+        if (errors.imagen) {
+            setErrors(prev => ({ ...prev, imagen: null }));
+        }
+        e.target.value = '';
+    };
+
+    const handleRemoveImage = (index) => {
+        setImagenes(prev => prev.filter((_, i) => i !== index));
+        setPreviews(prev => {
+            URL.revokeObjectURL(prev[index]);
+            return prev.filter((_, i) => i !== index);
+        });
     };
 
     const handleSubmit = (e) => {
@@ -587,8 +585,8 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             return;
         }
 
-        if (!imagen) {
-            showAlert('Debes seleccionar una imagen para el producto');
+        if (imagenes.length === 0) {
+            showAlert('Debes seleccionar al menos una imagen para el producto');
             return;
         }
 
@@ -607,9 +605,8 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
             }
         });
 
-        if (imagen) {
-            submitFormData.append('imagen', imagen);
-        }
+        // First image goes as the principal product image
+        submitFormData.append('imagen', imagenes[0]);
 
         handleCreate(submitFormData);
     };
@@ -834,36 +831,48 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                         </div>
 
                         <div className="form-section">
-                            <h3>📷 Imagen del Producto</h3>
+                            <h3>📷 Imágenes del Producto ({imagenes.length}/{MAX_IMAGES})</h3>
 
                             <div className="image-upload-section">
-                                <div
-                                    className={`image-upload-area ${errors.imagen ? 'error' : ''}`}
-                                    onClick={() => fileInputRef.current?.click()}
-                                >
-                                    {previewImagen ? (
-                                        <div className="image-preview">
-                                            <img src={previewImagen} alt="Preview" />
-                                            <div className="image-overlay">
-                                                <FaImage size={24} />
-                                                <span>Cambiar imagen</span>
+                                {previews.length > 0 && (
+                                    <div className="multi-image-grid">
+                                        {previews.map((src, idx) => (
+                                            <div key={idx} className={`multi-image-item ${idx === 0 ? 'principal' : ''}`}>
+                                                <img src={src} alt={`Imagen ${idx + 1}`} />
+                                                {idx === 0 && <span className="principal-badge">Principal</span>}
+                                                <button
+                                                    type="button"
+                                                    className="remove-image-btn"
+                                                    onClick={() => handleRemoveImage(idx)}
+                                                    title="Eliminar imagen"
+                                                >
+                                                    <FaTrash size={12} />
+                                                </button>
                                             </div>
-                                        </div>
-                                    ) : (
+                                        ))}
+                                    </div>
+                                )}
+
+                                {imagenes.length < MAX_IMAGES && (
+                                    <div
+                                        className={`image-upload-area ${errors.imagen ? 'error' : ''}`}
+                                        onClick={() => fileInputRef.current?.click()}
+                                    >
                                         <div className="upload-placeholder">
                                             <FaUpload size={48} />
-                                            <h4>Subir imagen del producto</h4>
-                                            <p>JPG, PNG o WebP • Máximo 5MB</p>
-                                            <p>Recomendado: 800x600px</p>
+                                            <h4>{imagenes.length === 0 ? 'Subir imágenes del producto' : 'Agregar más imágenes'}</h4>
+                                            <p>JPG, PNG o WebP • Máximo 5MB cada una</p>
+                                            <p>Hasta {MAX_IMAGES} imágenes • La primera será la principal</p>
                                         </div>
-                                    )}
-                                </div>
+                                    </div>
+                                )}
 
                                 <input
                                     ref={fileInputRef}
                                     type="file"
                                     accept="image/jpeg,image/jpg,image/png,image/webp"
                                     onChange={handleImageChange}
+                                    multiple
                                     style={{ display: 'none' }}
                                 />
 

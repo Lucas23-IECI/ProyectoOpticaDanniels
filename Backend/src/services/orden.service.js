@@ -317,7 +317,7 @@ export const actualizarEstadoOrdenService = async (id, nuevoEstado) => {
 
         orden.estado = nuevoEstado;
         orden.updatedAt = new Date();
-        await queryRunner.manager.save(orden);
+        await queryRunner.manager.save(Orden, orden);
 
         await queryRunner.commitTransaction();
         return orden;

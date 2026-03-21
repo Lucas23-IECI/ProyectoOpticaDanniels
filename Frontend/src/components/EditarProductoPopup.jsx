@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import useEditProducto from '@hooks/productos/useEditProducto';
-import { FaTimes, FaUpload, FaImage, FaSpinner } from 'react-icons/fa';
+import { FaTimes, FaSpinner } from 'react-icons/fa';
 import DropdownCategorias from './DropdownCategorias';
+import ImageGalleryEditor from './ImageGalleryEditor';
 import '@styles/crearProducto.css';
 
 const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => {
@@ -24,11 +25,8 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
         descuento: 0
     });
 
-    const [imagen, setImagen] = useState(null);
-    const [previewImagen, setPreviewImagen] = useState(null);
     const [alert, setAlert] = useState(null);
     const [dropdownActivo, setDropdownActivo] = useState(null);
-    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (show) {
@@ -60,16 +58,6 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                 descuento: producto.descuento || 0
             });
 
-            if (producto.imagen_url) {
-                const url = producto.imagen_url;
-                if (url.startsWith('http') || url.startsWith('data:')) {
-                    setPreviewImagen(url);
-                } else {
-                    const base = import.meta.env.VITE_BASE_URL || 'http://localhost:3000/api';
-                    const origin = new URL(base).origin;
-                    setPreviewImagen(url.startsWith('/') ? `${origin}${url}` : `${origin}/uploads/productos/${url}`);
-                }
-            }
         }
     }, [producto, show]);
 
@@ -451,61 +439,6 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
         }
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-            if (!validTypes.includes(file.type)) {
-                showAlert('Solo se permiten imágenes JPG, PNG o WebP');
-                e.target.value = '';
-                setImagen(null);
-                return;
-            }
-
-            if (file.size > 5 * 1024 * 1024) {
-                showAlert('La imagen no puede exceder 5MB');
-                e.target.value = '';
-                setImagen(null);
-                return;
-            }
-
-            const img = new Image();
-            img.onload = function () {
-                if (this.width < 200 || this.height < 200) {
-                    showAlert('La imagen debe tener al menos 200x200 píxeles');
-                    e.target.value = '';
-                    setImagen(null);
-                    return;
-                }
-
-                if (this.width > 4000 || this.height > 4000) {
-                    showAlert('La imagen no puede exceder 4000x4000 píxeles');
-                    e.target.value = '';
-                    setImagen(null);
-                    return;
-                }
-
-                setImagen(file);
-
-                if (errors.imagen) {
-                    setErrors(prev => ({ ...prev, imagen: null }));
-                }
-
-                const reader = new FileReader();
-                reader.onload = (e) => setPreviewImagen(e.target.result);
-                reader.readAsDataURL(file);
-            };
-
-            img.onerror = function () {
-                showAlert('Archivo de imagen corrupto o no válido');
-                e.target.value = '';
-                setImagen(null);
-            };
-
-            img.src = URL.createObjectURL(file);
-        }
-    };
-
     const handleSubmit = (e) => {
         e.preventDefault();
 
@@ -540,23 +473,7 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
             }
         });
 
-        if (imagen) {
-            submitFormData.append('imagen', imagen);
-        }
-
         handleEdit(producto.id, submitFormData);
-    };
-
-    const handleImageOnlyUpdate = () => {
-        if (!imagen) {
-            showAlert('Selecciona una nueva imagen primero');
-            return;
-        }
-
-        const imageFormData = new FormData();
-        imageFormData.append('imagen', imagen);
-
-        handleEdit(producto.id, imageFormData, true);
     };
 
     const handleClose = () => {
@@ -573,8 +490,6 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
             oferta: false,
             descuento: 0
         });
-        setImagen(null);
-        setPreviewImagen(null);
         clearErrors();
     };
 
@@ -771,60 +686,7 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                         </div>
 
                         <div className="form-section">
-                            <h3>📷 Imagen del Producto</h3>
-
-                            <div className="image-upload-section">
-                                <div
-                                    className={`image-upload-area ${errors.imagen ? 'error' : ''}`}
-                                    onClick={() => fileInputRef.current?.click()}
-                                >
-                                    {previewImagen ? (
-                                        <div className="image-preview">
-                                            <img src={previewImagen} alt="Preview" />
-                                            <div className="image-overlay">
-                                                <FaImage size={24} />
-                                                <span>Cambiar imagen</span>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="upload-placeholder">
-                                            <FaUpload size={48} />
-                                            <h4>Subir nueva imagen</h4>
-                                            <p>JPG, PNG o WebP • Máximo 5MB</p>
-                                            <p>Recomendado: 800x600px</p>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/jpeg,image/jpg,image/png,image/webp"
-                                    onChange={handleImageChange}
-                                    style={{ display: 'none' }}
-                                />
-
-                                {errors.imagen && <span className="error-message">{errors.imagen}</span>}
-
-                                {imagen && (
-                                    <button
-                                        type="button"
-                                        onClick={handleImageOnlyUpdate}
-                                        className="btn-create"
-                                        disabled={loading}
-                                        style={{ marginTop: '10px', width: '100%' }}
-                                    >
-                                        {loading ? (
-                                            <>
-                                                <FaSpinner className="spinner" />
-                                                Actualizando imagen...
-                                            </>
-                                        ) : (
-                                            'Actualizar solo imagen'
-                                        )}
-                                    </button>
-                                )}
-                            </div>
+                            <ImageGalleryEditor productoId={producto?.id} />
                         </div>
 
                         <div className="form-section">

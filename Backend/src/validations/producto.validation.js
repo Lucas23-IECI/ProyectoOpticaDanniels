@@ -95,6 +95,16 @@ export const productSchema = Joi.object({
         Joi.string().valid("true", "false").custom((value) => value === "true")
     ).optional(),
     descuento: discountValidation().optional(),
+    genero: Joi.string().max(50).optional().allow(""),
+    material: Joi.string().max(100).optional().allow(""),
+    forma: Joi.string().max(100).optional().allow(""),
+    color_armazon: Joi.string().max(100).optional().allow(""),
+    color_cristal: Joi.string().max(100).optional().allow(""),
+    polarizado: Joi.alternatives().try(
+        Joi.boolean(),
+        Joi.string().valid("true", "false").custom((value) => value === "true")
+    ).optional(),
+    tipo_cristal: Joi.string().max(100).optional().allow(""),
 });
 
 export const productUpdateSchema = Joi.object({
@@ -135,4 +145,14 @@ export const productUpdateSchema = Joi.object({
         Joi.string().valid("true", "false").custom((value) => value === "true")
     ).optional(),
     descuento: discountValidation().optional(),
+    genero: Joi.string().max(50).optional().allow(""),
+    material: Joi.string().max(100).optional().allow(""),
+    forma: Joi.string().max(100).optional().allow(""),
+    color_armazon: Joi.string().max(100).optional().allow(""),
+    color_cristal: Joi.string().max(100).optional().allow(""),
+    polarizado: Joi.alternatives().try(
+        Joi.boolean(),
+        Joi.string().valid("true", "false").custom((value) => value === "true")
+    ).optional(),
+    tipo_cristal: Joi.string().max(100).optional().allow(""),
 }).min(1);

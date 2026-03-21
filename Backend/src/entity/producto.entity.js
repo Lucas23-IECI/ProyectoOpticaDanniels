@@ -68,6 +68,41 @@ const ProductSchema = new EntitySchema({
             default: 0,
             nullable: false,
         },
+        genero: {
+            type: "varchar",
+            length: 50,
+            nullable: true,
+        },
+        material: {
+            type: "varchar",
+            length: 100,
+            nullable: true,
+        },
+        forma: {
+            type: "varchar",
+            length: 100,
+            nullable: true,
+        },
+        color_armazon: {
+            type: "varchar",
+            length: 100,
+            nullable: true,
+        },
+        color_cristal: {
+            type: "varchar",
+            length: 100,
+            nullable: true,
+        },
+        polarizado: {
+            type: "boolean",
+            default: false,
+            nullable: true,
+        },
+        tipo_cristal: {
+            type: "varchar",
+            length: 100,
+            nullable: true,
+        },
         createdAt: {
             type: "timestamp with time zone",
             default: () => "CURRENT_TIMESTAMP",
@@ -78,6 +113,14 @@ const ProductSchema = new EntitySchema({
             default: () => "CURRENT_TIMESTAMP",
             onUpdate: "CURRENT_TIMESTAMP",
             nullable: false,
+        },
+    },
+    relations: {
+        imagenes: {
+            type: "one-to-many",
+            target: "ProductoImagen",
+            inverseSide: "producto",
+            cascade: true,
         },
     },
     indices: [
