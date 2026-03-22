@@ -3,6 +3,7 @@ import useEditProducto from '@hooks/productos/useEditProducto';
 import { FaTimes, FaSpinner } from 'react-icons/fa';
 import DropdownCategorias from './DropdownCategorias';
 import ImageGalleryEditor from './ImageGalleryEditor';
+import BrandSelectorInput from './BrandSelectorInput';
 import '@styles/crearProducto.css';
 
 const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => {
@@ -554,14 +555,11 @@ const EditarProductoPopup = ({ show, setShow, producto, onProductoUpdated }) => 
                             <div className="form-row">
                                 <div className="form-group">
                                     <label htmlFor="marca">Marca *</label>
-                                    <input
-                                        type="text"
-                                        id="marca"
-                                        name="marca"
+                                    <BrandSelectorInput
                                         value={formData.marca}
                                         onChange={handleInputChange}
-                                        placeholder="Ej: Ray-Ban"
-                                        className={errors.marca ? 'error' : ''}
+                                        error={errors.marca}
+                                        name="marca"
                                     />
                                     {errors.marca && <span className="error-message">{errors.marca}</span>}
                                 </div>

@@ -3,6 +3,7 @@ import useCreateProducto from '@hooks/productos/useCreateProducto';
 import { agregarImagenesProducto } from '@services/producto.service';
 import { FaTimes, FaUpload, FaImage, FaSpinner, FaTrash } from 'react-icons/fa';
 import DropdownCategorias from './DropdownCategorias';
+import BrandSelectorInput from './BrandSelectorInput';
 import '@styles/crearProducto.css';
 
 const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
@@ -677,14 +678,11 @@ const CrearProductoPopup = ({ show, setShow, onProductoCreated }) => {
                             <div className="form-row">
                                 <div className="form-group">
                                     <label htmlFor="marca">Marca *</label>
-                                    <input
-                                        type="text"
-                                        id="marca"
-                                        name="marca"
+                                    <BrandSelectorInput
                                         value={formData.marca}
                                         onChange={handleInputChange}
-                                        placeholder="Ej: Ray-Ban"
-                                        className={errors.marca ? 'error' : ''}
+                                        error={errors.marca}
+                                        name="marca"
                                     />
                                     {errors.marca && <span className="error-message">{errors.marca}</span>}
                                 </div>

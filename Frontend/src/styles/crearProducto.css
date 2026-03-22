@@ -666,3 +666,263 @@ body.no-scroll {
     border-right: 8px solid transparent;
     border-top: 8px solid #ee5a52;
 }
+
+
+/* ============================================================
+   BrandSelectorInput — Selector de marcas con logos
+   ============================================================ */
+.brand-selector {
+    position: relative;
+    width: 100%;
+}
+
+/* Trigger button (cerrado) */
+.brand-trigger {
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.brand-trigger:hover,
+.brand-trigger.open {
+    border-color: var(--primary-color, #1a56db);
+    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.08);
+}
+
+.brand-trigger.error {
+    border-color: #ef4444;
+}
+
+/* Pill — selected brand */
+.brand-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.brand-pill-logo {
+    width: auto;
+    height: 22px;
+    max-width: 70px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 3px;
+}
+
+.brand-pill-name {
+    font-weight: 500;
+    font-size: 0.92rem;
+    color: #111827;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.brand-placeholder {
+    color: #9ca3af;
+    font-size: 0.88rem;
+    flex: 1;
+}
+
+/* Chevron icon */
+.brand-chevron {
+    flex-shrink: 0;
+    color: #6b7280;
+    transition: transform 0.2s ease;
+}
+
+.brand-chevron.rotated {
+    transform: rotate(180deg);
+}
+
+/* Dropdown panel */
+.brand-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    z-index: 500;
+    overflow: hidden;
+    animation: brandDropIn 0.15s ease;
+}
+
+@keyframes brandDropIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Search inside dropdown */
+.brand-search-wrap {
+    padding: 10px 10px 6px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.brand-search-input {
+    width: 100%;
+    padding: 7px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    outline: none;
+    color: #374151;
+    transition: border-color 0.15s;
+}
+
+.brand-search-input:focus {
+    border-color: var(--primary-color, #1a56db);
+}
+
+/* List of brand options */
+.brand-options-list {
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+    max-height: 220px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+}
+
+.brand-options-list li {
+    padding: 0 6px;
+}
+
+/* Individual brand option button */
+.brand-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 7px 8px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.12s ease;
+}
+
+.brand-option:hover {
+    background: #f3f7ff;
+}
+
+.brand-option.selected {
+    background: #eef4ff;
+}
+
+.brand-option-logo {
+    width: auto;
+    height: 24px;
+    max-width: 72px;
+    object-fit: contain;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.brand-option-name {
+    flex: 1;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: #1f2937;
+}
+
+.brand-option-check {
+    color: var(--primary-color, #1a56db);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.brand-no-results {
+    padding: 12px 16px;
+    font-size: 0.83rem;
+    color: #9ca3af;
+    text-align: center;
+}
+
+/* "Otra marca..." button */
+.brand-otra-option {
+    display: block;
+    width: 100%;
+    padding: 9px 16px;
+    border: none;
+    border-top: 1px solid #f3f4f6;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary-color, #1a56db);
+    text-align: left;
+    transition: background 0.12s ease;
+}
+
+.brand-otra-option:hover {
+    background: #f0f7ff;
+}
+
+/* ── Custom text input (otra mode) ── */
+.brand-custom-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.brand-custom-input {
+    flex: 1;
+    min-height: 42px;
+    padding: 8px 12px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #374151;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.brand-custom-input:focus {
+    border-color: var(--primary-color, #1a56db);
+    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.08);
+}
+
+.brand-custom-input.error {
+    border-color: #ef4444;
+}
+
+.brand-back-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: #6b7280;
+    transition: all 0.12s ease;
+}
+
+.brand-back-btn:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: #fff5f5;
+}
