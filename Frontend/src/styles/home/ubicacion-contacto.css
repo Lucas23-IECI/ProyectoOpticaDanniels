@@ -157,6 +157,61 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Hualqui Operativo */
+.hualqui-operativo {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    padding: 22px;
+    margin-top: 24px;
+}
+
+.hualqui-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.hualqui-header h3 {
+    font-size: 1.2rem;
+    color: #166534;
+    margin: 0;
+}
+
+.hualqui-header .ubicacion-icon {
+    color: var(--secondary-color);
+}
+
+.hualqui-desc {
+    font-size: 0.88rem;
+    color: #555;
+    margin: 0 0 12px 0;
+}
+
+.hualqui-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    background: #25D366;
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 600;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-top: 10px;
+}
+
+.hualqui-whatsapp:hover {
+    background: #1fb855;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
 .contacto-info h3 {
     font-size: 1.8rem;
     color: var(--text-primary);
