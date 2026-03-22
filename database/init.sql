@@ -206,6 +206,19 @@ CREATE TABLE IF NOT EXISTS mensajes_contacto (
 CREATE INDEX IF NOT EXISTS idx_mensajes_leido ON mensajes_contacto (leido);
 CREATE INDEX IF NOT EXISTS idx_mensajes_email ON mensajes_contacto (email);
 
+-- Tabla marcas (catálogo de marcas de lentes)
+CREATE TABLE IF NOT EXISTS marcas (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE,
+    logo_path VARCHAR(255),
+    activo BOOLEAN NOT NULL DEFAULT true,
+    "createdAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL,
+    "updatedAt" TIMESTAMPTZ DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_marcas_activo ON marcas (activo);
+CREATE INDEX IF NOT EXISTS idx_marcas_nombre ON marcas (nombre);
+
 -- =========================
 -- SEED: USUARIOS (coinciden con tu initialSetup.js)
 -- =========================
@@ -254,6 +267,30 @@ INSERT INTO productos (nombre, descripcion, precio, categoria, marca, "codigoSKU
 ('Ray-Ban Round Metal', 'Diseño circular clásico en metal', 94990, 'sol', 'Ray-Ban', 'RB-ROUND-001', 12, 'imagen-1751949381836-127102605.webp'),
 ('Oakley Radar EV Path', 'Máximo rendimiento para deportistas', 149990, 'sol', 'Oakley', 'OK-RADAR-001', 6, 'imagen-1752381832190-952681585.webp')
 ON CONFLICT ("codigoSKU") DO NOTHING;
+
+-- =========================
+-- SEED: MARCAS
+-- =========================
+INSERT INTO marcas (nombre, logo_path, activo) VALUES
+('Ray-Ban',          '/images/marcas/rayban.svg',          true),
+('Oakley',           '/images/marcas/oakley.svg',          true),
+('Essilor',          '/images/marcas/essilor.svg',         true),
+('Varilux',          '/images/marcas/varilux.svg',         true),
+('Transitions',      '/images/marcas/transitions.svg',     true),
+('Carrera',          '/images/marcas/carrera.svg',         true),
+('Arnette',          '/images/marcas/arnette.svg',         true),
+('Hawkers',          '/images/marcas/hawkers.svg',         true),
+('Vogue',            '/images/marcas/vogue.svg',           true),
+('Michael Kors',     '/images/marcas/michael-kors.svg',    true),
+('Emporio Armani',   '/images/marcas/emporio-armani.svg',  true),
+('Silhouette',       '/images/marcas/silhouette.svg',      true),
+('Polaroid',         '/images/marcas/polaroid.svg',        true),
+('Carolina Herrera', '/images/marcas/carolina-herrera.svg',true),
+('Nikon',            '/images/marcas/nikon.svg',           true),
+('Versace',          '/images/marcas/versace.svg',         true),
+('Prada',            '/images/marcas/prada.svg',           true),
+('Ralph Lauren',     '/images/marcas/ralph-lauren.svg',    true)
+ON CONFLICT (nombre) DO NOTHING;
 
 -- Dirección ejemplo para 'cliente@test.com'
 INSERT INTO direcciones (tipo, direccion, ciudad, region, "codigoPostal", "esPrincipal", "userId")
@@ -339,6 +376,12 @@ BEGIN
     PERFORM 1 FROM pg_trigger WHERE tgname = 'tg_citas_updated';
     IF NOT FOUND THEN
         CREATE TRIGGER tg_citas_updated BEFORE UPDATE ON citas
+        FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+    END IF;
+
+    PERFORM 1 FROM pg_trigger WHERE tgname = 'tg_marcas_updated';
+    IF NOT FOUND THEN
+        CREATE TRIGGER tg_marcas_updated BEFORE UPDATE ON marcas
         FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
     END IF;
 END $$;

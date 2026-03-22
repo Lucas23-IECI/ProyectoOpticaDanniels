@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 52">
+  <text x="22" y="33" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="22" fill="#1A1A1A" text-anchor="middle">CH</text>
+  <line x1="41" y1="12" x2="41" y2="40" stroke="#C8A97E" stroke-width="1.5"/>
+  <text x="94" y="26" font-family="Georgia, serif" font-style="italic" font-size="10" fill="#1A1A1A" text-anchor="middle" letter-spacing="1">Carolina</text>
+  <text x="94" y="38" font-family="Georgia, serif" font-style="italic" font-size="10" fill="#1A1A1A" text-anchor="middle" letter-spacing="1">Herrera</text>
+</svg>
