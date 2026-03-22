@@ -1,12 +1,14 @@
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '@context/AuthContext';
 import { getNombreCorto } from '@helpers/nameHelpers';
-import { FaChevronDown, FaCalendarCheck, FaPhone, FaWhatsapp } from 'react-icons/fa';
+import { FaChevronDown, FaCalendarCheck, FaChevronLeft, FaChevronRight, FaEye, FaStore } from 'react-icons/fa';
 import BarraBusqueda from '@components/BarraBusqueda';
 import AuthPopup from '@components/AuthPopup';
 import DropdownUsuario from '@components/DropdownUsuario';
 import CartIcon from '@components/CartIcon';
+import { getMarcaLogo } from '@constants/marcas';
 import '@styles/navbar.css';
 import '@styles/cartIcon.css';
 
@@ -17,6 +19,9 @@ const categoriasNav = [
         id: 'opticos',
         nombre: 'Lentes Ópticos',
         link: '/productos?categoria=opticos',
+        imagen: '/images/FotosGenerales/PruebaOptometrica.png',
+        descripcion: 'Lentes de alta calidad para tu visión',
+        marcas: ['Ray-Ban', 'Oakley', 'Vogue', 'Transitions', 'Emporio Armani', 'Silhouette'],
         subcategorias: [
             { nombre: 'Graduados', link: '/productos?categoria=opticos&subcategoria=graduados' },
             { nombre: 'Progresivos', link: '/productos?categoria=opticos&subcategoria=progresivos' },
@@ -29,6 +34,9 @@ const categoriasNav = [
         id: 'sol',
         nombre: 'Lentes de Sol',
         link: '/productos?categoria=sol',
+        imagen: '/images/FotosGenerales/MujerLentesDeSol.png',
+        descripcion: 'Estilo y protección UV para cada ocasión',
+        marcas: ['Ray-Ban', 'Oakley', 'Carrera', 'Arnette', 'Hawkers', 'Versace'],
         subcategorias: [
             { nombre: 'Deportivos', link: '/productos?categoria=sol&subcategoria=deportivos' },
             { nombre: 'Clásicos', link: '/productos?categoria=sol&subcategoria=clasicos' },
@@ -41,6 +49,9 @@ const categoriasNav = [
         id: 'accesorios',
         nombre: 'Accesorios',
         link: '/productos?categoria=accesorios',
+        imagen: '/images/FotosGenerales/GafasRayBan.png',
+        descripcion: 'Complementos y cuidado para tus lentes',
+        marcas: ['Silhouette', 'Essilor', 'Nikon', 'Polaroid', 'Varilux', 'Transitions'],
         subcategorias: [
             { nombre: 'Fundas', link: '/productos?categoria=accesorios&subcategoria=fundas' },
             { nombre: 'Cadenas', link: '/productos?categoria=accesorios&subcategoria=cadenas' },
@@ -50,16 +61,33 @@ const categoriasNav = [
     }
 ];
 
+const promociones = [
+    'Hasta 50% dcto en productos seleccionados',
+    'Despacho gratis en compras sobre $50.000',
+    '12 cuotas sin interés',
+    'GAFAS 2x $39.990 — ¡Stock Limitado!',
+    '2 Pares de Lentes Completos por $69.990',
+];
+
 function Navbar() {
     const { user, isAuthenticated } = useAuth();
     const [mostrarPopup, setMostrarPopup] = useState(false);
     const [menuAbierto, setMenuAbierto] = useState(false);
     const [megaMenuActivo, setMegaMenuActivo] = useState(null);
     const [mobileSubmenu, setMobileSubmenu] = useState(null);
+    const [promoIndex, setPromoIndex] = useState(0);
     const dropdownRef = useRef(null);
     const menuRef = useRef(null);
     const megaMenuTimeout = useRef(null);
     const location = useLocation();
+
+    // Auto-rotate promos
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setPromoIndex((prev) => (prev + 1) % promociones.length);
+        }, 4000);
+        return () => clearInterval(timer);
+    }, []);
 
     const togglePopup = () => setMostrarPopup((v) => !v);
     const toggleMenu = () => setMenuAbierto((v) => !v);
@@ -119,25 +147,39 @@ function Navbar() {
 
     return (
         <header className={`navbar-container ${isHomePage ? 'navbar-fixed' : ''}`}>
-            {/* Top info bar */}
+            {/* Top info bar — promo carousel */}
             <div className="navbar-info">
                 <div className="navbar-info-inner">
                     <div className="navbar-info-left">
-                        <span><FaPhone /> +56 9 3769 2691</span>
-                        <span className="navbar-info-separator">|</span>
-                        <span>L-V 10:30 - 12:30 / 15:30 - 17:00</span>
+                        <Link to="/agendar-cita" className="navbar-info-link">
+                            <FaEye /> Agenda tu examen visual
+                        </Link>
                     </div>
                     <div className="navbar-info-center">
-                        <a 
-                            href="https://api.whatsapp.com/send?phone=56937692691&text=Hola!%20Quisiera%20información"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="navbar-info-whatsapp"
+                        <button 
+                            className="navbar-promo-arrow" 
+                            onClick={() => setPromoIndex((prev) => (prev - 1 + promociones.length) % promociones.length)}
+                            aria-label="Promoción anterior"
                         >
-                            <FaWhatsapp /> WhatsApp
-                        </a>
+                            <FaChevronLeft />
+                        </button>
+                        <div className="navbar-promo-text">
+                            <span key={promoIndex} className="navbar-promo-slide">
+                                {promociones[promoIndex]}
+                            </span>
+                        </div>
+                        <button 
+                            className="navbar-promo-arrow" 
+                            onClick={() => setPromoIndex((prev) => (prev + 1) % promociones.length)}
+                            aria-label="Siguiente promoción"
+                        >
+                            <FaChevronRight />
+                        </button>
                     </div>
                     <div className="navbar-info-right">
+                        <Link to="/contacto" className="navbar-cita-btn">
+                            <FaStore /> Nuestras tiendas
+                        </Link>
                         <Link to="/agendar-cita" className="navbar-cita-btn">
                             <FaCalendarCheck /> Agenda tu Cita
                         </Link>
@@ -176,10 +218,10 @@ function Navbar() {
                     </button>
                 </div>
 
-                {/* Desktop: Categories inline */}
+                {/* Desktop: Categories inline — sin mega menu aquí, se renderiza a nivel de header */}
                 <ul className="categories-list">
                     {categoriasNav.map((cat) => (
-                        <li 
+                        <li
                             key={cat.id}
                             className={`category-item ${megaMenuActivo === cat.id ? 'active' : ''}`}
                             onMouseEnter={() => abrirMegaMenu(cat.id)}
@@ -189,29 +231,6 @@ function Navbar() {
                                 {cat.nombre}
                                 <FaChevronDown className="category-arrow" />
                             </Link>
-                            {megaMenuActivo === cat.id && (
-                                <div 
-                                    className="mega-menu"
-                                    onMouseEnter={() => abrirMegaMenu(cat.id)}
-                                    onMouseLeave={cerrarMegaMenu}
-                                >
-                                    <div className="mega-menu-content">
-                                        <div className="mega-menu-column">
-                                            <h4>{cat.nombre}</h4>
-                                            <ul>
-                                                {cat.subcategorias.map((sub) => (
-                                                    <li key={sub.nombre}>
-                                                        <Link to={sub.link}>{sub.nombre}</Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                            <Link to={cat.link} className="mega-menu-ver-todo">
-                                                Ver todos →
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                         </li>
                     ))}
                     <li className="category-item">
@@ -237,6 +256,91 @@ function Navbar() {
                     </div>
                 </div>
             </nav>
+
+            {/* ====== MEGA MENU PANEL — full width, posicionado relativo al header ====== */}
+            {megaMenuActivo && (() => {
+                const cat = categoriasNav.find(c => c.id === megaMenuActivo);
+                if (!cat) return null;
+                return (
+                    <div
+                        className="mega-menu-panel"
+                        onMouseEnter={() => abrirMegaMenu(cat.id)}
+                        onMouseLeave={cerrarMegaMenu}
+                    >
+                        <div className="mega-menu-panel-inner">
+                            {/* Columna izquierda: subcategorías */}
+                            <div className="mega-menu-left">
+                                <p className="mega-menu-section-title">Subcategorías</p>
+                                <ul className="mega-menu-subcat-list">
+                                    {cat.subcategorias.map((sub) => (
+                                        <li key={sub.nombre}>
+                                            <Link to={sub.link} className="mega-menu-subcat-link">
+                                                <span className="mega-menu-subcat-dot" />
+                                                {sub.nombre}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <Link to={cat.link} className="mega-menu-ver-todo-btn">
+                                    VER TODO {cat.nombre.toUpperCase()}
+                                </Link>
+                            </div>
+
+                            {/* Columna central: marcas destacadas */}
+                            <div className="mega-menu-center">
+                                <p className="mega-menu-section-title">Marcas Destacadas</p>
+                                <ul className="mega-menu-brand-list">
+                                    {cat.marcas.map((marca) => {
+                                        const logo = getMarcaLogo(marca);
+                                        return (
+                                            <li key={marca}>
+                                                <Link
+                                                    to={`/productos?marca=${encodeURIComponent(marca)}`}
+                                                    className="mega-menu-brand-item"
+                                                    title={marca}
+                                                >
+                                                    {logo ? (
+                                                        <img
+                                                            src={logo}
+                                                            alt={marca}
+                                                            className="mega-menu-brand-logo"
+                                                            onError={(e) => {
+                                                                e.target.style.display = 'none';
+                                                                e.target.nextSibling && (e.target.nextSibling.style.display = 'block');
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <span className="mega-menu-brand-fallback">{marca}</span>
+                                                    )}
+                                                </Link>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
+
+                            {/* Columna derecha: imagen con overlay */}
+                            <div className="mega-menu-right">
+                                <div className="mega-menu-image-card">
+                                    <img src={cat.imagen} alt={cat.nombre} />
+                                    <div className="mega-menu-image-overlay">
+                                        <span className="mega-menu-image-desc">{cat.descripcion}</span>
+                                        <Link to={cat.link} className="mega-menu-image-cta">
+                                            Explorar →
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            })()}
+
+            {/* Overlay oscuro detrás del mega menu — renderizado fuera del header via portal */}
+            {megaMenuActivo && createPortal(
+                <div className="mega-menu-overlay" onClick={() => setMegaMenuActivo(null)} />,
+                document.body
+            )}
 
             {/* Mobile overlay */}
             {menuAbierto && <div className="mobile-menu-overlay" onClick={cerrarMenu} />}
@@ -286,7 +390,7 @@ function Navbar() {
                     <li><NavLink to="/productos" onClick={cerrarMenu}><i className="fa-solid fa-glasses"></i> Todos los Productos</NavLink></li>
                     <li><NavLink to="/agendar-cita" onClick={cerrarMenu}><i className="fa-solid fa-calendar-check"></i> Agendar Cita</NavLink></li>
                     <li><NavLink to="/quienes-somos" onClick={cerrarMenu}><i className="fa-solid fa-users"></i> Quiénes Somos</NavLink></li>
-                    <li><NavLink to="/contacto" onClick={cerrarMenu}><i className="fa-solid fa-envelope"></i> Contacto</NavLink></li>
+                    <li><NavLink to="/contacto" onClick={cerrarMenu}><i className="fa-solid fa-store"></i> Contacto y Tiendas</NavLink></li>
                     <li><NavLink to="/faq" onClick={cerrarMenu}><i className="fa-solid fa-circle-question"></i> FAQ</NavLink></li>
                 </ul>
                 {!isAuthenticated && (
