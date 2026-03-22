@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaChevronDown, FaChevronUp, FaTimes } from "react-icons/fa";
+import { FaChevronDown, FaChevronUp, FaTimes, FaSearch } from "react-icons/fa";
 
 const CATEGORIAS_MAP = {
     opticos: "Ópticos",
@@ -55,6 +55,8 @@ const CatalogSidebar = ({
     onClearAll,
     onClose,
     isMobileOpen,
+    searchInput = '',
+    onSearchChange,
 }) => {
     const handleChange = (key) => (value) => {
         onFiltroChange(key, value);
@@ -66,7 +68,7 @@ const CatalogSidebar = ({
 
     return (
         <>
-            {isMobileOpen && <div className="sidebar-overlay" onClick={onClose} />}
+            {isMobileOpen && <div className="catalog-overlay" onClick={onClose} />}
             <aside className={`catalog-sidebar ${isMobileOpen ? "mobile-open" : ""}`}>
                 <div className="sidebar-header">
                     <h3>Filtros</h3>
@@ -83,6 +85,18 @@ const CatalogSidebar = ({
                 </div>
 
                 <div className="sidebar-filters">
+                    {onSearchChange && (
+                        <div className="sidebar-search">
+                            <FaSearch className="sidebar-search-icon" />
+                            <input
+                                type="text"
+                                className="sidebar-search-input"
+                                placeholder="Buscar productos..."
+                                value={searchInput}
+                                onChange={(e) => onSearchChange(e.target.value)}
+                            />
+                        </div>
+                    )}
                     <FilterSection title="Categoría">
                         <CheckboxList
                             items={(facetas.categorias || []).map((f) => ({

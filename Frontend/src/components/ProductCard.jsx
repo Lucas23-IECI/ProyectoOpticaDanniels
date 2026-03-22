@@ -171,17 +171,17 @@ const ProductCard = ({
                     <h3 className="product-name-modern">{producto.nombre}</h3>
                 </div>
 
-                <div className="product-meta-modern">
-                    <span className="product-category-modern">
-                        <FaTag />
-                        {producto.categoria}
-                    </span>
-                    {isAdminMode && (
+                {isAdminMode && (
+                    <div className="product-meta-modern">
+                        <span className="product-category-modern">
+                            <FaTag />
+                            {producto.categoria}
+                        </span>
                         <div className="admin-info">
                             <span className="sku-info">SKU: {producto.codigoSKU}</span>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
 
                 <div className="product-footer-modern">
                     <div className="pricing-modern">
@@ -195,12 +195,13 @@ const ProductCard = ({
                         )}
                     </div>
 
-                    <div className="stock-info-modern">
-                        <span className={`stock-status ${stockStatus.class}`}>
-                            {stockStatus.text}
-                            {isAdminMode && <span> ({producto.stock})</span>}
-                        </span>
-                    </div>
+                    {isAdminMode && (
+                        <div className="stock-info-modern">
+                            <span className={`stock-status ${stockStatus.class}`}>
+                                {stockStatus.text} ({producto.stock})
+                            </span>
+                        </div>
+                    )}
                 </div>
 
                 {/* Botones de acción para modo lista admin */}
