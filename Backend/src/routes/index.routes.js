@@ -11,6 +11,7 @@ import reviewRoutes from "./review.routes.js";
 import pagoRoutes from "./pago.routes.js";
 import citaRoutes from "./cita.routes.js";
 import contactoRoutes from "./contacto.routes.js";
+import marcasRoutes from "./marcas.routes.js";
 
 const router = Router();
 
@@ -25,6 +26,7 @@ router
     .use("/reviews", reviewRoutes)
     .use("/pagos", pagoRoutes)
     .use("/citas", citaRoutes)
-    .use("/contacto", contactoRoutes);
+    .use("/contacto", contactoRoutes)
+    .use("/marcas", marcasRoutes);
 
 export default router;
