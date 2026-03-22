@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { FaSignInAlt, FaUserPlus, FaUser } from 'react-icons/fa';
 import '@styles/authPopup.css';
 
 function AuthPopup({ onClose }) {
@@ -20,9 +21,16 @@ function AuthPopup({ onClose }) {
 
     return (
         <div className="popup-auth">
-            <button onClick={handleLogin}>Ingresar</button>
-            <button onClick={handleRegister}>Registrarse</button>
-            <button onClick={handleInvitado}>Invitado</button>
+            <p className="popup-auth-title">Bienvenido</p>
+            <button className="popup-auth-btn primary" onClick={handleLogin}>
+                <FaSignInAlt /> Iniciar Sesión
+            </button>
+            <button className="popup-auth-btn secondary" onClick={handleRegister}>
+                <FaUserPlus /> Registrarse
+            </button>
+            <button className="popup-auth-btn ghost" onClick={handleInvitado}>
+                <FaUser /> Continuar como invitado
+            </button>
         </div>
     );
 }

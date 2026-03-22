@@ -1,99 +1,80 @@
 import { Link } from 'react-router-dom';
-import { useContext } from 'react';
-import { AuthContext } from '@context/AuthContext';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaFacebook, FaInstagram, FaWhatsapp } from 'react-icons/fa';
 import '@styles/footer.css';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
-    const { isAuthenticated } = useContext(AuthContext);
 
     return (
-        <footer className="footer-container">
-            <div className="footer-content">
-                <div className="footer-section footer-about">
-                    <div className="footer-logo">
-                        <img src="LogoOficial.png" alt="Óptica Danniels" className="footer-logo-img" />
-                        <h3>Óptica Danniels</h3>
+        <footer className="eco-footer">
+            <div className="eco-footer-main">
+                <div className="eco-footer-inner">
+                    {/* Brand */}
+                    <div className="eco-footer-col eco-footer-brand">
+                        <div className="eco-footer-logo">
+                            <img src="LogoOficial.png" alt="Óptica Danniels" />
+                            <span>Óptica Danniels</span>
+                        </div>
+                        <p>Más de 30 años cuidando tu salud visual con profesionalismo y calidad.</p>
+                        <div className="eco-footer-social">
+                            <a href="https://facebook.com/opticadanniels" aria-label="Facebook"><FaFacebook /></a>
+                            <a href="https://instagram.com/opticadanniels" aria-label="Instagram"><FaInstagram /></a>
+                            <a href="https://api.whatsapp.com/send?phone=56937692691&text=Hola!%20Quisiera%20información%20sobre%20sus%20servicios" aria-label="WhatsApp"><FaWhatsapp /></a>
+                        </div>
                     </div>
-                    <p className="footer-description">
-                        Con más de 30 años de experiencia, somos tu mejor aliado en el cuidado de la salud visual. 
-                        Ofrecemos productos de la más alta calidad y un servicio profesional personalizado.
-                    </p>
-                    <div className="footer-social">
-                        <a href="https://facebook.com/opticadanniels" className="social-link facebook" aria-label="Facebook">
-                            <FaFacebook />
-                        </a>
-                        <a href="https://instagram.com/opticadanniels" className="social-link instagram" aria-label="Instagram">
-                            <FaInstagram />
-                        </a>
-                        <a href="https://api.whatsapp.com/send?phone=56937692691&text=Hola!%20Quisiera%20información%20sobre%20sus%20servicios" className="social-link whatsapp" aria-label="WhatsApp">
-                            <FaWhatsapp />
-                        </a>
+
+                    {/* Productos */}
+                    <div className="eco-footer-col">
+                        <h4>Productos</h4>
+                        <ul>
+                            <li><Link to="/productos?categoria=opticos">Lentes Ópticos</Link></li>
+                            <li><Link to="/productos?categoria=sol">Lentes de Sol</Link></li>
+                            <li><Link to="/productos?categoria=accesorios">Accesorios</Link></li>
+                            <li><Link to="/productos">Ver catálogo</Link></li>
+                        </ul>
                     </div>
-                </div>
 
-                {/* Enlaces Rápidos */}
-                <div className="footer-section footer-links">
-                    <h4>Enlaces Rápidos</h4>
-                    <ul>
-                        <li><Link to="/">Inicio</Link></li>
-                        <li><Link to="/productos">Productos</Link></li>
-                        <li><Link to="/quienes-somos">Quiénes Somos</Link></li>
-                        <li><Link to="/contacto">Contacto</Link></li>
-                        {isAuthenticated && (
-                            <>
-                                <li><Link to="/favoritos">Favoritos</Link></li>
-                                <li><Link to="/carrito">Carrito</Link></li>
-                            </>
-                        )}
-                    </ul>
-                </div>
+                    {/* Servicios */}
+                    <div className="eco-footer-col">
+                        <h4>Servicios</h4>
+                        <ul>
+                            <li><Link to="/agendar-cita">Examen Visual</Link></li>
+                            <li>Montaje de Cristales</li>
+                            <li>Reparaciones</li>
+                            <li>Atención Infantil</li>
+                            <li>Convenios</li>
+                        </ul>
+                    </div>
 
-                {/* Servicios */}
-                <div className="footer-section footer-services">
-                    <h4>Nuestros Servicios</h4>
-                    <ul>
-                        <li>Consultas Especializadas</li>
-                        <li>Atención Infantil</li>
-                        <li>Montaje de Cristales</li>
-                        <li>Reparaciones</li>
-                        <li>Prótesis Auditiva</li>
-                        <li>Convenios Especiales</li>
-                    </ul>
-                </div>
+                    {/* Empresa */}
+                    <div className="eco-footer-col">
+                        <h4>Empresa</h4>
+                        <ul>
+                            <li><Link to="/quienes-somos">Quiénes Somos</Link></li>
+                            <li><Link to="/contacto">Contacto y Tiendas</Link></li>
+                            <li><Link to="/faq">Preguntas Frecuentes</Link></li>
+                        </ul>
+                    </div>
 
-                {/* Información de Contacto */}
-                <div className="footer-section footer-contact">
-                    <h4>Contacto</h4>
-                    <div className="contact-info">
-                        <div className="contact-item">
-                            <FaMapMarkerAlt className="contact-icon" />
-                            <span>Visítanos en nuestra tienda<br />¡Te esperamos!</span>
-                        </div>
-                        <div className="contact-item">
-                            <FaPhone className="contact-icon" />
-                            <span>Llámanos para consultas</span>
-                        </div>
-                        <div className="contact-item">
-                            <FaEnvelope className="contact-icon" />
-                            <span>Contáctanos por email</span>
-                        </div>
-                        <div className="contact-item">
-                            <FaClock className="contact-icon" />
-                            <span>Lun - Vie: 9:00 - 19:00<br />Sáb: 9:00 - 14:00</span>
+                    {/* Contacto */}
+                    <div className="eco-footer-col">
+                        <h4>Contacto</h4>
+                        <div className="eco-footer-contact">
+                            <div><FaPhone /> <span>+56 9 3769 2691</span></div>
+                            <div><FaEnvelope /> <span>contacto@opticadanniels.cl</span></div>
+                            <div><FaClock /> <span>Lun-Vie 10:30-12:30 / 15:30-19:00 · Sáb 10:30-13:30</span></div>
+                            <div><FaMapMarkerAlt /> <span>Visítanos en tienda</span></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Barra de Copyright */}
-            <div className="footer-bottom">
-                <div className="footer-bottom-content">
+            <div className="eco-footer-bottom">
+                <div className="eco-footer-bottom-inner">
                     <p>&copy; {currentYear} Óptica Danniels. Todos los derechos reservados.</p>
-                    <div className="footer-legal">
-                        <Link to="/privacidad">Política de Privacidad</Link>
-                        <Link to="/terminos">Términos y Condiciones</Link>
+                    <div className="eco-footer-legal">
+                        <Link to="/privacidad">Privacidad</Link>
+                        <Link to="/terminos">Términos</Link>
                     </div>
                 </div>
             </div>

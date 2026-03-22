@@ -1,0 +1,70 @@
+/* ===== CATEGORY BANNER ===== */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500&display=swap');
+
+.category-banner {
+    background: #f8f9fa;
+    padding: 3rem 2rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.category-banner-inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #d1d5db;
+}
+
+.category-banner-title {
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: clamp(2rem, 5vw, 3.75rem);
+    font-weight: 300;
+    color: #1a1a1a;
+    letter-spacing: 0.06em;
+    margin: 0;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.category-banner-subtitle {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin-top: 0.5rem;
+}
+
+.category-banner-meta {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.category-banner-count {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .category-banner {
+        padding: 2rem 1.25rem 1.25rem;
+    }
+
+    .category-banner-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .category-banner-meta {
+        text-align: left;
+    }
+
+    .category-banner-title {
+        font-size: clamp(1.75rem, 8vw, 2.5rem);
+    }
+}

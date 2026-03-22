@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaWhatsapp, FaClock, FaFacebook, FaInstagram, FaCheckCircle, FaExclamationTriangle, FaCalendarAlt, FaPaperPlane } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaWhatsapp, FaClock, FaFacebook, FaInstagram, FaCheckCircle, FaExclamationTriangle, FaCalendarAlt, FaPaperPlane, FaStore } from 'react-icons/fa';
 import { enviarMensajeContacto } from '@services/contacto.service';
 import '@styles/contacto.css';
 
@@ -37,8 +37,8 @@ function Contacto() {
     };
 
     const horarios = [
-        { dia: 'Lunes a Viernes', horario: '9:00 - 19:00' },
-        { dia: 'Sábados', horario: '9:00 - 14:00' },
+        { dia: 'Lunes a Viernes', horario: '10:30 - 12:30 / 15:30 - 19:00' },
+        { dia: 'Sábados', horario: '10:30 - 13:30' },
         { dia: 'Domingos', horario: 'Cerrado' }
     ];
 
@@ -85,10 +85,80 @@ function Contacto() {
         <div className="contacto-container">
             <section className="contacto-hero">
                 <div className="hero-content">
-                    <h1>Contacto</h1>
+                    <h1>Contacto y Tiendas</h1>
                     <p className="hero-subtitle">
-                        Estamos aquí para ayudarte con cualquier consulta sobre tu visión
+                        Visítanos en nuestras sucursales o contáctanos para resolver cualquier consulta
                     </p>
+                </div>
+            </section>
+
+            {/* Nuestras Tiendas */}
+            <section className="tiendas-section">
+                <div className="container">
+                    <h2 className="tiendas-titulo"><FaStore /> Nuestras Tiendas</h2>
+                    <div className="tiendas-grid">
+                        {/* Chiguayante — Principal */}
+                        <div className="tienda-card">
+                            <span className="tienda-card-badge">Sucursal Principal</span>
+                            <h3>Óptica Danniels — Chiguayante</h3>
+                            <p className="tienda-card-direccion">
+                                <FaMapMarkerAlt /> Av. Manuel Rodriguez 426, Galería Paseo Madero
+                            </p>
+                            <p className="tienda-card-ciudad">Chiguayante — Biobío, Chile</p>
+                            <div className="tienda-card-horarios">
+                                <h4><FaClock /> Horarios de Atención</h4>
+                                <div className="tienda-card-horario-row">
+                                    <span>Lunes a Viernes</span>
+                                    <span>10:30 - 12:30 / 15:30 - 19:00</span>
+                                </div>
+                                <div className="tienda-card-horario-row">
+                                    <span>Sábados</span>
+                                    <span>10:30 - 13:30</span>
+                                </div>
+                                <div className="tienda-card-horario-row">
+                                    <span>Domingos</span>
+                                    <span>Cerrado</span>
+                                </div>
+                            </div>
+                            <a
+                                href="https://api.whatsapp.com/send?phone=56937692691&text=Hola!%20Quisiera%20información%20sobre%20sus%20servicios%20en%20Chiguayante"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="tienda-card-whatsapp"
+                            >
+                                <FaWhatsapp /> Contactar por WhatsApp
+                            </a>
+                        </div>
+
+                        {/* Hualqui — Operativo */}
+                        <div className="tienda-card tienda-card--operativo">
+                            <span className="tienda-card-badge tienda-card-badge--operativo">Operativo</span>
+                            <h3>Óptica Danniels — Hualqui</h3>
+                            <p className="tienda-card-direccion">
+                                <FaMapMarkerAlt /> Hualqui, Biobío
+                            </p>
+                            <p className="tienda-card-ciudad">Sucursal operativa los sábados</p>
+                            <div className="tienda-card-horarios">
+                                <h4><FaClock /> Horarios de Atención</h4>
+                                <div className="tienda-card-horario-row">
+                                    <span>Sábados</span>
+                                    <span>10:30 - 14:00</span>
+                                </div>
+                                <div className="tienda-card-horario-row">
+                                    <span>Otros días</span>
+                                    <span>Cerrado</span>
+                                </div>
+                            </div>
+                            <a
+                                href="https://api.whatsapp.com/send?phone=56937692691&text=Hola!%20Quisiera%20información%20sobre%20sus%20servicios%20en%20Hualqui"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="tienda-card-whatsapp"
+                            >
+                                <FaWhatsapp /> Contactar por WhatsApp
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </section>
 

@@ -26,6 +26,7 @@ import MisCompras from "@pages/MisCompras";
 import CheckoutResultado from "@pages/CheckoutResultado";
 import AgendarCita from "@pages/AgendarCita";
 import FAQ from "@pages/FAQ";
+import NotFound from "@pages/NotFound";
 
 
 function ScrollToTop() {
@@ -36,12 +37,14 @@ function ScrollToTop() {
 
 function AppContent() {
   useTokenExpiration();
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
 
   return (
     <>
       <ScrollToTop />
-      <Navbar />
-      <div className="contenedor-principal">
+      {!isAdmin && <Navbar />}
+      <div className={isAdmin ? '' : 'contenedor-principal'}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/productos" element={<Productos />} />
@@ -131,9 +134,12 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+
+          {/* 404 catch-all */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-      <Footer />
+      {!isAdmin && <Footer />}
     </>
   );
 }

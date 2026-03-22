@@ -68,6 +68,20 @@
     opacity: 1;
 }
 
+.image-placeholder-logo {
+    background: #f0f2f5;
+}
+
+.image-placeholder-logo .placeholder-logo {
+    width: 60%;
+    max-width: 120px;
+    height: auto;
+    object-fit: contain;
+    opacity: 0.45;
+    filter: grayscale(30%);
+    transition: opacity 0.3s ease;
+}
+
 .image-error {
     display: flex;
     flex-direction: column;

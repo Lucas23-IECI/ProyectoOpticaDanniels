@@ -40,6 +40,14 @@ const camposPermitidos = [
     "stock_max",
     "descuento_min",
     "descuento_max",
+    "genero",
+    "material",
+    "forma",
+    "color_armazon",
+    "color_cristal",
+    "polarizado",
+    "tipo_cristal",
+    "disponibilidad",
     "page",
     "limit",
     "orden",
@@ -90,7 +98,9 @@ export const buscarProductosService = async (filtros) => {
             };
         }
 
-        const queryBuilder = productoRepository.createQueryBuilder("producto");
+        const queryBuilder = productoRepository.createQueryBuilder("producto")
+            .leftJoinAndSelect("producto.imagenes", "imagenes")
+            .addOrderBy("imagenes.posicion", "ASC");
 
         if (filtros.id) {
             const id = Number(filtros.id);
@@ -140,6 +150,42 @@ export const buscarProductosService = async (filtros) => {
 
         if (filtros.oferta !== undefined) {
             queryBuilder.andWhere("producto.oferta = :oferta", { oferta: filtros.oferta === "true" });
+        }
+
+        if (filtros.genero) {
+            queryBuilder.andWhere("LOWER(producto.genero) = LOWER(:genero)", { genero: filtros.genero });
+        }
+
+        if (filtros.material) {
+            queryBuilder.andWhere("LOWER(producto.material) = LOWER(:material)", { material: filtros.material });
+        }
+
+        if (filtros.forma) {
+            queryBuilder.andWhere("LOWER(producto.forma) = LOWER(:forma)", { forma: filtros.forma });
+        }
+
+        if (filtros.color_armazon) {
+            queryBuilder.andWhere("LOWER(producto.color_armazon) = LOWER(:color_armazon)", { color_armazon: filtros.color_armazon });
+        }
+
+        if (filtros.color_cristal) {
+            queryBuilder.andWhere("LOWER(producto.color_cristal) = LOWER(:color_cristal)", { color_cristal: filtros.color_cristal });
+        }
+
+        if (filtros.polarizado !== undefined) {
+            queryBuilder.andWhere("producto.polarizado = :polarizado", { polarizado: filtros.polarizado === "true" });
+        }
+
+        if (filtros.tipo_cristal) {
+            queryBuilder.andWhere("LOWER(producto.tipo_cristal) = LOWER(:tipo_cristal)", { tipo_cristal: filtros.tipo_cristal });
+        }
+
+        if (filtros.disponibilidad) {
+            if (filtros.disponibilidad === "disponible") {
+                queryBuilder.andWhere("producto.stock > 0 AND producto.activo = true");
+            } else if (filtros.disponibilidad === "agotado") {
+                queryBuilder.andWhere("producto.stock = 0");
+            }
         }
 
         if (filtros.precio_min && filtros.precio_max) {
@@ -228,6 +274,8 @@ export const buscarProductosService = async (filtros) => {
             }
 
             queryBuilder.orderBy(`producto.${campo}`, direccion.toUpperCase());
+        } else {
+            queryBuilder.orderBy("producto.createdAt", "DESC");
         }
 
         queryBuilder.skip(skip).take(limite);
@@ -510,6 +558,146 @@ export const getProductosStockBajoService = async (umbral = 10) => {
     } catch (error) {
         logger.error("Error obteniendo productos stock bajo:", error);
         return [null, "Error al obtener productos con stock bajo."];
+    }
+};
+
+/**
+ * Obtener facetas (conteos) para filtros contextuales del catálogo.
+ * Respeta los filtros activos para recalcular conteos dinámicamente.
+ */
+export const obtenerFacetasService = async (filtros) => {
+    try {
+        const productoRepository = AppDataSource.getRepository(Producto);
+
+        // Construir query base con los filtros activos (igual que buscarProductos)
+        const buildBaseQuery = (excluirCampo) => {
+            const qb = productoRepository.createQueryBuilder("producto")
+                .where("producto.activo = true");
+
+            if (excluirCampo !== "categoria" && filtros.categoria) {
+                qb.andWhere("producto.categoria = :categoria", { categoria: filtros.categoria });
+            }
+            if (excluirCampo !== "subcategoria" && filtros.subcategoria) {
+                qb.andWhere("LOWER(producto.subcategoria) = LOWER(:subcategoria)", { subcategoria: filtros.subcategoria });
+            }
+            if (excluirCampo !== "marca" && filtros.marca) {
+                qb.andWhere("LOWER(producto.marca) = LOWER(:marca)", { marca: filtros.marca });
+            }
+            if (excluirCampo !== "genero" && filtros.genero) {
+                qb.andWhere("LOWER(producto.genero) = LOWER(:genero)", { genero: filtros.genero });
+            }
+            if (excluirCampo !== "material" && filtros.material) {
+                qb.andWhere("LOWER(producto.material) = LOWER(:material)", { material: filtros.material });
+            }
+            if (excluirCampo !== "forma" && filtros.forma) {
+                qb.andWhere("LOWER(producto.forma) = LOWER(:forma)", { forma: filtros.forma });
+            }
+            if (excluirCampo !== "color_armazon" && filtros.color_armazon) {
+                qb.andWhere("LOWER(producto.color_armazon) = LOWER(:color_armazon)", { color_armazon: filtros.color_armazon });
+            }
+            if (excluirCampo !== "color_cristal" && filtros.color_cristal) {
+                qb.andWhere("LOWER(producto.color_cristal) = LOWER(:color_cristal)", { color_cristal: filtros.color_cristal });
+            }
+            if (excluirCampo !== "polarizado" && filtros.polarizado !== undefined) {
+                qb.andWhere("producto.polarizado = :polarizado", { polarizado: filtros.polarizado === "true" });
+            }
+            if (excluirCampo !== "tipo_cristal" && filtros.tipo_cristal) {
+                qb.andWhere("LOWER(producto.tipo_cristal) = LOWER(:tipo_cristal)", { tipo_cristal: filtros.tipo_cristal });
+            }
+            if (filtros.precio_min) {
+                qb.andWhere("producto.precio >= :precioMin", { precioMin: Number(filtros.precio_min) });
+            }
+            if (filtros.precio_max) {
+                qb.andWhere("producto.precio <= :precioMax", { precioMax: Number(filtros.precio_max) });
+            }
+            if (filtros.nombre) {
+                const searchTerm = filtros.nombre.toLowerCase().trim();
+                qb.andWhere(
+                    "(LOWER(producto.nombre) LIKE :searchTerm OR LOWER(producto.marca) LIKE :searchTerm)",
+                    { searchTerm: `%${searchTerm}%` }
+                );
+            }
+            return qb;
+        };
+
+        // Función para obtener conteos de un campo
+        const getFacetCounts = async (campo, excluirCampo) => {
+            const qb = buildBaseQuery(excluirCampo);
+            const results = await qb
+                .select(`producto.${campo}`, "valor")
+                .addSelect("COUNT(*)", "count")
+                .andWhere(`producto.${campo} IS NOT NULL AND producto.${campo} != ''`)
+                .groupBy(`producto.${campo}`)
+                .orderBy("count", "DESC")
+                .getRawMany();
+            return results.map(r => ({ valor: r.valor, count: parseInt(r.count) }));
+        };
+
+        const [
+            categorias,
+            subcategorias,
+            marcas,
+            generos,
+            materiales,
+            formas,
+            coloresArmazon,
+            coloresCristal,
+            tiposCristal,
+        ] = await Promise.all([
+            getFacetCounts("categoria", "categoria"),
+            getFacetCounts("subcategoria", "subcategoria"),
+            getFacetCounts("marca", "marca"),
+            getFacetCounts("genero", "genero"),
+            getFacetCounts("material", "material"),
+            getFacetCounts("forma", "forma"),
+            getFacetCounts("color_armazon", "color_armazon"),
+            getFacetCounts("color_cristal", "color_cristal"),
+            getFacetCounts("tipo_cristal", "tipo_cristal"),
+        ]);
+
+        // Faceta polarizado (true/false)
+        const qbPol = buildBaseQuery("polarizado");
+        const polResults = await qbPol
+            .select("producto.polarizado", "valor")
+            .addSelect("COUNT(*)", "count")
+            .andWhere("producto.polarizado IS NOT NULL")
+            .groupBy("producto.polarizado")
+            .getRawMany();
+        const polarizado = polResults.map(r => ({
+            valor: r.valor === true || r.valor === "true" ? "Sí" : "No",
+            rawValue: r.valor,
+            count: parseInt(r.count),
+        }));
+
+        // Rango de precios global (para slider)
+        const qbPrecio = buildBaseQuery(null);
+        const precioRange = await qbPrecio
+            .select("MIN(producto.precio)", "min")
+            .addSelect("MAX(producto.precio)", "max")
+            .getRawOne();
+
+        return {
+            categorias,
+            subcategorias,
+            marcas,
+            generos,
+            materiales,
+            formas,
+            coloresArmazon,
+            coloresCristal,
+            tiposCristal,
+            polarizado,
+            precioRango: {
+                min: precioRange?.min ? parseInt(precioRange.min) : 0,
+                max: precioRange?.max ? parseInt(precioRange.max) : 0,
+            },
+        };
+    } catch (error) {
+        logger.error("Error obteniendo facetas:", error);
+        throw {
+            status: error.status || 500,
+            message: error.message || "Error al obtener facetas de productos.",
+        };
     }
 };
 

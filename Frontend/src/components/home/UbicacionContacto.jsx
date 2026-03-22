@@ -2,8 +2,8 @@ import { FaMapMarkerAlt, FaPhone, FaEnvelope, FaWhatsapp, FaClock, FaFacebook, F
 
 const UbicacionContacto = () => {
     const horarios = [
-        { dia: 'Lunes a Viernes', horario: '9:00 - 19:00' },
-        { dia: 'Sábados', horario: '9:00 - 14:00' },
+        { dia: 'Lunes a Viernes', horario: '10:30 - 12:30 / 15:30 - 19:00' },
+        { dia: 'Sábados', horario: '10:30 - 13:30' },
         { dia: 'Domingos', horario: 'Cerrado' }
     ];
 
@@ -99,6 +99,8 @@ const UbicacionContacto = () => {
                                 />
                             </div>
                         </div>
+
+
                     </div>
 
                     <div className="contacto-info">

@@ -1,0 +1,81 @@
+/* ===== ACTIVE FILTER CHIPS ===== */
+
+.active-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem 0.5rem 0.3rem 0.625rem;
+    background: rgba(33, 71, 162, 0.08);
+    border: 1px solid rgba(33, 71, 162, 0.15);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #334155;
+    transition: all 0.2s;
+}
+
+.chip:hover {
+    background: rgba(33, 71, 162, 0.12);
+    border-color: rgba(33, 71, 162, 0.25);
+}
+
+.chip-label {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.chip-value {
+    font-weight: 400;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chip-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0.125rem;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    line-height: 1;
+    transition: all 0.15s;
+    margin-left: 0.125rem;
+}
+
+.chip-remove:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.chip-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem 0.625rem;
+    background: none;
+    border: 1px dashed #e2e8f0;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #ef4444;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.chip-clear:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
+}

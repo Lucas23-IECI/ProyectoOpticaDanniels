@@ -201,5 +201,65 @@ export const enviarAlertaStock = async (umbral = 10) => {
     }
 };
 
+export const getFacetas = async (filtros = {}) => {
+    try {
+        const filtrosLimpios = Object.entries(filtros).reduce((acc, [key, value]) => {
+            if (value !== null && value !== undefined && value !== '') {
+                acc[key] = value;
+            }
+            return acc;
+        }, {});
+
+        const cacheKey = `facetas_${JSON.stringify(filtrosLimpios)}`;
+        const cached = cacheService.get(cacheKey);
+        if (cached) return cached;
+
+        const response = await api.get(`${PRODUCTOS_ENDPOINT}/facetas`, { params: filtrosLimpios });
+        const data = response.data.data || response.data || {};
+
+        cacheService.set(cacheKey, data, 2 * 60 * 1000);
+        return data;
+    } catch (error) {
+        console.error("Error en getFacetas:", error);
+        return {};
+    }
+};
+
+// ── Multi-image endpoints ──
+
+export const getImagenesProducto = async (productoId) => {
+    try {
+        const response = await api.get(`${PRODUCTOS_ENDPOINT}/${productoId}/imagenes`);
+        return response.data.data || [];
+    } catch (error) {
+        console.error("Error en getImagenesProducto:", error);
+        return [];
+    }
+};
+
+export const agregarImagenesProducto = async (productoId, archivos) => {
+    const formData = new FormData();
+    archivos.forEach((file) => formData.append("imagenes", file));
+    const response = await api.post(`${PRODUCTOS_ENDPOINT}/${productoId}/imagenes`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data.data || [];
+};
+
+export const eliminarImagenProducto = async (imagenId) => {
+    const response = await api.delete(`${PRODUCTOS_ENDPOINT}/imagenes/${imagenId}`);
+    return response.data.data;
+};
+
+export const reordenarImagenesProducto = async (productoId, ordenIds) => {
+    const response = await api.put(`${PRODUCTOS_ENDPOINT}/${productoId}/imagenes/reordenar`, { ordenIds });
+    return response.data.data || [];
+};
+
+export const establecerImagenPrincipal = async (imagenId) => {
+    const response = await api.put(`${PRODUCTOS_ENDPOINT}/imagenes/${imagenId}/principal`);
+    return response.data.data;
+};
+
 
 

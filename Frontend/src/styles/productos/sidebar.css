@@ -1,0 +1,368 @@
+/* ===== CATALOG SIDEBAR ===== */
+
+.catalog-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 380px;
+    height: 100vh;
+    max-height: 100vh;
+    z-index: 1000;
+    background: white;
+    border-radius: 0;
+    border: none;
+    border-left: 1px solid #e2e8f0;
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.catalog-sidebar.mobile-open {
+    transform: translateX(0);
+}
+
+.catalog-sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.catalog-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.catalog-sidebar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+/* --- Sidebar header --- */
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.125rem;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 1;
+    border-radius: 0;
+}
+
+.sidebar-header h3 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sidebar-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.sidebar-clear-btn {
+    font-size: 0.75rem;
+    color: #ef4444;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.sidebar-clear-btn:hover {
+    background: #fef2f2;
+}
+
+.sidebar-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    font-size: 1.1rem;
+}
+
+.sidebar-close-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+/* --- Filter sections --- */
+.sidebar-filters {
+    padding: 0.375rem 0;
+}
+
+.filter-section {
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+}
+
+.filter-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem 1.125rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #334155;
+    transition: color 0.2s;
+}
+
+.filter-section-header:hover {
+    color: var(--primary-color);
+}
+
+.filter-section-header span:last-child {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    transition: transform 0.2s;
+}
+
+.filter-section.collapsed .filter-section-header span:last-child {
+    transform: rotate(-90deg);
+}
+
+.filter-section-body {
+    padding: 0 1.125rem 0.75rem;
+    max-height: 240px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #e2e8f0 transparent;
+}
+
+.filter-section-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.filter-section-body::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.filter-section.collapsed .filter-section-body {
+    display: none;
+}
+
+/* --- Checkbox list --- */
+.filter-checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.filter-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.8125rem;
+    color: #475569;
+}
+
+.filter-checkbox-label:hover {
+    background: #f8fafc;
+}
+
+.filter-checkbox-label.active {
+    background: rgba(33, 71, 162, 0.06);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.filter-checkbox-label input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.filter-checkbox-label input[type="radio"]:checked {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+}
+
+.filter-checkbox-label input[type="radio"]:checked::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    background: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.filter-checkbox-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filter-count-badge {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    background: #f1f5f9;
+    padding: 0.125rem 0.4rem;
+    border-radius: 10px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.filter-empty {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    padding: 0.25rem 0.5rem;
+    font-style: italic;
+}
+
+/* --- Price range inputs --- */
+.filter-price-range {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.price-input-group {
+    position: relative;
+    flex: 1;
+}
+
+.price-prefix {
+    position: absolute;
+    left: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+.price-input-group input {
+    width: 100%;
+    padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.price-input-group input:focus {
+    border-color: var(--primary-color);
+}
+
+.price-input-group input::placeholder {
+    color: #cbd5e1;
+}
+
+.price-separator {
+    color: #94a3b8;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+}
+
+.price-range-hint {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-align: center;
+}
+
+/* --- Search inside sidebar --- */
+.sidebar-search {
+    position: relative;
+    padding: 0.875rem 1.125rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.sidebar-search-icon {
+    position: absolute;
+    left: 1.875rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+.sidebar-search-input {
+    width: 100%;
+    padding: 0.625rem 0.875rem 0.625rem 2.375rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    background: #f8fafc;
+    outline: none;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.sidebar-search-input:focus {
+    border-color: var(--primary-color);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(33, 71, 162, 0.08);
+}
+
+.sidebar-search-input::placeholder {
+    color: #9ca3af;
+}
+
+/* --- Catalog overlay --- */
+.catalog-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+    animation: overlayFadeIn 0.25s ease-out;
+}
+
+@keyframes overlayFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+    .catalog-sidebar {
+        width: 100vw;
+    }
+}

@@ -5,6 +5,7 @@ import {
     eliminarProductoService,
     generarSugerenciasBusqueda,
     getProductosStockBajoService,
+    obtenerFacetasService,
 } from "../services/producto.service.js";
 import { actualizarImagenProductoService } from "../services/producto.service.js";
 import {
@@ -80,6 +81,10 @@ export const buscarProductosController = async (req, res) => {
         const productosConUrl = productos.map((producto) => ({
             ...producto,
             imagen_url: getImageUrl(producto.imagen_url),
+            imagenes: (producto.imagenes || []).map((img) => ({
+                ...img,
+                imagen_url: getImageUrl(img.imagen_url),
+            })),
         }));
 
         handleSuccess(
@@ -192,6 +197,18 @@ export const enviarAlertaStockController = async (req, res) => {
             total: productos.length,
         });
     } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+};
+
+export const obtenerFacetasController = async (req, res) => {
+    try {
+        const facetas = await obtenerFacetasService(req.query);
+        handleSuccess(res, 200, "Facetas obtenidas correctamente.", facetas);
+    } catch (error) {
+        if (error.status) {
+            return handleErrorClient(res, error.status, error.message);
+        }
         handleErrorServer(res, 500, error.message);
     }
 };
