@@ -112,8 +112,8 @@ const Admin = () => {
                         <FaUserCircle className="user-avatar" />
                         {!sidebarCollapsed && (
                             <div className="user-info">
-                                <span className="user-name">{getNombreCorto(user) || 'Admin'}</span>
-                                <span className="user-role">Administrador</span>
+                                <span className="user-name">{getNombreCorto(user) || 'Administrador'}</span>
+                                <span className="user-role">ADMINISTRADOR</span>
                             </div>
                         )}
                     </div>
