@@ -1,4 +1,6 @@
 @import './variables.css';
+@import './productos/category-banner.css';
+@import './productos/horizontal-filters.css';
 @import './productos/catalog.css';
 @import './productos/sidebar.css';
 @import './productos/chips.css';

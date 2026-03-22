@@ -1,0 +1,180 @@
+/* ===== HORIZONTAL FILTER BAR (GMO-style) ===== */
+
+.hfb-wrapper {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.hfb-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    height: 56px;
+    gap: 0.75rem;
+}
+
+/* Product count */
+.hfb-count {
+    font-size: 0.8125rem;
+    color: #64748b;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Spacer */
+.hfb-spacer {
+    flex: 1;
+}
+
+/* Right controls grouping */
+.hfb-right-controls {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Vertical separator */
+.hfb-sep {
+    width: 1px;
+    height: 22px;
+    background: #e2e8f0;
+    margin: 0 0.875rem;
+    flex-shrink: 0;
+}
+
+/* Sort */
+.hfb-sort-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hfb-sort-label {
+    font-size: 0.8125rem;
+    color: #374151;
+    white-space: nowrap;
+}
+
+.hfb-sort-select {
+    font-size: 0.8125rem;
+    color: #1e293b;
+    font-weight: 500;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0;
+    appearance: auto;
+}
+
+/* Grid toggle */
+.hfb-grid-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+}
+
+.hfb-cols-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1.5px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    transition: all 0.15s;
+    font-family: inherit;
+    flex-shrink: 0;
+}
+
+.hfb-cols-btn:hover {
+    color: #1e293b;
+    border-color: #94a3b8;
+}
+
+.hfb-cols-btn.active {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background: rgba(33, 71, 162, 0.06);
+}
+
+/* Filtrar trigger button */
+.hfb-filter-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.125rem;
+    background: none;
+    border: 1.5px solid #374151;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.hfb-filter-trigger:hover {
+    background: #1e293b;
+    border-color: #1e293b;
+    color: white;
+}
+
+.hfb-filter-trigger.has-filters {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.hfb-filter-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    background: white;
+    color: var(--primary-color);
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 10px;
+    padding: 0 0.3rem;
+    line-height: 1;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .hfb-inner {
+        padding: 0 1rem;
+        height: 52px;
+    }
+
+    .hfb-sort-label {
+        display: none;
+    }
+
+    .hfb-count {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hfb-sort-wrapper {
+        display: none;
+    }
+}
+

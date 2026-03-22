@@ -5,25 +5,16 @@ import useGetFacetas from "@hooks/productos/useGetFacetas";
 import { formatearNombreParaURL } from "@helpers/formatData";
 import ProductCard from "@components/ProductCard";
 import CatalogSidebar from "@components/CatalogSidebar";
-import ActiveFilterChips from "@components/ActiveFilterChips";
+import CategoryBanner from "@components/CategoryBanner";
+import HorizontalFilterBar from "@components/HorizontalFilterBar";
 import { ProductGridSkeleton } from "@components/ProductCardSkeleton";
 import QuickViewModal from "@components/QuickViewModal";
 import RecentlyViewed, { addToRecentlyViewed } from "@components/RecentlyViewed";
-import Breadcrumbs from "@components/Breadcrumbs";
 import SugerenciasBusqueda from "@components/SugerenciasBusqueda";
 import "@styles/productos.css";
-import { FaFilter, FaTimes, FaSearch, FaSort, FaEyeSlash, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaEyeSlash, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const ITEMS_PER_PAGE = 16;
-
-const SORT_OPTIONS = [
-    { value: "", label: "Más relevantes" },
-    { value: "precio_ASC", label: "Precio: menor a mayor" },
-    { value: "precio_DESC", label: "Precio: mayor a menor" },
-    { value: "nombre_ASC", label: "Nombre: A-Z" },
-    { value: "nombre_DESC", label: "Nombre: Z-A" },
-    { value: "createdAt_DESC", label: "Novedades" },
-];
 
 // Keys for filtros that map directly to query params
 const FILTER_KEYS = [
@@ -54,15 +45,29 @@ const Productos = () => {
     const [searchInput, setSearchInput] = useState(searchFromUrl);
     const debounceRef = useRef(null);
 
+    // Grid columns — persisted in localStorage
+    const [gridColumns, setGridColumns] = useState(() => {
+        const saved = localStorage.getItem('catalog-grid-cols');
+        return saved ? parseInt(saved) : 4;
+    });
+
+    const handleGridColumnsChange = useCallback((cols) => {
+        setGridColumns(cols);
+        localStorage.setItem('catalog-grid-cols', String(cols));
+    }, []);
+
     // Sync local input when URL changes externally (navbar, chips, etc.)
     useEffect(() => {
+        if (debounceRef.current) {
+            clearTimeout(debounceRef.current);
+            debounceRef.current = null;
+        }
         setSearchInput(searchFromUrl);
     }, [searchFromUrl]);
 
     // UI state
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [quickViewProduct, setQuickViewProduct] = useState(null);
-
     const { productos, paginacion, loading, fetchProductos } = useGetProductos();
     const { facetas, fetchFacetas } = useGetFacetas();
 
@@ -115,7 +120,7 @@ const Productos = () => {
             else next.delete("busqueda");
             next.delete("page");
             setSearchParams(next, { replace: true });
-        }, 400);
+        }, 300);
     }, [searchParams, setSearchParams]);
 
     // Sort handler
@@ -135,7 +140,6 @@ const Productos = () => {
         setSearchParams(next, { replace: true });
     }, [searchParams, setSearchParams]);
 
-    // For chips display
     const chipsData = useMemo(() => {
         const data = { ...filtros };
         if (searchFromUrl.trim()) data.nombre = searchFromUrl.trim();
@@ -144,108 +148,54 @@ const Productos = () => {
 
     const activeFilterCount = Object.keys(chipsData).length;
 
-    // QuickView handler
+    // QuickView handler (kept for future use)
     const handleQuickView = useCallback((producto) => {
         addToRecentlyViewed(producto);
         setQuickViewProduct(producto);
     }, []);
 
-    // Breadcrumb trail
-    const breadcrumbTrail = useMemo(() => {
-        const trail = [{ label: "Productos", path: "/productos", isLast: !filtros.categoria }];
-        if (filtros.categoria) {
-            const catLabel = filtros.categoria === "opticos" ? "Ópticos" : filtros.categoria === "sol" ? "Sol" : "Accesorios";
-            trail.push({
-                label: catLabel,
-                path: `/productos?categoria=${filtros.categoria}`,
-                isLast: !filtros.subcategoria,
-            });
-        }
-        if (filtros.subcategoria) {
-            trail.push({ label: filtros.subcategoria, path: "#", isLast: true });
-        }
-        return trail;
-    }, [filtros.categoria, filtros.subcategoria]);
-
     const displayedProducts = productos || [];
 
     return (
         <div className="catalog-container">
-            {/* Header: breadcrumbs + title + search + sort */}
-            <div className="catalog-topbar">
-                <Breadcrumbs customTrail={breadcrumbTrail} />
+            {/* Category banner */}
+            <CategoryBanner
+                categoria={filtros.categoria}
+                totalProductos={paginacion?.total}
+            />
 
-                <div className="topbar-controls">
-                    <div className="topbar-left">
-                        <button
-                            className="mobile-filter-btn"
-                            onClick={() => setSidebarOpen(true)}
-                        >
-                            <FaFilter />
-                            Filtrar
-                            {activeFilterCount > 0 && (
-                                <span className="mobile-filter-badge">{activeFilterCount}</span>
-                            )}
-                        </button>
+            {/* Horizontal filter bar (desktop) + mobile filter trigger */}
+            <HorizontalFilterBar
+                filtros={filtros}
+                searchInput={searchInput}
+                orden={orden}
+                onOrdenChange={handleOrdenChange}
+                gridColumns={gridColumns}
+                onGridColumnsChange={handleGridColumnsChange}
+                totalProductos={paginacion?.total}
+                onMobileFilterOpen={() => setSidebarOpen(true)}
+            />
 
-                        <div className="search-container">
-                            <FaSearch className="search-icon" />
-                            <input
-                                type="text"
-                                placeholder="Buscar productos..."
-                                value={searchInput}
-                                onChange={(e) => handleSearchChange(e.target.value)}
-                                className="search-input"
-                            />
-                            {searchInput && (
-                                <button className="clear-search" onClick={() => handleSearchChange("")}>
-                                    <FaTimes />
-                                </button>
-                            )}
-                        </div>
-                    </div>
+            {/* Filter panel drawer */}
+            <CatalogSidebar
+                filtros={filtros}
+                facetas={facetas}
+                onFiltroChange={handleFiltroChange}
+                onClearAll={clearAllFilters}
+                onClose={() => setSidebarOpen(false)}
+                isMobileOpen={sidebarOpen}
+                searchInput={searchInput}
+                onSearchChange={handleSearchChange}
+            />
 
-                    <div className="topbar-right">
-                        {paginacion && (
-                            <span className="results-count">
-                                {paginacion.total} producto{paginacion.total !== 1 ? "s" : ""}
-                            </span>
-                        )}
-                        <div className="sort-control">
-                            <FaSort className="sort-icon" />
-                            <select
-                                value={orden}
-                                onChange={(e) => handleOrdenChange(e.target.value)}
-                                className="sort-select"
-                            >
-                                {SORT_OPTIONS.map((opt) => (
-                                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <ActiveFilterChips filtros={chipsData} onRemove={removeFilter} onClearAll={clearAllFilters} />
-            </div>
-
-            {/* Main layout: sidebar + grid */}
+            {/* Main content — no sidebar on desktop */}
             <div className="catalog-layout">
-                <CatalogSidebar
-                    filtros={filtros}
-                    facetas={facetas}
-                    onFiltroChange={handleFiltroChange}
-                    onClearAll={clearAllFilters}
-                    onClose={() => setSidebarOpen(false)}
-                    isMobileOpen={sidebarOpen}
-                />
-
                 <main className="catalog-main">
                     {loading ? (
-                        <ProductGridSkeleton count={ITEMS_PER_PAGE} />
+                        <ProductGridSkeleton count={gridColumns === 3 ? 9 : 16} />
                     ) : displayedProducts.length > 0 ? (
                         <>
-                            <div className="products-grid">
+                            <div className={`products-grid cols-${gridColumns}`}>
                                 {displayedProducts.map((producto) => (
                                     <Link
                                         key={producto.id}

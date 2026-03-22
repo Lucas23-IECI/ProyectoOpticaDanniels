@@ -44,13 +44,13 @@
 
 .product-card-modern:not(.admin-mode) {
     background: var(--bg-card);
-    border-radius: 20px;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
     position: relative;
-    animation: fadeInUp 0.6s ease-out;
-    border: 1px solid rgba(0, 0, 0, 0.04);
+    animation: fadeInUp 0.5s ease-out;
+    border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .product-card-modern:not(.admin-mode).grid-mode {
@@ -73,16 +73,16 @@
 }
 
 .product-card-modern:not(.admin-mode):hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
-    border-color: var(--primary-color);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.07);
+    border-color: #d1d5db;
 }
 
 /* IMÁGENES - MODO CLIENTE */
 .product-card-modern:not(.admin-mode) .product-image-container {
     position: relative;
     overflow: hidden;
-    border-radius: 16px 16px 0 0;
+    border-radius: 10px 10px 0 0;
 }
 
 .product-card-modern:not(.admin-mode).list-mode .product-image-container {
@@ -114,7 +114,7 @@
 }
 
 .product-card-modern:not(.admin-mode):hover .product-img {
-    transform: scale(1.1) rotate(2deg);
+    transform: scale(1.05);
 }
 
 /* OVERLAY - MODO CLIENTE */
