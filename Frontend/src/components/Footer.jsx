@@ -51,7 +51,7 @@ const Footer = () => {
                         <h4>Empresa</h4>
                         <ul>
                             <li><Link to="/quienes-somos">Quiénes Somos</Link></li>
-                            <li><Link to="/contacto">Contacto</Link></li>
+                            <li><Link to="/contacto">Contacto y Tiendas</Link></li>
                             <li><Link to="/faq">Preguntas Frecuentes</Link></li>
                         </ul>
                     </div>
@@ -62,7 +62,7 @@ const Footer = () => {
                         <div className="eco-footer-contact">
                             <div><FaPhone /> <span>+56 9 3769 2691</span></div>
                             <div><FaEnvelope /> <span>contacto@opticadanniels.cl</span></div>
-                            <div><FaClock /> <span>Lun-Vie 9:00-19:00 · Sáb 9:00-14:00</span></div>
+                            <div><FaClock /> <span>Lun-Vie 10:30-12:30 / 15:30-19:00 · Sáb 10:30-13:30</span></div>
                             <div><FaMapMarkerAlt /> <span>Visítanos en tienda</span></div>
                         </div>
                     </div>
