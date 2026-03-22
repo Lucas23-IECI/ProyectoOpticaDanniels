@@ -10,6 +10,8 @@
   --gray-dark: #666666;
 
   --primary-color: var(--cobalt-blue);
+  --primary-dark: #1a3b8a;
+  --primary-hover: #1a3b8a;
   --secondary-color: var(--pigment-green);
   --accent-color: var(--screamin-green);
   --success-color: var(--sgbus-green);
@@ -23,11 +25,24 @@
   --bg-navbar: var(--cobalt-blue);
   --bg-card: var(--white);
   --bg-overlay: rgba(33, 71, 162, 0.1);
+  --bg-color: var(--white);
+  --bg-input: var(--gray-light);
+  --bg-tertiary: #eaeef3;
+  --background-light: var(--gray-light);
+  --surface-color: var(--white);
 
+  --text-color: var(--black);
   --text-primary: var(--black);
   --text-secondary: var(--gray-dark);
   --text-light: var(--white);
   --text-muted: var(--gray-medium);
+  --color-text: var(--black);
+  --color-text-light: var(--gray-dark);
+  --color-primary: var(--cobalt-blue);
+  --color-border: var(--gray-medium);
+  --color-error: #FF4444;
+  --color-light-blue: rgba(33, 71, 162, 0.08);
+  --color-light-red: rgba(255, 68, 68, 0.08);
 
   --btn-primary-bg: var(--cobalt-blue);
   --btn-primary-color: var(--white);
@@ -46,6 +61,7 @@
   --border-focus: var(--cobalt-blue);
   --border-radius: 8px;
   --border-radius-sm: 4px;
+  --border-radius-md: 8px;
   --border-radius-lg: 12px;
 
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
