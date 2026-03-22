@@ -1,31 +1,66 @@
 import { Link } from 'react-router-dom';
+import { FaTag, FaFire, FaShoppingCart } from 'react-icons/fa';
 import '../../styles/home/promo-banners.css';
 
 const PromoBanners = () => {
     return (
-        <section className="eco-promo">
-            <div className="eco-promo-inner">
-                <div className="eco-promo-grid">
-                    <Link to="/agendar-cita" className="eco-promo-card eco-promo-card--primary">
-                        <div className="eco-promo-content">
-                            <h3>Examen Visual Gratuito</h3>
-                            <p>Agenda tu hora con nuestros profesionales</p>
-                            <span className="eco-promo-btn">Agendar cita →</span>
+        <section className="promo-section">
+            <div className="promo-section-inner">
+                <div className="promo-section-header">
+                    <span className="promo-section-badge"><FaFire /> Promociones</span>
+                    <h2 className="promo-section-title">Ofertas Especiales</h2>
+                    <p className="promo-section-subtitle">Aprovecha nuestras promociones por tiempo limitado</p>
+                </div>
+                <div className="promo-cards-grid">
+                    {/* Promo 1: Gafas 2x */}
+                    <div className="promo-card promo-card--sky">
+                        <div className="promo-card-tag">
+                            <FaTag /> Oferta
                         </div>
-                        <div className="eco-promo-bg">
-                            <img src="/images/promo/examen-visual.jpg" alt="Examen visual" loading="lazy" />
+                        <div className="promo-card-content">
+                            <h3 className="promo-card-title">GAFAS 2x</h3>
+                            <div className="promo-card-price">
+                                <span className="promo-price-symbol">$</span>
+                                <span className="promo-price-amount">39.990</span>
+                            </div>
+                            <p className="promo-card-desc">Renueva tu estilo y ahorra</p>
+                            <span className="promo-card-stock"><FaFire /> ¡STOCK LIMITADO!</span>
                         </div>
-                    </Link>
+                        <Link to="/productos?categoria=sol" className="promo-card-btn">
+                            <FaShoppingCart /> COMPRA AQUÍ
+                        </Link>
+                    </div>
 
-                    <Link to="/productos?categoria=sol" className="eco-promo-card eco-promo-card--secondary">
-                        <div className="eco-promo-content">
-                            <h3>Lentes de Sol</h3>
-                            <p>Protección UV con las mejores marcas</p>
-                            <span className="eco-promo-btn">Ver colección →</span>
+                    {/* Promo 2: 2 Pares Completos */}
+                    <div className="promo-card promo-card--warm">
+                        <div className="promo-card-tag promo-card-tag--hot">
+                            <FaFire /> Top Venta
                         </div>
-                        <div className="eco-promo-bg">
-                            <img src="/images/promo/lentes-sol-lifestyle.jpg" alt="Lentes de sol" loading="lazy" />
+                        <div className="promo-card-content">
+                            <h3 className="promo-card-title">2 Pares de Lentes Completos</h3>
+                            <p className="promo-card-detail">Armazón + Cristales Orgánicos con Antirreflejo</p>
+                            <div className="promo-card-price">
+                                <span className="promo-price-symbol">$</span>
+                                <span className="promo-price-amount">69.990</span>
+                            </div>
                         </div>
+                        <Link to="/productos?categoria=opticos" className="promo-card-btn promo-card-btn--dark">
+                            <FaShoppingCart /> COMPRA AQUÍ
+                        </Link>
+                    </div>
+
+                    {/* Promo 3: Examen visual */}
+                    <Link to="/agendar-cita" className="promo-card promo-card--blue">
+                        <div className="promo-card-tag promo-card-tag--free">
+                            ✓ Gratis
+                        </div>
+                        <div className="promo-card-content">
+                            <h3 className="promo-card-title">Examen Visual Gratuito</h3>
+                            <p className="promo-card-desc">Agenda tu hora con nuestros profesionales ópticos</p>
+                        </div>
+                        <span className="promo-card-btn promo-card-btn--white">
+                            Agendar cita →
+                        </span>
                     </Link>
                 </div>
             </div>
